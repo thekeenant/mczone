@@ -2,13 +2,19 @@ package co.mczone.events;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import co.mczone.api.Chat;
+import co.mczone.MCZone;
 import co.mczone.api.players.Gamer;
 import co.mczone.api.server.Hive;
+import co.mczone.util.Chat;
 
-public class GeneralEvents {
+public class GeneralEvents implements Listener {
+	public GeneralEvents() {
+		MCZone.getInstance().getServer().getPluginManager().registerEvents(this, MCZone.getInstance());
+	}
+	
 	@EventHandler
 	public void onPlayerChat(AsyncPlayerChatEvent event) {
 		Player p = event.getPlayer();
@@ -21,7 +27,7 @@ public class GeneralEvents {
 		if (g.getRank() != null)
 			prefix = g.getRank().getType().getPrefix();
 		
-		String result = Chat.colors(prefix + "&7" + name + "&f:") + msg;
+		String result = Chat.colors(prefix + "&7" + name + "&f: ") + msg;
 		if (g.getRank().getType().getLevel() >= 5)
 			result = Chat.colors(result);
 		

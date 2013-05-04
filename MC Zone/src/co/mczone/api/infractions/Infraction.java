@@ -17,4 +17,8 @@ public class Infraction {
 	public String forHumanDate() {
 		return human.format(date);
 	}
+	
+	public String getKickMessage() {
+		return "";
+	}
 }

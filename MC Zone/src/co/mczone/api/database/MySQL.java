@@ -10,6 +10,7 @@ import java.sql.Statement;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import co.mczone.MCZone;
+import co.mczone.util.Chat;
 
 public class MySQL extends Database {
 	private String hostname = "";
@@ -18,11 +19,11 @@ public class MySQL extends Database {
 	private String password = "";
 	private String database = "";
 
-	public MySQL(String hostname, String portnmbr, String database, String username, String password) {
+	public MySQL(String hostname, String port, String db, String username, String password) {
 		super();
 		this.hostname = hostname;
-		this.portnmbr = portnmbr;
-		this.database = database;
+		this.portnmbr = port;
+		this.database = db;
 		this.username = username;
 		this.password = password;
 	}
@@ -72,6 +73,7 @@ public class MySQL extends Database {
 			result = statement.executeQuery(query);
 			return result;
 		} catch (SQLException e) {
+			Chat.log("MySQL query failed: " + query);
 			e.printStackTrace();
 		}
 		return result;
@@ -86,6 +88,7 @@ public class MySQL extends Database {
 					statement = connection.createStatement();
 					statement.executeUpdate(query);
 				} catch (SQLException e) {
+					Chat.log("MySQL update failed: " + query);
 					e.printStackTrace();
 				}
 			}
@@ -99,6 +102,7 @@ public class MySQL extends Database {
 			statement = connection.createStatement();
 			statement.executeUpdate(query);
 		} catch (SQLException e) {
+			Chat.log("MySQL update failed: " + query);
 			e.printStackTrace();
 		}
 		return true;

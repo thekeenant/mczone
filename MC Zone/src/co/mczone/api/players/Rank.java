@@ -15,4 +15,8 @@ public class Rank {
 	public Rank(RankType type) {
 		this.type = type;
 	}
+	
+	public static Rank getRank(String name) {
+		return ranks.get(name);
+	}
 }

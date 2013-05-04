@@ -1,4 +1,4 @@
-package co.mczone.api;
+package co.mczone.util;
 
 import java.util.ArrayList;
 import java.util.List;

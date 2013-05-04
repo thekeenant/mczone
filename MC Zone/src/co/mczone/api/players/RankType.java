@@ -7,8 +7,10 @@ public enum RankType {
 	VIP(1, "VIP", "&6[VIP]&f "),
 	ELITE(2, "Elite", "&a[Elite]&f "),
 	TITAN(3, "Titan", "&b[Titan]&f "),
-	MOD(4, "Mod", "&c[Mod]&f "),
-	ADMIN(5, "Admin", "&4[Admin]&f ");
+	MOD(5, "Mod", "&c[Mod]&f "),
+	OFFICER(6, "Officer", "&1[Officer]&f "),
+	ADMIN(7, "Admin", "&4[Admin]&f "),
+	OWNER(8, "Owner", "&2[Owner]&f ");
 	
 	@Getter int level;
 	@Getter String title;

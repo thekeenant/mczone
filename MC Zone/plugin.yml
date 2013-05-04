@@ -1,0 +1,19 @@
+name: Hive
+version: 0.1b
+author: funkystudios
+main: co.mczone.MCZone
+description: >
+             MC Zone
+commands:
+  register:
+    description: Register on MC Zone website
+    usage: /register <password>
+  ban:
+    description: Ban an MC Zone player
+    usage: /ban <player> <reason>
+  unban:
+    description: Unban an MC Zone player
+    usage: /unban <player>
+  tempban:
+    description: Tempban an MC Zone player
+    usage: /tempban <player> <time> <reason>

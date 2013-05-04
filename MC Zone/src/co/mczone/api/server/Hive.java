@@ -1,5 +1,9 @@
 package co.mczone.api.server;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Date;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,6 +21,7 @@ public class Hive {
 	public Hive(MySQL database) {
 		instance = this;
 		this.database = database;
+		database.open();
 	}
 	
 	public Gamer getGamer(Player p) {
@@ -34,5 +39,42 @@ public class Hive {
 		else
 			query += "'natural','" + target.getName() + "'";
 		database.update(query + ")");
+	}
+	
+	public boolean playerExists(String name) {
+		ResultSet r = database.query("SELECT username FROM players WHERE username='" + name + "'");
+		try {
+			while (r.next())
+				return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return false;
+	}
+	
+	public String getUsername(String name) {
+		ResultSet r = database.query("SELECT username FROM players WHERE username='" + name + "'");
+		try {
+			while (r.next())
+				return r.getString("username");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		return null;
+	}
+	
+	public Date getServerTime() {
+        ResultSet r = Hive.getInstance().getDatabase().query("SELECT now()");
+        try {
+			while (r.next()) {
+			    return r.getTimestamp(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+        return null;
 	}
 }

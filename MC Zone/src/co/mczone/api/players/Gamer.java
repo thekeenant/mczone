@@ -21,6 +21,7 @@ public class Gamer {
 	
 	public Gamer(String name) {
 		this.name = name;
+		list.add(this);
 	}
 	
 	public Player getPlayer() {

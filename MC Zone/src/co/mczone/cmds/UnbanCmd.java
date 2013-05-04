@@ -42,7 +42,7 @@ public class UnbanCmd implements CommandExecutor {
         }
         
         boolean found = false;
-        ResultSet r = Hive.getInstance().getDatabase().query("SELECT * FROM infractions WHERE username='" + username + "' WHERE active=1 AND (type='ban' OR type='tempban')");
+        ResultSet r = Hive.getInstance().getDatabase().query("SELECT * FROM infractions WHERE username='" + username + "' AND active=1 AND (type='ban' OR type='tempban')");
         try {
 			while (r.next()) {
 				found = true;

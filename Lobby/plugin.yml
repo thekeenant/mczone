@@ -1,0 +1,11 @@
+name: Lobby
+version: 1.0
+startup: startup
+author: funkystudios
+depend: [Hive]
+main: co.mczone.lobby.Lobby
+description: >
+             MC Zone Lobby
+commands:
+  spawn:
+    description: TP to spawn

@@ -9,7 +9,6 @@ import lombok.Setter;
 
 import org.bukkit.entity.Player;
 
-import co.mczone.api.GameType;
 import co.mczone.api.database.MySQL;
 import co.mczone.api.players.Gamer;
 

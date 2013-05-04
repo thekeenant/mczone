@@ -8,7 +8,7 @@ import lombok.Setter;
 
 public class Rank {
 	@Getter static HashMap<String, Rank> ranks = new HashMap<String, Rank>();
-	@Getter @Setter boolean expires = false;
+	@Getter @Setter boolean cancelled = false;
 	@Getter @Setter Date expireDate = null;
 	@Getter @Setter RankType type;
 	
@@ -17,6 +17,17 @@ public class Rank {
 	}
 	
 	public static Rank getRank(String name) {
+		if (name.equals("CONSOLE"))
+			return new Rank(RankType.ADMIN);
+		
 		return ranks.get(name);
+	}
+	
+	public int getLevel() {
+		return type.getLevel();
+	}
+	
+	public String getPrefix() {
+		return type.getPrefix();
 	}
 }

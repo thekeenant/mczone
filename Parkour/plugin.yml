@@ -1,0 +1,10 @@
+name: Parkour
+main: co.mczone.parkour.Parkour
+version: 0.1a
+author: funkystudios
+description: >
+             The MC Zone Parkour
+commands:
+  parkour:
+    description: mc zone parkour!
+    default: true

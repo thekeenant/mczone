@@ -27,7 +27,7 @@ public class RankSchedule extends BukkitRunnable {
 					rank = new Rank(RankType.OWNER);
 				
 				if (ended) {
-					rank.setExpires(true);
+					rank.setCancelled(true);
 					rank.setExpireDate(r.getTime("subscription_end"));
 				}
 				Rank.getRanks().put(username, rank);

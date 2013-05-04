@@ -16,6 +16,7 @@ import co.mczone.api.infractions.Infraction;
 import co.mczone.api.infractions.Tempban;
 import co.mczone.api.players.Gamer;
 import co.mczone.api.players.Rank;
+import co.mczone.api.players.RankType;
 import co.mczone.api.server.Hive;
 import co.mczone.util.Chat;
 
@@ -30,10 +31,6 @@ public class ConnectEvents implements Listener {
 		Gamer g = Gamer.get(p.getName());
 		if (g == null)
 			g = new Gamer(p.getName());
-		
-		// Import current ranking
-		if (Rank.getRanks().containsKey(p.getName()))
-			g.setRank(Rank.getRanks().get(p.getName()));
 		
 		// Import infractions and check bans
 		g.getInfractions().clear();
@@ -57,9 +54,19 @@ public class ConnectEvents implements Listener {
 			}
 			if (msg != "") {
 				event.disallow(Result.KICK_OTHER, msg);
+				return;
 			}
 		}
 		
-		Chat.server(g.getInfractions().toString());
+		// Import current ranking
+		if (Rank.getRanks().containsKey(p.getName()))
+			g.setRank(Rank.getRanks().get(p.getName()));
+		else
+			g.setRank(new Rank(RankType.USER));
+		
+		if (g.getRank().isCancelled()) {
+			Date cancel = g.getRank().getExpireDate();
+			Chat.player(p, "&7&oYour &8" + g.getRank().getType().getTitle() + " &7will expire on &8" + Infraction.human.format(cancel));
+		}
 	}
 }

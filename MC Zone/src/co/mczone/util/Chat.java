@@ -20,7 +20,7 @@ public class Chat {
 	}
 	
 	public static void log(Level l, String msg) {
-		Bukkit.getServer().getLogger().log(l, "[Avicus] " + msg);
+		Bukkit.getServer().getLogger().log(l, "[MC Zone] " + msg);
 	}
 
 	public static void server(String msg) {

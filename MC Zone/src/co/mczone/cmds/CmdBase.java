@@ -11,6 +11,7 @@ public class CmdBase {
         MCZone.getInstance().getCommand("ban").setExecutor(new BanCmd());
         MCZone.getInstance().getCommand("unban").setExecutor(new UnbanCmd());
         MCZone.getInstance().getCommand("tempban").setExecutor(new TempbanCmd());
+        MCZone.getInstance().getCommand("kick").setExecutor(new KickCmd());
     }
     
     public static boolean returnConsole(CommandSender s) {

@@ -25,7 +25,7 @@ public class Tempban extends Infraction {
 		String msg = "";
 		msg += "&4[Tempban]\n\n";
 		msg += "&cDate: &e" + forHumanDate() + "\n";
-		msg += "&cExpires: &e" + forHumanExpireTime();
+		msg += "&cExpires: &e" + forHumanExpireTime() + "\n";
 		msg += "&cReason: &f" + reason;
 		msg += "\n\n\n";
 		msg += "&7Email &oinfo@mczone.co &7to appeal.";

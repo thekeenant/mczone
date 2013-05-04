@@ -39,4 +39,8 @@ public class Gamer {
 				return g;
 		return null;
 	}
+	
+	public static Gamer get(Player p) {
+		return get(p.getName());
+	}
 }

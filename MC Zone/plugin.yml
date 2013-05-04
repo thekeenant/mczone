@@ -17,3 +17,6 @@ commands:
   tempban:
     description: Tempban an MC Zone player
     usage: /tempban <player> <time> <reason>
+  kick:
+    description: Kick an MC Zone player
+    usage: /kick <player> <reason>

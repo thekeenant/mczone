@@ -1,4 +1,4 @@
-package co.mczone.api;
+package co.mczone.api.server;
 
 import lombok.Getter;
 
@@ -8,7 +8,8 @@ public enum GameType {
 	NEBULA("Nebula MC", "pn"),
 	NEXUS("Nexus MC", "nexus"),
 	WALLS("The Walls", "walls"),
-	SKYWARS("Sky Wars", "skywars");
+	SKYWARS("Sky Wars", "skywars"),
+	LOBBY("Lobby", "lobby");
 	
 	@Getter String title;
 	@Getter String name;

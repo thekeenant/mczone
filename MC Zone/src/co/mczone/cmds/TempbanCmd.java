@@ -1,5 +1,9 @@
 package co.mczone.cmds;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Date;
+
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -7,6 +11,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import co.mczone.api.infractions.Tempban;
 import co.mczone.api.players.Rank;
 import co.mczone.api.players.RankType;
 import co.mczone.api.server.Hive;
@@ -48,8 +53,21 @@ public class TempbanCmd implements CommandExecutor {
         String prefix = "INSERT INTO infractions (username,staff,type,end,reason) VALUES ";
         String content = "('" + username + "','" + sender.getName() + "','tempban',DATE_ADD(now(), INTERVAL " + duration + " SECOND),'" + reason + "')";
         Hive.getInstance().getDatabase().update(prefix + content);
-        Chat.player(sender, "&4[Tempban] &b" + username + " &7&ofor &c" + reason);
+        Chat.player(sender, "&4[Tempban] &b" + username + " &7&ofor &c" + reason + " &7(" + getDuration(args[1]) + ")");
         
+        Date expires = null;
+        ResultSet r = Hive.getInstance().getDatabase().query("SELECT DATE_ADD(now(), INTERVAL " + duration + " SECOND)");
+        try {
+			while (r.next())
+				expires = r.getTimestamp("DATE_ADD(now(), INTERVAL " + duration + " SECOND)");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+        	
+        Tempban i = new Tempban(username, reason, Hive.getInstance().getServerTime(), expires);
+      	if (p != null && p.isOnline())
+      		p.kickPlayer(i.getKickMessage());
+      	
     	return true;
     }
     

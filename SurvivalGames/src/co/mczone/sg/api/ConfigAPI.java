@@ -1,4 +1,4 @@
-package co.mczone.parkour;
+package co.mczone.sg.api;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +10,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import co.mczone.sg.SurvivalGames;
+
 public class ConfigAPI {
 	@Getter FileConfiguration config;
     
@@ -18,7 +20,7 @@ public class ConfigAPI {
     }
 
     public ConfigAPI() {
-    	Parkour plugin = Parkour.getInstance();
+        SurvivalGames plugin = SurvivalGames.getInstance();
         plugin.reloadConfig();
         plugin.getConfig().options().copyDefaults(true);
         plugin.saveConfig();
@@ -95,7 +97,7 @@ public class ConfigAPI {
         if (config.getString(s) != null)
             return config.getString(s);
         config.set(s, def);
-        Parkour.getInstance().saveConfig();
+        SurvivalGames.getInstance().saveConfig();
         return def;
     }
 
@@ -111,7 +113,7 @@ public class ConfigAPI {
         if (config.get(s) != null)
             return config.getInt(s);
         config.set(s, i);
-        Parkour.getInstance().saveConfig();
+        SurvivalGames.getInstance().saveConfig();
         return i;
     }
 }

@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class Gamer {
-	@Getter static List<Gamer> list = new ArrayList<Gamer>(); 
+	@Getter static List<Gamer> list = new ArrayList<Gamer>();
 	@Getter String name;
 	@Getter @Setter Rank rank;
 	
@@ -42,5 +42,9 @@ public class Gamer {
 	
 	public static Gamer get(Player p) {
 		return get(p.getName());
+	}
+	
+	public void giveCredits(int amount) {
+		
 	}
 }

@@ -25,6 +25,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import co.mczone.api.ConfigAPI;
 import co.mczone.api.server.GameType;
 import co.mczone.api.server.Hive;
 import co.mczone.lobby.api.*;
@@ -45,7 +46,7 @@ public class Lobby extends JavaPlugin implements Listener {
 		Bukkit.getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 		Hive.getInstance().setType(GameType.LOBBY);
 		instance = this;
-		configAPI = new ConfigAPI();
+		configAPI = new ConfigAPI(this);
 
 		// Load configuration
 		MiniGame.load(configAPI.getConfig().getConfigurationSection("minigames"));

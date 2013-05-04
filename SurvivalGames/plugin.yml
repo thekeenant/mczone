@@ -1,0 +1,29 @@
+name: SurvivalGames
+main: co.mczone.sg.SurvivalGames
+version: 0.1a
+author: funkystudios
+description: >
+             The Minecraft Survival Games
+commands:
+  admin:
+    description: sg admin command
+    default: true
+  vote:
+    description: sg vote command
+    default: true
+  about:
+    description: sg about command
+    default: true
+  help:
+    description: sg help command
+    default: true
+  maps:
+    description: sg maps command
+    default: true
+  world:
+    description: world maps command
+    default: true
+  spawn:
+    aliases: [lobby]
+    description: lobby
+    default: true

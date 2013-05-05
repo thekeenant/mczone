@@ -15,6 +15,7 @@ public class Gamer {
 	@Getter static List<Gamer> list = new ArrayList<Gamer>();
 	@Getter String name;
 	@Getter @Setter Rank rank;
+	@Getter boolean invisible;
 	
 	@Getter @Setter boolean online;
 	@Getter List<Infraction> infractions = new ArrayList<Infraction>();
@@ -46,5 +47,26 @@ public class Gamer {
 	
 	public void giveCredits(int amount) {
 		
+	}
+	
+	public void setInvisible(boolean invisible) {
+		this.invisible = invisible;
+		updateHidden();
+	}
+	
+	public static void updateHidden() {
+		for (Player p : Bukkit.getOnlinePlayers()) {
+			Gamer gp = Gamer.get(p);
+			for (Player t : Bukkit.getOnlinePlayers()) {
+				Gamer gt = Gamer.get(t);
+				if (gp.getName().equals(gt.getName()))
+					continue;
+				
+				if (gt.isInvisible())
+					gp.getPlayer().hidePlayer(gt.getPlayer());
+				else
+					gp.getPlayer().showPlayer(gt.getPlayer());
+			}
+		}
 	}
 }

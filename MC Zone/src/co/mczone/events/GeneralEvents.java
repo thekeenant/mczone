@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import co.mczone.MCZone;
 import co.mczone.api.players.Gamer;
@@ -33,5 +34,12 @@ public class GeneralEvents implements Listener {
 		
 		// Symbol % has formatting issues
 		event.setFormat(result.replace("%", "%%"));
+	}
+	
+	@EventHandler
+	public void onPlayerTeleport(PlayerTeleportEvent event) {
+		Gamer g = Gamer.get(event.getPlayer());
+		if (g.isInvisible())
+			Gamer.updateHidden();
 	}
 }

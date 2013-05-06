@@ -8,3 +8,7 @@
 # Bin #
 bin/
 *.class
+
+.metadata
+.classpath
+.project

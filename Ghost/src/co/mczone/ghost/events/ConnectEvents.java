@@ -5,6 +5,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import co.mczone.api.players.Gamer;
 import co.mczone.ghost.Ghost;
@@ -16,11 +17,16 @@ public class ConnectEvents implements Listener {
 	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
-		Gamer g = Gamer.get(event.getPlayer());
+		final Gamer g = Gamer.get(event.getPlayer());
+		new BukkitRunnable() {
 
-		g.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 10000, 0));
-		Ghost.getMatches().get(0).join(event.getPlayer(), "red");
-		
-		g.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 10000, 0));
+			@Override
+			public void run() {
+				Ghost.getMatches().get(0).join(g.getPlayer(), "red");
+			}
+			
+		}.runTaskLater(Ghost.getInstance(), 100);
+		for (PotionEffect p : g.getPlayer().getActivePotionEffects())
+			g.getPlayer().removePotionEffect(p.getType());
 	}
 }

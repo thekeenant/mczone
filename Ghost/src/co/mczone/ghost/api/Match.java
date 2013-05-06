@@ -44,13 +44,12 @@ public class Match {
 
 		spec.setDisplayName("Spectators");
 		spec.setAllowFriendlyFire(false);
-		spec.setCanSeeFriendlyInvisibles(false);
+		spec.setCanSeeFriendlyInvisibles(true);
 		spec.setPrefix(ChatColor.GRAY + "");
 
 		sidebar = scoreboard.registerNewObjective("test", "dummy");
 		sidebar.setDisplaySlot(DisplaySlot.SIDEBAR);
 		sidebar.setDisplayName(ChatColor.GREEN + "Sidebar");
-		
 	}
 	
 	public void setScore(String key, int value) {

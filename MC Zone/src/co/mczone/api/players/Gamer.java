@@ -15,7 +15,7 @@ public class Gamer {
 	@Getter static List<Gamer> list = new ArrayList<Gamer>();
 	@Getter String name;
 	@Getter @Setter Rank rank;
-	@Getter boolean invisible;
+	@Getter boolean invisible = false;
 	
 	@Getter @Setter boolean online;
 	@Getter List<Infraction> infractions = new ArrayList<Infraction>();

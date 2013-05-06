@@ -18,9 +18,9 @@ public class ConnectEvents implements Listener {
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Gamer g = Gamer.get(event.getPlayer());
 
-		g.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 10000, 1));
+		g.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 10000, 0));
 		Ghost.getMatches().get(0).join(event.getPlayer(), "red");
 		
-		g.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 10000, 1));
+		g.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 10000, 0));
 	}
 }

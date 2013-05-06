@@ -13,39 +13,43 @@ import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-import co.mczone.util.Chat;
-import co.mczone.util.RandomUtil;
-
 import lombok.Getter;
 
 public class Match {
 	@Getter int id;
 	@Getter Scoreboard scoreboard;
 	@Getter Objective sidebar;
+
+	@Getter Team red;
+	@Getter Team blue;
+	@Getter Team spec;
 	
 	public Match(int id) {
 		this.id = id;
 		this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 
-		scoreboard.registerNewTeam("red");
-		scoreboard.registerNewTeam("blue");
-		scoreboard.registerNewTeam("spec");
+		red = scoreboard.registerNewTeam("red");
+		blue = scoreboard.registerNewTeam("blue");
+		spec = scoreboard.registerNewTeam("spec");
 
-		scoreboard.getTeam("red").setAllowFriendlyFire(false);
-		scoreboard.getTeam("red").setCanSeeFriendlyInvisibles(true);
-		scoreboard.getTeam("red").setPrefix(ChatColor.RED + "");
-		
-		scoreboard.getTeam("blue").setAllowFriendlyFire(false);
-		scoreboard.getTeam("blue").setCanSeeFriendlyInvisibles(true);
-		scoreboard.getTeam("blue").setPrefix(ChatColor.BLUE + "");
+		red.setDisplayName("Red");
+		red.setAllowFriendlyFire(false);
+		red.setCanSeeFriendlyInvisibles(true);
+		red.setPrefix(ChatColor.RED + "");
 
-		scoreboard.getTeam("spec").setAllowFriendlyFire(false);
-		scoreboard.getTeam("spec").setCanSeeFriendlyInvisibles(false);
-		scoreboard.getTeam("spec").setPrefix(ChatColor.GRAY + "");
+		blue.setDisplayName("Blue");
+		blue.setAllowFriendlyFire(false);
+		blue.setCanSeeFriendlyInvisibles(true);
+		blue.setPrefix(ChatColor.BLUE + "");
+
+		spec.setDisplayName("Spectators");
+		spec.setAllowFriendlyFire(false);
+		spec.setCanSeeFriendlyInvisibles(false);
+		spec.setPrefix(ChatColor.GRAY + "");
 
 		sidebar = scoreboard.registerNewObjective("test", "dummy");
 		sidebar.setDisplaySlot(DisplaySlot.SIDEBAR);
-		sidebar.setDisplayName(ChatColor.GREEN + "Levels");
+		sidebar.setDisplayName(ChatColor.GREEN + "Sidebar");
 		
 	}
 	
@@ -64,12 +68,14 @@ public class Match {
 	}
 	
 	public void join(Player p, String team) {
-		scoreboard.getTeam(team).addPlayer(p);
-		p.setScoreboard(scoreboard);
-
-		this.setScore(p.getName(), RandomUtil.between(20, 100));
+		if (team.equals("red"))
+			red.addPlayer(p);
+		else if (team.equals("blue"))
+			blue.addPlayer(p);
+		else
+			spec.addPlayer(p);
 		
-		Chat.server("&aTeam: " + scoreboard.getTeam(team).getPlayers().toString());
+		p.setScoreboard(scoreboard);
 	}
 
 	public void leave(Player p, String team) {

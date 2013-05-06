@@ -32,18 +32,20 @@ public class Match {
 		blue = scoreboard.registerNewTeam("blue");
 		spec = scoreboard.registerNewTeam("spec");
 
+		
+		// Apparently, opactiy doesn't work with friendly fire >:(
 		red.setDisplayName("Red");
-		red.setAllowFriendlyFire(false);
+		//red.setAllowFriendlyFire(false);
 		red.setCanSeeFriendlyInvisibles(true);
 		red.setPrefix(ChatColor.RED + "");
 
 		blue.setDisplayName("Blue");
-		blue.setAllowFriendlyFire(false);
+		//blue.setAllowFriendlyFire(false);
 		blue.setCanSeeFriendlyInvisibles(true);
 		blue.setPrefix(ChatColor.BLUE + "");
 
 		spec.setDisplayName("Spectators");
-		spec.setAllowFriendlyFire(false);
+		//spec.setAllowFriendlyFire(false);
 		spec.setCanSeeFriendlyInvisibles(true);
 		spec.setPrefix(ChatColor.GRAY + "");
 

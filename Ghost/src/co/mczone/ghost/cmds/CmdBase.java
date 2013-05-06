@@ -9,7 +9,7 @@ import co.mczone.util.Chat;
 
 public class CmdBase {
     public CmdBase() {
-    	//Parkour.getInstance().getCommand("parkour").setExecutor(new ParkourCmd());
+    	Ghost.getInstance().getCommand("matches").setExecutor(new MatchesCmd());
     }
     
     public static boolean isAdmin(CommandSender s) {

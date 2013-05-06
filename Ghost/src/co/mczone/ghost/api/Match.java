@@ -214,4 +214,14 @@ public class Match {
 	public void sendMessage(String msg) {
 		Chat.player(getPlayers(), msg);
 	}
+	
+	public static Match getMatch(Player player) {
+		for (Match match : list) {
+			if (match.getPlayers().contains(player)) {
+				return match;
+			}
+		}
+		
+		return null;
+	}
 }

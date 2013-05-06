@@ -44,7 +44,7 @@ public class PlayerEvents implements Listener {
 		}
 		
 		if (attacked != null && damager != null) {
-			Match match = Ghost.getMatches().get(0);
+			Match match = Match.getMatch(attacked);
 			Scoreboard board = match.getScoreboard();
 			Team attackedTeam = board.getPlayerTeam(attacked);
 			Team damagerTeam = board.getPlayerTeam(damager);

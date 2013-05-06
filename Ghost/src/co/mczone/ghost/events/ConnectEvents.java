@@ -9,6 +9,7 @@ import co.mczone.api.players.Gamer;
 import co.mczone.ghost.Ghost;
 
 public class ConnectEvents implements Listener {
+	
 	public ConnectEvents() {
 		Ghost.getInstance().getServer().getPluginManager().registerEvents(this, Ghost.getInstance());
 	}

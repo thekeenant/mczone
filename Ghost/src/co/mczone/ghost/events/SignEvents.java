@@ -12,6 +12,7 @@ import co.mczone.ghost.api.TeamColor;
 import co.mczone.util.Chat;
 
 public class SignEvents implements Listener {
+	
 	public SignEvents() {
 		Ghost.getInstance().getServer().getPluginManager().registerEvents(this, Ghost.getInstance());
 	}

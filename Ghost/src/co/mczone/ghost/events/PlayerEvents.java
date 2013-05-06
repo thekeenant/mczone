@@ -11,6 +11,7 @@ import org.bukkit.scoreboard.Team;
 
 import co.mczone.ghost.Ghost;
 import co.mczone.ghost.api.Match;
+import co.mczone.ghost.api.MatchState;
 
 public class PlayerEvents implements Listener {
 	
@@ -20,7 +21,7 @@ public class PlayerEvents implements Listener {
 	
 	// Because the setAllowFriendlyFire() doesn't work.
 	@EventHandler
-	public void onDamage(EntityDamageByEntityEvent event) {
+	public void onPlayerTeamKill(EntityDamageByEntityEvent event) {
 		Entity entity = event.getEntity();
 		Entity damagerEntity = event.getDamager();
 		
@@ -49,12 +50,12 @@ public class PlayerEvents implements Listener {
 			Team attackedTeam = board.getPlayerTeam(attacked);
 			Team damagerTeam = board.getPlayerTeam(damager);
 			
-			if (attackedTeam == damagerTeam) {
+			if (attackedTeam == damagerTeam)
 				event.setCancelled(true);
-			} else if (attackedTeam.getName().equalsIgnoreCase("spec") || damagerTeam.getName().equalsIgnoreCase("spec")) {
+			else if (attackedTeam.getName().equalsIgnoreCase("spec") || damagerTeam.getName().equalsIgnoreCase("spec"))
 				event.setCancelled(true);
-			}
+			else if (match.getState() != MatchState.STARTED)
+				event.setCancelled(true);
 		}
 	}
-	
 }

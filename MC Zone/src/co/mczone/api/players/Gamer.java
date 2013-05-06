@@ -1,6 +1,7 @@
 package co.mczone.api.players;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -18,6 +19,7 @@ import lombok.Setter;
 
 public class Gamer {
 	@Getter static List<Gamer> list = new ArrayList<Gamer>();
+	@Getter HashMap<String, Object> settings = new HashMap<String, Object>();
 	@Getter String name;
 	@Getter @Setter Rank rank;
 	@Getter boolean invisible = false;
@@ -96,5 +98,24 @@ public class Gamer {
 		
 		if (to != null)
 			getPlayer().teleport(to);
+	}
+	
+	public void clearInventory() {
+		clearInventory(true);
+	}
+	
+	public void clearInventory(boolean andArmor) {
+		getPlayer().getInventory().clear();
+		if (andArmor)
+			getPlayer().getInventory().setArmorContents(null);
+	}
+	
+	// Custom settings
+	public void setVariable(String key, Object value) {
+		getSettings().put(key, value);
+	}
+
+	public Object getVariable(String key) {
+		return getSettings().get(key);
 	}
 }

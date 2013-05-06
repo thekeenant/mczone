@@ -7,6 +7,7 @@ public enum RankType {
 	VIP(1, "VIP", "&6[VIP]&f "),
 	ELITE(2, "Elite", "&a[Elite]&f "),
 	TITAN(3, "Titan", "&b[Titan]&f "),
+	
 	MOD(5, "Mod", "&c[Mod]&f "),
 	OFFICER(6, "Officer", "&1[Officer]&f "),
 	ADMIN(7, "Admin", "&4[Admin]&f "),

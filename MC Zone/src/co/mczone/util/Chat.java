@@ -14,6 +14,11 @@ public class Chat {
 	public static void player(CommandSender p, String msg) {
 		p.sendMessage(ChatColor.translateAlternateColorCodes("&".charAt(0), msg));
 	}
+
+	public static void player(List<Player> list, String msg) {
+		for (Player p : list)
+			p.sendMessage(ChatColor.translateAlternateColorCodes("&".charAt(0), msg));
+	}
 	
 	public static void log(String msg) {
 		log(Level.INFO, msg);

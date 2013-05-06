@@ -3,8 +3,6 @@ package co.mczone.ghost.events;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import co.mczone.api.players.Gamer;
@@ -26,7 +24,8 @@ public class ConnectEvents implements Listener {
 			}
 			
 		}.runTaskLater(Ghost.getInstance(), 100);
-		for (PotionEffect p : g.getPlayer().getActivePotionEffects())
-			g.getPlayer().removePotionEffect(p.getType());
+		
+		g.removePotionEffects();
+		
 	}
 }

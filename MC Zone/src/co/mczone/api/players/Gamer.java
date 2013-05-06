@@ -4,7 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import co.mczone.api.infractions.Infraction;
 
@@ -69,5 +74,27 @@ public class Gamer {
 					*/
 			}
 		}
+	}
+	
+	public void removePotionEffects() {
+		for (PotionEffect p : getPlayer().getActivePotionEffects())
+			getPlayer().removePotionEffect(p.getType());
+	}
+	
+	public void removePotionEffect(PotionEffectType t) {
+		getPlayer().removePotionEffect(t);
+	}
+	
+	public void teleport(Object o) {
+		Location to = null;
+		if (o instanceof Location)
+			to = (Location) o;
+		else if (o instanceof Entity)
+			to = ((Entity) o).getLocation();
+		else if (o instanceof World)
+			to = ((World) o).getSpawnLocation();
+		
+		if (to != null)
+			getPlayer().teleport(to);
 	}
 }

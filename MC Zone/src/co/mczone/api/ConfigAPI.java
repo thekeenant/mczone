@@ -3,12 +3,14 @@ package co.mczone.api;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 import lombok.Getter;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -130,5 +132,13 @@ public class ConfigAPI {
         if (config.get(s) != null)
             return config.getInt(s);
         return i;
+    }
+    
+    public ConfigurationSection getConfigurationSection(String name) {
+    	return config.getConfigurationSection(name);
+    }
+    
+    public Set<String> getKeys(boolean depth) {
+    	return config.getKeys(depth);
     }
 }

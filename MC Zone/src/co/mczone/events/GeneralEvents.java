@@ -1,14 +1,21 @@
 package co.mczone.events;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import co.mczone.MCZone;
 import co.mczone.api.players.Gamer;
 import co.mczone.api.server.Hive;
+import co.mczone.events.custom.SignClickEvent;
 import co.mczone.util.Chat;
 
 public class GeneralEvents implements Listener {
@@ -41,5 +48,20 @@ public class GeneralEvents implements Listener {
 		Gamer g = Gamer.get(event.getPlayer());
 		if (g.isInvisible())
 			Gamer.updateHidden();
+	}
+	
+	@EventHandler
+	public void onSignClick(PlayerInteractEvent event) {
+		if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_AIR)
+			return;
+		
+		Block b = event.getClickedBlock();
+		if (b.getType() == Material.SIGN || b.getType() == Material.WALL_SIGN) {
+			Sign sign = (Sign) b.getState();
+			SignClickEvent ev = new SignClickEvent(event.getPlayer(), sign, event.getAction() == Action.RIGHT_CLICK_BLOCK);
+			Bukkit.getServer().getPluginManager().callEvent(ev);
+		}
+
+		
 	}
 }

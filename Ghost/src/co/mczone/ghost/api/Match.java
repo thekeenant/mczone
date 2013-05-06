@@ -106,7 +106,7 @@ public class Match {
 			Chat.log("Failed loading match world: " + worldName);
 			e.printStackTrace();
 		}
-		Bukkit.createWorld(new WorldCreator(worldName));
+		new WorldCreator(worldName).createWorld();
 		getWorld().setAutoSave(false);
 		setState(MatchState.WAITING);
 	}

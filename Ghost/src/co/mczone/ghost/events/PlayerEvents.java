@@ -53,8 +53,6 @@ public class PlayerEvents implements Listener {
 				event.setCancelled(true);
 			} else if (attackedTeam.getName().equalsIgnoreCase("spec") || damagerTeam.getName().equalsIgnoreCase("spec")) {
 				event.setCancelled(true);
-			} else if (!match.isRunning()) {
-				event.setCancelled(true);
 			}
 		}
 	}

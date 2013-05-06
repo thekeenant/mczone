@@ -1,6 +1,5 @@
 package co.mczone.ghost.events;
 
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -22,33 +21,28 @@ public class PlayerEvents implements Listener {
 	// Because the setAllowFriendlyFire() doesn't work.
 	@EventHandler
 	public void onPlayerTeamKill(EntityDamageByEntityEvent event) {
-		Entity entity = event.getEntity();
-		Entity damagerEntity = event.getDamager();
+		if (event.getEntity() instanceof Player == false)
+			return;
 		
-		Player attacked = null;
-		Player damager = null;
+		Player t = (Player) event.getEntity();
+		Player p = null;
 		
-		if (entity instanceof Player) {
+		
+		if (event.getDamager() instanceof Player) {
+			p = (Player) event.getDamager();
+		} 
+		else if (event.getDamager() instanceof Projectile) {
+			Projectile projectile = (Projectile) event.getDamager();
 			
-			attacked = (Player) entity;
-			if (damagerEntity instanceof Player) {
-				damager = (Player) damagerEntity;
-			} else if (damagerEntity instanceof Projectile) {
-				Projectile projectile = (Projectile) damagerEntity;
-				Entity shooter = projectile.getShooter();
-				
-				if (shooter instanceof Player) {
-					damager = (Player) damager;
-				}
-			}
-			
+			if (projectile.getShooter() instanceof Player)
+				p = (Player) projectile.getShooter();
 		}
 		
-		if (attacked != null && damager != null) {
-			Match match = Match.getMatch(attacked);
+		if (p != null) {
+			Match match = Match.getMatch(t);
 			Scoreboard board = match.getScoreboard();
-			Team attackedTeam = board.getPlayerTeam(attacked);
-			Team damagerTeam = board.getPlayerTeam(damager);
+			Team attackedTeam = board.getPlayerTeam(p);
+			Team damagerTeam = board.getPlayerTeam(t);
 			
 			if (attackedTeam == damagerTeam)
 				event.setCancelled(true);

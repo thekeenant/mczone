@@ -1,8 +1,5 @@
 package co.mczone.ghost;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import lombok.Getter;
 
 import org.bukkit.Bukkit;
@@ -13,18 +10,19 @@ import org.bukkit.plugin.java.JavaPlugin;
 import co.mczone.api.ConfigAPI;
 import co.mczone.ghost.api.Match;
 import co.mczone.ghost.events.ConnectEvents;
+import co.mczone.ghost.events.PlayerEvents;
 
 public class Ghost extends JavaPlugin {
 	@Getter static Ghost instance;
 	@Getter static ConfigAPI conf;
-	@Getter static List<Match> matches = new ArrayList<Match>();
 	@Getter static World lobby;
 	
 	public void onEnable() {
 		instance = this;
 		conf = new ConfigAPI(this);
-		
+
 		new ConnectEvents();
+		new PlayerEvents();
 		
 		for (String worldName : conf.getConfigurationSection("matches").getKeys(false)) {
 			String base = "matches." + worldName + ".";

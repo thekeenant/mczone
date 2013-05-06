@@ -116,6 +116,7 @@ public class Match {
 	
 	// Should by called on main thread!
 	public void unloadWorld() {
+		// Any players left for some reason?
 		for (Player p : getWorld().getPlayers())
 			p.teleport(Ghost.getLobby().getSpawnLocation());
 		

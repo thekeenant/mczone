@@ -20,7 +20,7 @@ public class ConnectEvents implements Listener {
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		event.setJoinMessage(null);
 		final Gamer g = Gamer.get(event.getPlayer());
-		Match.getList().get(0).join(g.getPlayer(), "red");
+		Match.getList().get(0).join(g.getPlayer());
 		
 		
 		g.removePotionEffects();

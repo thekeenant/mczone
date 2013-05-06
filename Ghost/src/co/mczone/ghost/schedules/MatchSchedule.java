@@ -20,6 +20,8 @@ public class MatchSchedule extends BukkitRunnable {
 	public void run() {
 		time += 1;
 		
+		match.updateScoreboard();
+		
 		if (time % 3 == 0)
 			match.updateSign();
 		

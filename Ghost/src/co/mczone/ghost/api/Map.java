@@ -10,6 +10,8 @@ public class Map {
 	
 	@Getter static List<Map> list = new ArrayList<Map>();
 	
+	@Getter List<Integer> matches = new ArrayList<Integer>();
+	
 	@Getter @Setter String folderName;
 	@Getter @Setter String mapName;
 	

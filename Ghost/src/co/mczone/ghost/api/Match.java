@@ -1,5 +1,7 @@
 package co.mczone.ghost.api;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +23,7 @@ import org.bukkit.scoreboard.Team;
 import co.mczone.ghost.Ghost;
 import co.mczone.ghost.schedules.MatchSchedule;
 import co.mczone.util.Chat;
+import co.mczone.util.FileUtil;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -83,6 +86,13 @@ public class Match {
 	}
 	
 	public void loadWorld() {
+		FileUtil.delete(new File(worldName));
+		try {
+			FileUtil.copy(new File("backups", worldName), new File(worldName));
+		} catch (IOException e) {
+			Chat.log("Failed loading match world: " + worldName);
+			e.printStackTrace();
+		}
 		Bukkit.createWorld(new WorldCreator(worldName));
 		getWorld().setAutoSave(false);
 		setState(MatchState.WAITING);
@@ -192,12 +202,14 @@ public class Match {
 			spec.addPlayer(p);
 		
 		p.setScoreboard(scoreboard);
+		sendMessage("  &7&o + " + p.getName() + " has joined the match");
 		return TeamColor.valueOf(team.toUpperCase());
 	}
 
-	public void leave(Player p, String team) {
-		scoreboard.getTeam(team).removePlayer(p);
+	public void leave(Player p) {
+		scoreboard.getPlayerTeam(Bukkit.getOfflinePlayer(p.getName())).removePlayer(p);
 		p.setScoreboard(null);
+		sendMessage("  &7&o - " + p.getName() + " has left the match");
 	}
 
 	public void updateSign() {
@@ -216,12 +228,9 @@ public class Match {
 	}
 	
 	public static Match getMatch(Player player) {
-		for (Match match : list) {
-			if (match.getPlayers().contains(player)) {
+		for (Match match : list)
+			if (match.getPlayers().contains(player))
 				return match;
-			}
-		}
-		
 		return null;
 	}
 }

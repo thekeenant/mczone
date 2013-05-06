@@ -3,6 +3,8 @@ package co.mczone.ghost.events;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import co.mczone.api.players.Gamer;
 import co.mczone.ghost.Ghost;
@@ -16,11 +18,27 @@ public class ConnectEvents implements Listener {
 	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
+		event.setJoinMessage(null);
 		final Gamer g = Gamer.get(event.getPlayer());
 		Match.getList().get(0).join(g.getPlayer(), "red");
 		
 		
 		g.removePotionEffects();
 		
+	}
+	
+	@EventHandler
+	public void onPlayerLeave(PlayerQuitEvent event) {
+		event.setQuitMessage(null);
+		Match match = Match.getMatch(event.getPlayer());
+		if (match == null)
+			return;
+		
+		match.leave(event.getPlayer());
+	}
+	
+	@EventHandler
+	public void onPlayerKick(PlayerKickEvent event) {
+		event.setLeaveMessage(null);
 	}
 }

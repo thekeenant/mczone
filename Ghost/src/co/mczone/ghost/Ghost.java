@@ -27,10 +27,11 @@ public class Ghost extends JavaPlugin {
 		new ConnectEvents();
 		
 		for (String worldName : conf.getConfigurationSection("matches").getKeys(false)) {
-			String title = conf.getString(worldName + ".title", "NULL TITLE");
-			int id = conf.getInt(worldName + ".id", 0);
+			String base = "matches." + worldName + ".";
+			String title = conf.getString(base + "title", "NULL TITLE");
+			int id = conf.getInt(base + "id", 0);
 			
-			Block sign = conf.getBlock(worldName + ".sign");
+			Block sign = conf.getBlock(base + "sign");
 			
 			new Match(id, title, worldName, sign);
 		}

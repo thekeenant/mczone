@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
@@ -48,7 +49,9 @@ public class Match {
 		this.title = title;
 		this.worldName = world;
 		this.signBlock = sign;
-		this.sign = (Sign) signBlock.getState();
+		
+		if (signBlock.getType() == Material.WALL_SIGN || signBlock.getType() == Material.SIGN)
+			this.sign = (Sign) signBlock.getState();
 		
 		this.state = MatchState.WAITING;
 		this.schedule = new MatchSchedule(this);
@@ -198,6 +201,9 @@ public class Match {
 	}
 
 	public void updateSign() {
+		if (getSign() == null)
+			return;
+		
 		Sign sign = getSign();
 		sign.setLine(0, "[Match-" + getId() + "]");
 		sign.setLine(1, Chat.colors("&o" + getState().getColor() + getState().name()));

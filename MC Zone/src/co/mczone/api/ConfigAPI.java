@@ -9,6 +9,7 @@ import lombok.Getter;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.WorldCreator;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -89,6 +90,9 @@ public class ConfigAPI {
         int y = config.getInt(base + "y");
         int z = config.getInt(base + "z");
 
+        if (Bukkit.getWorld(world) == null)
+        	Bukkit.createWorld(new WorldCreator(world));
+        
 		Block r = Bukkit.getWorld(world).getBlockAt(x, y, z);
 		return r;
 	}	

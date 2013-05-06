@@ -39,6 +39,5 @@ public class SignEvents implements Listener {
 		
 		TeamColor team = match.join(p);
 		Chat.player(p, "&aYou have joined team " + team.getColor() + team.name());
-		
 	}
 }

@@ -3,6 +3,7 @@ package co.mczone.ghost;
 import lombok.Getter;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -30,8 +31,11 @@ public class Ghost extends JavaPlugin {
 			int id = conf.getInt(base + "id", 0);
 			
 			Block sign = conf.getBlock(base + "sign");
+
+			Location red = conf.getLocation(base + "red");
+			Location blue = conf.getLocation(base + "blue");
 			
-			new Match(id, title, worldName, sign);
+			new Match(id, title, worldName, sign, red, blue);
 		}
 		
 		lobby = Bukkit.getWorld(Ghost.getConf().getString("lobby-world", "world"));

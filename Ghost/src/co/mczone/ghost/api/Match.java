@@ -8,6 +8,7 @@ import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -49,10 +50,15 @@ public class Match {
 	@Getter @Setter MatchState state;
 	@Getter MatchSchedule schedule;
 	
-	public Match(int id, String title, String world, Block sign) {
+	@Getter Location redSpawn;
+	@Getter Location blueSpawn;
+	
+	public Match(int id, String title, String world, Block sign, Location redSpawn, Location blueSpawn) {
 		this.id = id;
 		this.title = title;
 		this.worldName = world;
+		this.redSpawn = redSpawn;
+		this.blueSpawn = blueSpawn;
 		this.signBlock = sign;
 		
 		if (signBlock.getType() == Material.WALL_SIGN || signBlock.getType() == Material.SIGN)

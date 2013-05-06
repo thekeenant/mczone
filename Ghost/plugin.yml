@@ -1,0 +1,7 @@
+name: Ghost
+main: co.mczone.ghost.Ghost
+version: 0.1a
+author: funkystudios
+description: >
+             MC Zone Ghost
+commands:

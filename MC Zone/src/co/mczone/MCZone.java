@@ -18,7 +18,7 @@ public class MCZone extends JavaPlugin {
 	public void onEnable() {
 		instance = this;
 		new ConfigAPI(this);
-		new Hive(new MySQL("mczone.co", "3306", "mczone", "root", "johnt#@!"));
+		new Hive(new MySQL("alpha.mczone.co", "3306", "mczone", "root", "johnt#@!"));
 
 		new RankSchedule().runTaskTimerAsynchronously(this, 0, 20 * 60);
 		new InfractionSchedule().runTaskTimerAsynchronously(this, 0, 20 * 30);

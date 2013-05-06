@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -14,6 +15,7 @@ import org.bukkit.WorldCreator;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
@@ -82,7 +84,18 @@ public class Match {
 		setState(MatchState.LOADING);
 		schedule.setTime(0);
 		
-		Bukkit.unloadWorld(worldName, false);
+		// Kick all players out of the match
+		for (Player p : getPlayers()) {
+			p.teleport(Ghost.getLobby().getSpawnLocation());
+		}
+		
+		// Run this a bit later, no lag :)
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				unloadWorld();
+			}
+		}.runTaskLater(Ghost.getInstance(), 120);
 	}
 	
 	public void loadWorld() {
@@ -96,6 +109,17 @@ public class Match {
 		Bukkit.createWorld(new WorldCreator(worldName));
 		getWorld().setAutoSave(false);
 		setState(MatchState.WAITING);
+	}
+	
+	// Should by called on main thread!
+	public void unloadWorld() {
+		for (Player p : getWorld().getPlayers())
+			p.teleport(Ghost.getLobby().getSpawnLocation());
+		
+		boolean saved = Bukkit.unloadWorld(worldName, false);
+		if (!saved) {
+			Chat.log(Level.SEVERE, "Failed to unload world: " + worldName);
+		}
 	}
 	
 	private void registerTeams() {

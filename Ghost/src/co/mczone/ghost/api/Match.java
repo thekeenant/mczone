@@ -48,15 +48,12 @@ public class Match {
 	
 	@Getter @Setter MatchState state;
 	@Getter MatchSchedule schedule;
-	@Getter Map map;
 	
-	public Match(int id, String title, String world, Block sign, Map map) {
+	public Match(int id, String title, String world, Block sign) {
 		this.id = id;
 		this.title = title;
 		this.worldName = world;
 		this.signBlock = sign;
-		this.map = map;
-		map.matches.add(id);
 		
 		if (signBlock.getType() == Material.WALL_SIGN || signBlock.getType() == Material.SIGN)
 			this.sign = (Sign) signBlock.getState();

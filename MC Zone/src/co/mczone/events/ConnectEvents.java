@@ -47,10 +47,10 @@ public class ConnectEvents implements Listener {
 				msg = i.getKickMessage();
 			}
 			else if (i instanceof Tempban) {
-                Date now = Hive.getInstance().getServerTime();
-                if (now != null && now.before(((Tempban) i).getExpires())) {
+                		Date now = Hive.getInstance().getServerTime();
+                		if (now != null && now.before(((Tempban) i).getExpires())) {
 					msg = i.getKickMessage();
-                }
+                		}
 			}
 			if (msg != "") {
 				event.disallow(Result.KICK_OTHER, msg);

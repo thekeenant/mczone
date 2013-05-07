@@ -28,7 +28,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class Match {
-	public static int MAX_PER_TEAM = Ghost.getConf().getInt("max-per-team", 8);
+	public static int MAX_PER_TEAM = Ghost.getConf().getInt("max-per-team", 1);
 	
 	@Getter static List<Match> list = new ArrayList<Match>();
 	@Getter int id;

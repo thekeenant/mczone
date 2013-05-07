@@ -17,8 +17,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import co.mczone.util.Chat;
-
 public class ConfigAPI {
 	@Getter FileConfiguration config;
     
@@ -88,22 +86,15 @@ public class ConfigAPI {
 	}
 
 	public Location getLocation(String s) {
-		Chat.log(s);
 		String base = s + ".";
-		Chat.log(base);
-        String worldName = config.getString(base + "world");
+        String worldName = getString(base + "world");
         double x = config.getDouble(base + "x");
 		double y = config.getDouble(base + "y");
 		double z = config.getDouble(base + "z");
 		float yaw = (float) config.getDouble(base + "yaw");
 		float pitch = (float) config.getDouble(base + "pitch");
-		
-		Chat.log(worldName + x + y + z);
-		
+        new WorldCreator(worldName).createWorld();
 		World world = Bukkit.getWorld(worldName);
-		
-		
-		
 		Location r = new Location(world, x, y, z, yaw, pitch);
 		return r;
 	}
@@ -114,20 +105,10 @@ public class ConfigAPI {
         int x = config.getInt(base + "x");
         int y = config.getInt(base + "y");
         int z = config.getInt(base + "z");
-
-        if (Bukkit.getWorld(world) == null)
-        	Bukkit.createWorld(new WorldCreator(world));
+        
+        new WorldCreator(world).createWorld();
         
 		Block r = Bukkit.getWorld(world).getBlockAt(x, y, z);
-		return r;
-	}	
-	
-	public Block parseBlock(String s) {
-        int x = Integer.parseInt(s.split(",")[0]);
-        int y = Integer.parseInt(s.split(",")[1]);
-        int z = Integer.parseInt(s.split(",")[2]);
-
-		Block r = Bukkit.getWorld("void").getBlockAt(x, y, z);
 		return r;
 	}
 

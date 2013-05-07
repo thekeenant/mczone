@@ -26,8 +26,9 @@ public class MatchSchedule extends BukkitRunnable {
 			match.updateSign();
 		
 		if (match.getState() == MatchState.WAITING) {
-			if (match.getRedPlayers().size() >= 8 && match.getBluePlayers().size() >= 8) {
+			if (match.getRedPlayers().size() >= Match.MAX_PER_TEAM && match.getBluePlayers().size() >= Match.MAX_PER_TEAM) {
 				match.startGame();
+				return;
 			}
 			if (time % 30 == 0) {
 				int more = (Match.MAX_PER_TEAM * 2) - match.getPlayers().size();

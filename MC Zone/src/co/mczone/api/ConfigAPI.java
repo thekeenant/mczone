@@ -144,6 +144,10 @@ public class ConfigAPI {
         return i;
     }
     
+    public List<String> getStringList(String s) {
+    	return config.getStringList(s);
+    }
+    
     public ConfigurationSection getConfigurationSection(String name) {
     	return config.getConfigurationSection(name);
     }

@@ -1,6 +1,7 @@
 package co.mczone.ghost.api;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import lombok.Getter;
@@ -9,8 +10,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import co.mczone.api.players.Gamer;
+import co.mczone.api.players.Permissible;
+import co.mczone.api.players.RankType;
+import co.mczone.ghost.Ghost;
+import co.mczone.util.Chat;
 
-public class Kit {
+public class Kit implements Permissible {
+	@Getter static HashMap<String, List<Kit>> purchases = new HashMap<String, List<Kit>>();
 	@Getter static List<Kit> list = new ArrayList<Kit>();
 	@Getter String name;
 	@Getter List<ItemStack> items;
@@ -22,14 +28,17 @@ public class Kit {
 		list.add(this);
 	}
 	
+	public String getTitle() {
+		return Chat.capitalize(name.toLowerCase());
+	}
+	
 	public static void giveKit(final Player p) {
 		Gamer g = Gamer.get(p.getName());
 		g.clearInventory();
 		Kit k = (Kit) g.getSettings().get("kit");
 		
 		if (k == null) {
-			k = Kit.get("barbarian");
-			g.setVariable("kit", k);
+			return;
 		}
 		
 		List<ItemStack> items = k.getItems();
@@ -46,5 +55,31 @@ public class Kit {
 				return k;
 		}
 		return null;
+	}
+
+	@Override
+	public boolean hasPermission(Gamer g) {
+		RankType r = g.getRank().getType();
+		if (r.getLevel() >= RankType.TITAN.getLevel()) {
+			return true;
+		}
+		else if (r.getLevel() >= RankType.ELITE.getLevel()) {
+			if (Ghost.getConf().getStringList("elite-kits").contains(name.toLowerCase()))
+				return true;
+		}
+		else if (r.getLevel() >= RankType.VIP.getLevel()) {
+			if (Ghost.getConf().getStringList("vip-kits").contains(name.toLowerCase()))
+				return true;
+		}
+		else if (Kit.getPurchases().containsKey(g.getName().toLowerCase())) {
+			if (Kit.getPurchases().get(g.getName().toLowerCase()).contains(this))
+				return true;
+		}
+		else {
+			if (name.equals("archer"))
+				return true;
+		}
+		
+		return false;
 	}
 }

@@ -161,6 +161,9 @@ public class Gamer {
 			p.getInventory().setLeggings(new ItemStack(id, 1));
 		else if ((id == 301) || (id == 305) || (id == 309) || (id == 313) || (id == 317))
 			p.getInventory().setBoots(new ItemStack(id, 1));
-		
+	}
+	
+	public boolean hasPermission(Permissible perm) {
+		return perm.hasPermission(this);
 	}
 }

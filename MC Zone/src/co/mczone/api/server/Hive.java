@@ -3,6 +3,7 @@ package co.mczone.api.server;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.HashMap;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import co.mczone.api.database.MySQL;
 import co.mczone.api.players.Gamer;
 
 public class Hive {
+	@Getter HashMap<String, Object> variables = new HashMap<String, Object>();
 	@Getter MySQL database;
 	@Getter static Hive instance;
 	@Getter @Setter GameType type;
@@ -75,5 +77,13 @@ public class Hive {
 			return null;
 		}
         return null;
+	}
+	
+	public void setVariable(String key, Object value) {
+		variables.put(key, value);
+	}
+	
+	public Object getVariable(String key)  {
+		return variables.get(key);
 	}
 }

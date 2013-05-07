@@ -98,5 +98,12 @@ public class Chat {
         String secondsS = (seconds < 10) ? "0" + seconds : seconds + "";
 	    
 	    return minutesS + ":" + secondsS;
-	}  
+	}
+	
+	public static List<String> asList(String[] arr) {
+		List<String> list = new ArrayList<String>();
+		for (String s : arr)
+			list.add(s);
+		return list;
+	}
 }

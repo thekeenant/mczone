@@ -17,7 +17,7 @@ import co.mczone.ghost.api.Lobby;
 import co.mczone.ghost.api.Match;
 import co.mczone.ghost.events.ConnectEvents;
 import co.mczone.ghost.events.PlayerEvents;
-import co.mczone.util.Chat;
+import co.mczone.ghost.schedules.KitSchedule;
 import co.mczone.util.ItemUtil;
 
 public class Ghost extends JavaPlugin {
@@ -32,7 +32,6 @@ public class Ghost extends JavaPlugin {
 		conf = new ConfigAPI(this);
 		kitConf = new ConfigAPI("kits.yml", this);
 		
-		Chat.log(conf.getString("lobby") + "!");
 		lobby = new Lobby(conf.getLocation("lobby"));
 
 		new ConnectEvents();
@@ -47,7 +46,6 @@ public class Ghost extends JavaPlugin {
 			new Kit(name, items);
 		}
 		
-		
 		for (String worldName : conf.getConfigurationSection("matches").getKeys(false)) {
 			String base = "matches." + worldName + ".";
 			String title = conf.getString(base + "title", "NULL TITLE");
@@ -60,5 +58,7 @@ public class Ghost extends JavaPlugin {
 			
 			new Match(id, title, worldName, sign, red, blue);
 		}
+		
+		new KitSchedule().runTaskTimerAsynchronously(this, 0, 45 * 20);
 	}
 }

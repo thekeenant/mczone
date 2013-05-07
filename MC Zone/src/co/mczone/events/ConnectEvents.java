@@ -68,5 +68,7 @@ public class ConnectEvents implements Listener {
 			Date cancel = g.getRank().getExpireDate();
 			Chat.player(p, "&7&oYour &8" + g.getRank().getType().getTitle() + " &7will expire on &8" + Infraction.human.format(cancel));
 		}
+		
+		g.updateCredits();
 	}
 }

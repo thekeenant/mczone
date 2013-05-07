@@ -9,11 +9,15 @@ import lombok.Getter;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import co.mczone.util.Chat;
 
 public class ConfigAPI {
 	@Getter FileConfiguration config;
@@ -27,6 +31,19 @@ public class ConfigAPI {
         plugin.getConfig().options().copyDefaults(true);
         plugin.saveConfig();
         config = plugin.getConfig();
+    }
+    
+    public ConfigAPI(String name, JavaPlugin plugin) {
+    	File file = new File(plugin.getDataFolder(), name);
+    	if (!file.exists()) {
+			try {
+				file.getParentFile().mkdirs();
+				file.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+    	}
+        this.config = YamlConfiguration.loadConfiguration(file);
     }
     
     public boolean save(File file) {
@@ -71,15 +88,23 @@ public class ConfigAPI {
 	}
 
 	public Location getLocation(String s) {
+		Chat.log(s);
 		String base = s + ".";
-        String world = config.getString(base + "world");
+		Chat.log(base);
+        String worldName = config.getString(base + "world");
         double x = config.getDouble(base + "x");
 		double y = config.getDouble(base + "y");
 		double z = config.getDouble(base + "z");
 		float yaw = (float) config.getDouble(base + "yaw");
 		float pitch = (float) config.getDouble(base + "pitch");
-
-		Location r = new Location(Bukkit.getServer().getWorld(world), x, y, z, yaw, pitch);
+		
+		Chat.log(worldName + x + y + z);
+		
+		World world = Bukkit.getWorld(worldName);
+		
+		
+		
+		Location r = new Location(world, x, y, z, yaw, pitch);
 		return r;
 	}
 	

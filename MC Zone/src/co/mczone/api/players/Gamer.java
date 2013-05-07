@@ -1,5 +1,7 @@
 package co.mczone.api.players;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,10 +11,12 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import co.mczone.api.infractions.Infraction;
+import co.mczone.api.server.Hive;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,6 +27,8 @@ public class Gamer {
 	@Getter String name;
 	@Getter @Setter Rank rank;
 	@Getter boolean invisible = false;
+	
+	@Getter int credits;
 	
 	@Getter @Setter boolean online;
 	@Getter List<Infraction> infractions = new ArrayList<Infraction>();
@@ -53,7 +59,21 @@ public class Gamer {
 	}
 	
 	public void giveCredits(int amount) {
-		
+		Hive.getInstance().getDatabase().update("UPDATE players SET credits=credits+" + amount + " WHERE username='" + name + "'");
+		updateCredits();
+	}
+	
+	public void updateCredits() {
+		ResultSet r = Hive.getInstance().getDatabase().query("SELECT credits FROM players WHERE username='" + name + "'");
+		try {
+			while (r.next()) {
+				credits = r.getInt("credits");
+				return;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		credits = 0;
 	}
 	
 	public void setInvisible(boolean invisible) {
@@ -117,5 +137,30 @@ public class Gamer {
 
 	public Object getVariable(String key) {
 		return getSettings().get(key);
+	}
+	
+	public void giveItem(ItemStack i) {
+		giveItem(i, true);
+	}
+
+	public void giveItem(ItemStack i, boolean addToArmor) {
+		int id = i.getTypeId();
+		Player p = getPlayer();
+		if (!addToArmor) {
+			p.getInventory().addItem(i);
+			return;
+		}
+		
+		if ((id < 298) || (317 < id))
+			p.getInventory().addItem(i);
+		else if ((id == 298) || (id == 302) || (id == 306) || (id == 310) || (id == 314))
+			p.getInventory().setHelmet(new ItemStack(id, 1));
+		else if ((id == 299) || (id == 303) || (id == 307) || (id == 311) || (id == 315))
+			p.getInventory().setChestplate(new ItemStack(id, 1));
+		else if ((id == 300) || (id == 304) || (id == 308) || (id == 312) || (id == 316))
+			p.getInventory().setLeggings(new ItemStack(id, 1));
+		else if ((id == 301) || (id == 305) || (id == 309) || (id == 313) || (id == 317))
+			p.getInventory().setBoots(new ItemStack(id, 1));
+		
 	}
 }

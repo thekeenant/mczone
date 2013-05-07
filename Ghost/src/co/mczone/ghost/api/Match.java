@@ -1,7 +1,5 @@
 package co.mczone.ghost.api;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -16,7 +14,6 @@ import org.bukkit.WorldCreator;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
@@ -26,7 +23,6 @@ import org.bukkit.scoreboard.Team;
 import co.mczone.ghost.Ghost;
 import co.mczone.ghost.schedules.MatchSchedule;
 import co.mczone.util.Chat;
-import co.mczone.util.FileUtil;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -78,11 +74,11 @@ public class Match {
 		setState(MatchState.STARTED);
 
 		for (Player p : getRedPlayers()) {
-			// p.teleport
+			p.teleport(this.getRedSpawn());
 		}
 		
 		for (Player p : getBluePlayers()) {
-			// p.teleport
+			p.teleport(this.getBlueSpawn());
 		}
 	}
 	
@@ -92,36 +88,20 @@ public class Match {
 		
 		// Kick all players out of the match
 		for (Player p : getPlayers()) {
-			p.teleport(Ghost.getLobby().getSpawnLocation());
+			p.teleport(Ghost.getLobby().getSpawn());
 		}
-		
-		// Run this a bit later, no lag :)
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				unloadWorld();
-			}
-		}.runTaskLater(Ghost.getInstance(), 120);
 	}
 	
 	public void loadWorld() {
-		FileUtil.delete(new File(worldName));
-		try {
-			FileUtil.copy(new File("backups", worldName), new File(worldName));
-		} catch (IOException e) {
-			Chat.log("Failed loading match world: " + worldName);
-			e.printStackTrace();
-		}
 		new WorldCreator(worldName).createWorld();
 		getWorld().setAutoSave(false);
 		setState(MatchState.WAITING);
 	}
 	
-	// Should by called on main thread!
 	public void unloadWorld() {
 		// Any players left for some reason?
 		for (Player p : getWorld().getPlayers())
-			p.teleport(Ghost.getLobby().getSpawnLocation());
+			p.teleport(Ghost.getLobby().getSpawn());
 		
 		boolean saved = Bukkit.unloadWorld(worldName, false);
 		if (!saved) {
@@ -153,7 +133,7 @@ public class Match {
 
 		sidebar = scoreboard.registerNewObjective("test", "dummy");
 		sidebar.setDisplaySlot(DisplaySlot.SIDEBAR);
-		sidebar.setDisplayName(ChatColor.GREEN + "Sidebar");
+		sidebar.setDisplayName("Teams (0 means dead)");
 	}
 	
 	public void updateScoreboard() {

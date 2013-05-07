@@ -1,29 +1,52 @@
 package co.mczone.ghost;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Getter;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import co.mczone.api.ConfigAPI;
+import co.mczone.ghost.api.Kit;
+import co.mczone.ghost.api.Lobby;
 import co.mczone.ghost.api.Match;
 import co.mczone.ghost.events.ConnectEvents;
 import co.mczone.ghost.events.PlayerEvents;
+import co.mczone.util.Chat;
+import co.mczone.util.ItemUtil;
 
 public class Ghost extends JavaPlugin {
 	@Getter static Ghost instance;
 	@Getter static ConfigAPI conf;
-	@Getter static World lobby;
+	@Getter static Lobby lobby;
+	
+	@Getter static ConfigAPI kitConf;
 	
 	public void onEnable() {
 		instance = this;
 		conf = new ConfigAPI(this);
+		kitConf = new ConfigAPI("kits.yml", this);
+		
+		Chat.log(conf.getString("lobby") + "!");
+		lobby = new Lobby(conf.getLocation("lobby"));
 
 		new ConnectEvents();
 		new PlayerEvents();
+		
+		for (String name : kitConf.getKeys(false)) {
+			ConfigurationSection kit = kitConf.getConfigurationSection(name);
+			List<ItemStack> items = new ArrayList<ItemStack>();
+			for (String raw : kit.getStringList("items"))
+				items.add(ItemUtil.deserializeItem(raw));
+			
+			new Kit(name, items);
+		}
+		
 		
 		for (String worldName : conf.getConfigurationSection("matches").getKeys(false)) {
 			String base = "matches." + worldName + ".";
@@ -37,7 +60,5 @@ public class Ghost extends JavaPlugin {
 			
 			new Match(id, title, worldName, sign, red, blue);
 		}
-		
-		lobby = Bukkit.getWorld(Ghost.getConf().getString("lobby-world", "world"));
 	}
 }

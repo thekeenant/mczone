@@ -15,9 +15,12 @@ import co.mczone.api.ConfigAPI;
 import co.mczone.ghost.api.Kit;
 import co.mczone.ghost.api.Lobby;
 import co.mczone.ghost.api.Match;
+import co.mczone.ghost.cmds.CmdBase;
 import co.mczone.ghost.events.ConnectEvents;
 import co.mczone.ghost.events.PlayerEvents;
+import co.mczone.ghost.events.SignEvents;
 import co.mczone.ghost.schedules.KitSchedule;
+import co.mczone.util.Chat;
 import co.mczone.util.ItemUtil;
 
 public class Ghost extends JavaPlugin {
@@ -35,7 +38,10 @@ public class Ghost extends JavaPlugin {
 		lobby = new Lobby(conf.getLocation("lobby"));
 
 		new ConnectEvents();
+		new SignEvents();
 		new PlayerEvents();
+		
+		new CmdBase();
 		
 		for (String name : kitConf.getKeys(false)) {
 			ConfigurationSection kit = kitConf.getConfigurationSection(name);
@@ -45,6 +51,7 @@ public class Ghost extends JavaPlugin {
 			
 			new Kit(name, items);
 		}
+		Chat.log("Loaded " + Kit.getList().size() + " kits");
 		
 		for (String worldName : conf.getConfigurationSection("matches").getKeys(false)) {
 			String base = "matches." + worldName + ".";
@@ -53,10 +60,11 @@ public class Ghost extends JavaPlugin {
 			
 			Block sign = conf.getBlock(base + "sign");
 
+			Location spawn = conf.getLocation(base + "spawn");
 			Location red = conf.getLocation(base + "red");
 			Location blue = conf.getLocation(base + "blue");
 			
-			new Match(id, title, worldName, sign, red, blue);
+			new Match(id, title, worldName, sign, spawn, red, blue);
 		}
 		
 		new KitSchedule().runTaskTimerAsynchronously(this, 0, 45 * 20);

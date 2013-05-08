@@ -5,3 +5,7 @@ author: funkystudios
 description: >
              MC Zone Ghost
 commands:
+  matches:
+    aliases: [games]
+    description: View Ghost matches
+    default: true

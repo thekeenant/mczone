@@ -31,6 +31,6 @@ public class KitSchedule extends BukkitRunnable {
 			e.printStackTrace();
 		}
 		
-		Chat.log("Loaded " + Kit.getPurchases().size() + " ghost kits!");
+		Chat.log("Loaded " + Kit.getPurchases().size() + " donation kits!");
 	}
 }

@@ -35,14 +35,13 @@ public class Kit implements Permissible {
 	public static void giveKit(final Player p) {
 		Gamer g = Gamer.get(p.getName());
 		g.clearInventory();
-		Kit k = (Kit) g.getSettings().get("kit");
+		Kit k = (Kit) g.getVariable("kit");
 		
 		if (k == null) {
 			return;
 		}
 		
 		List<ItemStack> items = k.getItems();
-		
 		for (ItemStack i : items)
 			g.giveItem(i);
 		

@@ -45,14 +45,16 @@ public class Match {
 	
 	@Getter @Setter MatchState state;
 	@Getter MatchSchedule schedule;
-	
+
+	@Getter Location spawn;
 	@Getter Location redSpawn;
 	@Getter Location blueSpawn;
 	
-	public Match(int id, String title, String world, Block sign, Location redSpawn, Location blueSpawn) {
+	public Match(int id, String title, String world, Block sign, Location spawn, Location redSpawn, Location blueSpawn) {
 		this.id = id;
 		this.title = title;
 		this.worldName = world;
+		this.spawn = spawn;
 		this.redSpawn = redSpawn;
 		this.blueSpawn = blueSpawn;
 		this.signBlock = sign;
@@ -213,13 +215,13 @@ public class Match {
 			spec.addPlayer(p);
 		
 		p.setScoreboard(scoreboard);
+		p.teleport(spawn);
 		sendMessage("  &7&o + " + p.getName() + " has joined the match");
 		return TeamColor.valueOf(team.toUpperCase());
 	}
 
 	public void leave(Player p) {
 		scoreboard.getPlayerTeam(Bukkit.getOfflinePlayer(p.getName())).removePlayer(p);
-		p.setScoreboard(null);
 		sendMessage("  &7&o - " + p.getName() + " has left the match");
 	}
 
@@ -231,7 +233,8 @@ public class Match {
 		sign.setLine(0, "[Match-" + getId() + "]");
 		sign.setLine(1, Chat.colors("&o" + getState().getColor() + getState().name()));
 		sign.setLine(2, Chat.colors("&l" + getTitle()));
-		sign.setLine(3, getPlayers().size() + "/" + Match.MAX_PER_TEAM * 2 + " players");	
+		sign.setLine(3, getPlayers().size() + "/" + Match.MAX_PER_TEAM * 2 + " players");
+		sign.update(true);
 	}
 	
 	public void sendMessage(String msg) {

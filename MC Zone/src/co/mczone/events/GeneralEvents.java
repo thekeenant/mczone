@@ -7,6 +7,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -56,12 +57,13 @@ public class GeneralEvents implements Listener {
 			return;
 		
 		Block b = event.getClickedBlock();
-		if (b.getType() == Material.SIGN || b.getType() == Material.WALL_SIGN) {
+		if (b.getType() == Material.SIGN_POST || b.getType() == Material.WALL_SIGN) {
 			Sign sign = (Sign) b.getState();
-			SignClickEvent ev = new SignClickEvent(event.getPlayer(), sign, event.getAction() == Action.RIGHT_CLICK_BLOCK);
+			SignClickEvent ev = new SignClickEvent(event.getPlayer(), sign, event.getClickedBlock(), event.getAction() == Action.RIGHT_CLICK_BLOCK);
 			Bukkit.getServer().getPluginManager().callEvent(ev);
+			
+			event.setUseItemInHand(Result.DENY);
+			event.setUseInteractedBlock(Result.DENY);
 		}
-
-		
 	}
 }

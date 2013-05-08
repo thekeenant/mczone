@@ -1,11 +1,11 @@
 package co.mczone.ghost.events;
 
-import java.util.List;
-
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import co.mczone.api.players.Gamer;
 import co.mczone.events.custom.SignClickEvent;
@@ -24,12 +24,15 @@ public class SignEvents implements Listener {
 	
 	@EventHandler
 	public void onKitChoose(SignClickEvent event) {
-		Sign sign = event.getSign();
-		Player p = event.getPlayer();
+		if (!event.isRightClick())
+			return;
+		
+		final Sign sign = event.getSign();
+		final Player p = event.getPlayer();
 		if (!sign.getLine(0).equals("[Kit]"))
 			return;
 		
-		Kit kit = Kit.get(sign.getLine(1));
+		final Kit kit = Kit.get(sign.getLine(1));
 		if (kit == null) {
 			Chat.player(p, "&cUnknown kit, " + sign.getLine(1));
 			return;
@@ -37,26 +40,49 @@ public class SignEvents implements Listener {
 		
 		Gamer g = Gamer.get(p);
 		if (!g.hasPermission(kit)) {
-			Chat.player(p, "&4Buy this kit at &ewww.mczone.co/games/ghost");
+			String[] arr = new String[4];
+			arr[0] = sign.getLine(0);
+			arr[1] = sign.getLine(1);
+			arr[2] = Chat.colors("&lBuy this kit at");
+			arr[3] = Chat.colors("&ewww.mczone.co");
+			WorldUtil.sendSignChange(p, sign, arr);
 			return;
 		}
 		
-		List<String> lines = Chat.asList(sign.getLines());
-		lines.set(3, "&lLOCKED");
-		lines.set(4, "&ewww.mczone.co");
-		lines = Chat.colors(lines);
-		WorldUtil.sendSignChange(p, sign, lines);
-		Gamer.get(p).setVariable("kit", kit);
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				Gamer.get(p).setVariable("kit", kit);
+				Kit.giveKit(p);
+			}
+			
+		}.runTaskLater(Ghost.getInstance(), 2);
 		
+		
+		String[] arr = new String[4];
+		arr[0] = sign.getLine(0);
+		arr[1] = sign.getLine(1);
+		arr[2] = Chat.colors("&lKIT SELECTED");
+		arr[3] = Chat.colors("&bJoin a match!");
+		WorldUtil.sendSignChange(p, sign, arr);
+		
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				WorldUtil.sendSignChange(p, sign, sign.getLines());
+			}
+		}.runTaskLaterAsynchronously(Ghost.getInstance(), 20 * 6);
 	}
 	
 	@EventHandler
 	public void onMatchJoin(SignClickEvent event) {
-		Sign sign = event.getSign();
+		Block b = event.getBlock();
 		Player p = event.getPlayer();
 		Match match = null;
 		for (Match m : Match.getList()) {
-			if (m.getSign().getX() == sign.getX() && m.getSign().getY() == sign.getY() && m.getSign().getZ() == sign.getZ()) {
+			if (m.getSign() == null)
+				continue;
+			if (m.getSign().getX() == b.getX() && m.getSign().getY() == b.getY() && m.getSign().getZ() == b.getZ()) {
 				match = m;
 			}
 		}

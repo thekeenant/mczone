@@ -1,0 +1,30 @@
+package co.mczone.ghost.cmds;
+
+import lombok.Getter;
+
+import org.bukkit.command.CommandSender;
+
+import co.mczone.api.players.Gamer;
+import co.mczone.cmds.SubCommand;
+import co.mczone.util.Chat;
+
+public class GhostEditCmd implements SubCommand {
+	@Getter String about = "Toggle map edit mode";
+	
+	@Override
+	public boolean execute(CommandSender sender, String[] args) {
+		Gamer g = Gamer.get(sender.getName());
+		if (g.getVariable("edit") == null)
+			g.setVariable("edit", true);
+		else
+			g.setVariable("edit", ! (boolean) g.getVariable("edit"));
+		
+		if ((boolean) g.getVariable("edit") == true) {
+			Chat.player(sender, "&eYou have entered map edit mode. Remember to /ghost save");
+		}
+		else {
+			Chat.player(sender, "&eYou have left map edit mode. Remember to /ghost save");
+		}
+		return false;
+	}
+}

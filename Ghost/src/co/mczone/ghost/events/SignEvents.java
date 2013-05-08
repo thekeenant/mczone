@@ -8,13 +8,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import co.mczone.api.players.Gamer;
+import co.mczone.api.players.SignChangePacket;
 import co.mczone.events.custom.SignClickEvent;
 import co.mczone.ghost.Ghost;
 import co.mczone.ghost.api.Kit;
 import co.mczone.ghost.api.Match;
 import co.mczone.ghost.api.TeamColor;
 import co.mczone.util.Chat;
-import co.mczone.util.WorldUtil;
 
 public class SignEvents implements Listener {
 	
@@ -45,7 +45,7 @@ public class SignEvents implements Listener {
 			arr[1] = sign.getLine(1);
 			arr[2] = Chat.colors("&lBuy this kit at");
 			arr[3] = Chat.colors("&ewww.mczone.co");
-			WorldUtil.sendSignChange(p, sign, arr);
+			new SignChangePacket(p, sign, arr, 6).send();
 			return;
 		}
 		
@@ -63,15 +63,8 @@ public class SignEvents implements Listener {
 		arr[0] = sign.getLine(0);
 		arr[1] = sign.getLine(1);
 		arr[2] = Chat.colors("&lKIT SELECTED");
-		arr[3] = Chat.colors("&bJoin a match!");
-		WorldUtil.sendSignChange(p, sign, arr);
-		
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				WorldUtil.sendSignChange(p, sign, sign.getLines());
-			}
-		}.runTaskLaterAsynchronously(Ghost.getInstance(), 20 * 6);
+		arr[3] = Chat.colors("&a&oJoin a Match!");
+		new SignChangePacket(p, sign, arr, 6).send();
 	}
 	
 	@EventHandler
@@ -94,6 +87,15 @@ public class SignEvents implements Listener {
 		
 		if (match.getPlayers().size() >= Match.MAX_PER_TEAM * 2) {
 			Chat.player(p, "&cThat match is currently full.");
+			
+			String[] arr = new String[4];
+			arr[0] = event.getSign().getLine(0);
+			arr[1] = event.getSign().getLine(1);
+			arr[2] = event.getSign().getLine(2);
+			arr[3] = "&l&cMATCH FULL";
+			
+			new SignChangePacket(p, event.getSign(), arr, 5);
+			
 			return;
 		}
 		

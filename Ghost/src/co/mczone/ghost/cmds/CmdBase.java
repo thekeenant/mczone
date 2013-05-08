@@ -10,6 +10,7 @@ import co.mczone.util.Chat;
 public class CmdBase {
     public CmdBase() {
     	Ghost.getInstance().getCommand("matches").setExecutor(new MatchesCmd());
+    	Ghost.getInstance().getCommand("matches").setExecutor(new GhostCmd());
     }
     
     public static boolean isAdmin(CommandSender s) {

@@ -6,8 +6,7 @@ import co.mczone.api.ConfigAPI;
 import co.mczone.api.database.MySQL;
 import co.mczone.api.server.Hive;
 import co.mczone.cmds.CmdBase;
-import co.mczone.events.ConnectEvents;
-import co.mczone.events.GeneralEvents;
+import co.mczone.events.*;
 import co.mczone.schedules.*;
 
 import lombok.Getter;
@@ -22,6 +21,8 @@ public class MCZone extends JavaPlugin {
 
 		new RankSchedule().runTaskTimerAsynchronously(this, 0, 20 * 60);
 		new InfractionSchedule().runTaskTimerAsynchronously(this, 0, 20 * 30);
+		new SignChangePacketSchedule().runTaskTimerAsynchronously(this, 0, 20 * 1);
+		new ModifyWorldEvents();
 		new ConnectEvents();
 		new GeneralEvents();
 		

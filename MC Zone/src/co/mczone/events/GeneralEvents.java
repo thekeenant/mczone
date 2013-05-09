@@ -20,6 +20,7 @@ import co.mczone.events.custom.SignClickEvent;
 import co.mczone.util.Chat;
 
 public class GeneralEvents implements Listener {
+	
 	public GeneralEvents() {
 		MCZone.getInstance().getServer().getPluginManager().registerEvents(this, MCZone.getInstance());
 	}

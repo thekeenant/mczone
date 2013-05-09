@@ -20,6 +20,7 @@ import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
+import co.mczone.api.players.Gamer;
 import co.mczone.ghost.Ghost;
 import co.mczone.ghost.schedules.MatchSchedule;
 import co.mczone.util.Chat;
@@ -208,6 +209,8 @@ public class Match {
 			blue.addPlayer(p);
 		else
 			spec.addPlayer(p);
+		
+		Gamer.get(p).setVariable("match", this);
 		
 		p.setScoreboard(scoreboard);
 		p.teleport(spawn);

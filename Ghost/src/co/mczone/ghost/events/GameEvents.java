@@ -37,7 +37,6 @@ public class GameEvents implements Listener {
 	
 	@EventHandler 
 	public void onPlayerKilled(PlayerKilledEvent event) {
-		Gamer p = Gamer.get(event.getPlayer());
 		Gamer t = Gamer.get(event.getTarget());
 		
 		Match m = (Match) t.getVariable("match");
@@ -46,20 +45,32 @@ public class GameEvents implements Listener {
 		
 		m.getDead().add(t.getName());
 		m.updateScoreboard();
-		p.giveCredits(3);
 		
 		String broadcast = "&4[Ghost] &6" + event.getDeathMessage();
-		for (Player player : m.getPlayers()) {
-			if (player.getName().equals(p.getName()))
-				Chat.player(player, broadcast + " &8[&71 credit&8]");
-			else
-				Chat.player(player, broadcast);
+		if (event.isPlayerKill()) {
+			Gamer p = Gamer.get(event.getPlayer());
+			p.giveCredits(3);
+			for (Player player : m.getPlayers()) {
+				if (player.getName().equals(p.getName()))
+					Chat.player(player, broadcast + " &8[&71 credit&8]");
+				else
+					Chat.player(player, broadcast);
+			}
 		}
+		else {
+			for (Player player : m.getPlayers()) {
+				Chat.player(player, broadcast);
+			}
+		}
+		event.setDeathMessage(null);
 	}
 	
 	@EventHandler
 	public void onPlayerDamage(PlayerDamageEvent event) {
 		if (!event.isEntityDamage())
+			return;
+		
+		if (event.getPlayer() == null)
 			return;
 		
 		Player p = event.getPlayer();

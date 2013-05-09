@@ -55,6 +55,8 @@ public class Gamer {
 	}
 	
 	public static Gamer get(Player p) {
+		if (p == null)
+			return null;
 		return get(p.getName());
 	}
 	

@@ -15,12 +15,18 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
+import co.mczone.MCZone;
 import co.mczone.events.custom.PlayerDamageEvent;
 import co.mczone.events.custom.PlayerKilledEvent;
 import co.mczone.util.Chat;
 
 public class DamageEvents implements Listener {
 	HashMap<String, List<EntityDamageEvent>> damages = new HashMap<String, List<EntityDamageEvent>>();
+	
+	public DamageEvents() {
+		MCZone.getInstance().getServer().getPluginManager().registerEvents(this, MCZone.getInstance());
+	}
+	
 	
 	@EventHandler
 	public void onEntityDamage(EntityDamageEvent event) {
@@ -99,7 +105,7 @@ public class DamageEvents implements Listener {
 			}
 			else {
 				if (ev.getCause() == DamageCause.FALL)
-					event.setDeathMessage(event.getDeathMessage() + " &7(" + t.getFallDistance() + " blocks)");
+					event.setDeathMessage(Chat.colors(event.getDeathMessage() + " &7(" + t.getFallDistance() + " blocks)"));
 				
 				callMe = new PlayerKilledEvent(t, event.getDeathMessage());
 			}
@@ -108,7 +114,7 @@ public class DamageEvents implements Listener {
 		
 		if (callMe == null) {
 			Chat.log("Error handling PlayerKilledEvent! " + event.getEntity().getLastDamageCause().getCause().name());
-			new PlayerKilledEvent(t, event.getDeathMessage());
+			callMe = new PlayerKilledEvent(t, event.getDeathMessage());
 		}
 		
 		Bukkit.getPluginManager().callEvent(callMe);

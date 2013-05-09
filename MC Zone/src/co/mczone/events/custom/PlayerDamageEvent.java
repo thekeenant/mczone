@@ -10,13 +10,21 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 public class PlayerDamageEvent extends Event {
 	public static HandlerList handlers = new HandlerList();
-	@Getter @Setter Player player;
-	@Getter @Setter Player target;
-	@Getter @Setter DamageCause cause;
+	@Getter Player player;
+	@Getter Player target;
+	@Getter DamageCause cause;
 	@Getter @Setter boolean cancelled;
+	@Getter boolean entityDamage = false;
 	
 	public PlayerDamageEvent(Player player, Player target, DamageCause cause) {
 		this.player = player;
+		this.target = target;
+		this.cause = cause;
+		this.cancelled = false;
+	}
+	
+	public PlayerDamageEvent(Player target, DamageCause cause) {
+		this.entityDamage = true;
 		this.target = target;
 		this.cause = cause;
 		this.cancelled = false;

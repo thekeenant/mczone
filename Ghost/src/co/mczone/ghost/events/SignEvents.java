@@ -13,6 +13,7 @@ import co.mczone.events.custom.SignClickEvent;
 import co.mczone.ghost.Ghost;
 import co.mczone.ghost.api.Kit;
 import co.mczone.ghost.api.Match;
+import co.mczone.ghost.api.MatchState;
 import co.mczone.ghost.api.TeamColor;
 import co.mczone.util.Chat;
 
@@ -85,9 +86,7 @@ public class SignEvents implements Listener {
 		
 		match.updateSign();
 		
-		if (match.getPlayers().size() >= Match.MAX_PER_TEAM * 2) {
-			Chat.player(p, "&cThat match is currently full.");
-			
+		if (match.getPlayers().size() >= Match.MAX_PER_TEAM * 2) {			
 			String[] arr = new String[4];
 			arr[0] = event.getSign().getLine(0);
 			arr[1] = event.getSign().getLine(1);
@@ -95,7 +94,16 @@ public class SignEvents implements Listener {
 			arr[3] = "&l&cMATCH FULL";
 			
 			new SignChangePacket(p, event.getSign(), arr, 5);
+			return;
+		}
+		else if (match.getState() != MatchState.WAITING) {
+			String[] arr = new String[4];
+			arr[0] = event.getSign().getLine(0);
+			arr[1] = event.getSign().getLine(1);
+			arr[2] = event.getSign().getLine(2);
+			arr[3] = "&l&cIN PROGRESS";
 			
+			new SignChangePacket(p, event.getSign(), arr, 5);
 			return;
 		}
 		

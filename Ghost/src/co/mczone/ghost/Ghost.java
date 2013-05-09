@@ -37,7 +37,6 @@ public class Ghost extends JavaPlugin {
 
 		new ConnectEvents();
 		new SignEvents();
-		new PlayerEvents();
 		new GameEvents();
 		
 		new CmdBase();

@@ -166,4 +166,8 @@ public class Gamer {
 	public boolean hasPermission(Permissible perm) {
 		return perm.hasPermission(this);
 	}
+
+	public String getPrefix() {
+		return this.getRank().getPrefix();
+	}
 }

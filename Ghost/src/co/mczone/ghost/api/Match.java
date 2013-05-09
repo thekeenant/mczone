@@ -138,32 +138,27 @@ public class Match {
 		sidebar.setDisplayName("Teams (0 means dead)");
 	}
 	
+	@Getter List<String> dead = new ArrayList<String>();
 	public void updateScoreboard() {
-		List<OfflinePlayer> dead = new ArrayList<OfflinePlayer>();
-		
 		// Team Red
 		for (OfflinePlayer p : red.getPlayers()) {
 			if (p.isOnline())
-				if (((Player) p).isDead()) {
-					dead.add(p);
+				if (dead.contains(p.getName()))
 					continue;
-				}
 			setScore(p.getName(), 2);
 		}
 		
 		// Team Blue
 		for (OfflinePlayer p : blue.getPlayers()) {
 			if (p.isOnline())
-				if (((Player) p).isDead()) {
-					dead.add(p);
+				if (dead.contains(p.getName()))
 					continue;
-				}
 			setScore(p.getName(), 1);
 		}
 		
 		// Dead/Spectators		
-		for (OfflinePlayer p : dead) {
-			setScore(p.getName(), 0);
+		for (String s : dead) {
+			setScore(s, 0);
 		}
 	}
 	

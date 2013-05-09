@@ -28,6 +28,12 @@ public class PlayerKilledEvent extends Event {
 		this.target = target;
 		this.deathMessage = deathMessage;
 	}
+	
+	public PlayerKilledEvent(Player target, String deathMessage) {
+		this.entity = null;
+		this.target = target;
+		this.deathMessage = deathMessage;
+	}
 	 
     public HandlerList getHandlers() {
         return handlers;

@@ -23,6 +23,25 @@ public class DamageEvents implements Listener {
 	HashMap<String, List<EntityDamageEvent>> damages = new HashMap<String, List<EntityDamageEvent>>();
 	
 	@EventHandler
+	public void onEntityDamage(EntityDamageEvent event) {
+		if (event instanceof EntityDamageByEntityEvent)
+			return;
+		
+		if (event.getEntity() instanceof Player == false)
+			return;
+
+		Player t = (Player) event.getEntity();
+		
+		if (!damages.containsKey(t.getName()))
+			damages.put(t.getName(), new ArrayList<EntityDamageEvent>());
+		damages.get(t.getName()).add(event);
+		
+		PlayerDamageEvent callMe = new PlayerDamageEvent(t, event.getCause());
+		Bukkit.getPluginManager().callEvent(callMe);
+		event.setCancelled(callMe.isCancelled());
+	}
+	
+	@EventHandler
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
 		if (!(event.getEntity() instanceof Player))
 			return;
@@ -57,12 +76,7 @@ public class DamageEvents implements Listener {
 		
 		PlayerDamageEvent callMe = new PlayerDamageEvent(p, t, event.getCause());
 		Bukkit.getPluginManager().callEvent(callMe);
-		
-		if (callMe.isCancelled()) {
-			event.setCancelled(true);
-			return;
-		}
-		
+		event.setCancelled(callMe.isCancelled());		
 	}
 	
 	@EventHandler
@@ -78,10 +92,8 @@ public class DamageEvents implements Listener {
 				EntityDamageByEntityEvent ede = (EntityDamageByEntityEvent) ev;
 				Entity e = ede.getDamager();
 				
-				if (e instanceof Player) {
+				if (e instanceof Player)
 					callMe = new PlayerKilledEvent((Player) e, t, event.getDeathMessage());
-					callMe.setPlayerKill(true);
-				}
 				else
 					callMe = new PlayerKilledEvent(e, t, event.getDeathMessage());
 			}
@@ -89,17 +101,17 @@ public class DamageEvents implements Listener {
 				if (ev.getCause() == DamageCause.FALL)
 					event.setDeathMessage(event.getDeathMessage() + " &7(" + t.getFallDistance() + " blocks)");
 				
-				callMe = new PlayerKilledEvent(null, t, event.getDeathMessage());
+				callMe = new PlayerKilledEvent(t, event.getDeathMessage());
 			}
 			
 		}
 		
 		if (callMe == null) {
-			Chat.log("Error handling PlayerKilledEvent! " + event.toString());
+			Chat.log("Error handling PlayerKilledEvent! " + event.getEntity().getLastDamageCause().getCause().name());
+			new PlayerKilledEvent(t, event.getDeathMessage());
 		}
-		else {
-			Bukkit.getPluginManager().callEvent(callMe);
-			event.setDeathMessage(callMe.getDeathMessage());
-		}
+		
+		Bukkit.getPluginManager().callEvent(callMe);
+		event.setDeathMessage(callMe.getDeathMessage());
 	}
 }

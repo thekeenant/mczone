@@ -20,10 +20,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import co.mczone.base.MCZone;
-import co.mczone.base.api.shop.ShopAbility;
-import co.mczone.base.api.shop.ShopEnchantment;
-import co.mczone.base.api.shop.ShopItemStack;
+import co.mczone.api.server.GameType;
+import co.mczone.api.server.Hive;
 import co.mczone.sg.api.ConfigAPI;
 import co.mczone.sg.api.Game;
 import co.mczone.sg.api.Map;
@@ -62,9 +60,8 @@ public class SurvivalGames extends JavaPlugin {
 		new ShopEnchantment("knockback", "Knockback I", Enchantment.KNOCKBACK, 1, 25);
 		new ShopEnchantment("sharpness", "Sharpness I", Enchantment.DAMAGE_ALL, 1, 75);
 		
-		MCZone.setServerType("The Survival Games");
-		MCZone.setTitanKickFullServer(true);
-
+		Hive.getInstance().setType(GameType.SURVIVAL_GAMES);
+		
 		ItemStack item = new ItemStack(Material.WOOD_SWORD);
 		item.addEnchantment(Enchantment.KNOCKBACK, 1);
 		for (int i = 0; i < 3; i++)

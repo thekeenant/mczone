@@ -35,6 +35,9 @@ public class MatchSchedule extends BukkitRunnable {
 				match.sendMessage("&eWaiting for &4" + more + "&e more players to start the match.");
 			}
 		}
+		else if (match.getState() == MatchState.STARTED) {
+			
+		}
 	}
 	
 }

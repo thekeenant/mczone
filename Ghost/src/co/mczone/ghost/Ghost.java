@@ -16,9 +16,7 @@ import co.mczone.ghost.api.Kit;
 import co.mczone.ghost.api.Lobby;
 import co.mczone.ghost.api.Match;
 import co.mczone.ghost.cmds.CmdBase;
-import co.mczone.ghost.events.ConnectEvents;
-import co.mczone.ghost.events.PlayerEvents;
-import co.mczone.ghost.events.SignEvents;
+import co.mczone.ghost.events.*;
 import co.mczone.ghost.schedules.KitSchedule;
 import co.mczone.util.Chat;
 import co.mczone.util.ItemUtil;
@@ -40,6 +38,7 @@ public class Ghost extends JavaPlugin {
 		new ConnectEvents();
 		new SignEvents();
 		new PlayerEvents();
+		new GameEvents();
 		
 		new CmdBase();
 		

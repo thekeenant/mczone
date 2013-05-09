@@ -9,3 +9,6 @@ commands:
     aliases: [games]
     description: View Ghost matches
     default: true
+  ghost:
+    description: Ghost administration
+    default: true

@@ -18,6 +18,11 @@ public class GameEvents implements Listener {
 	@EventHandler
 	public void onPlayerModifyWorld(PlayerModifyWorldEvent event) {
 		Gamer g = Gamer.get(event.getPlayer());
+		boolean editMode = (boolean) g.getVariable("edit");
+		if (editMode) {
+			event.setCancelled(false);
+			return;
+		}
 		event.setCancelled(true);
 		if (g.getVariable("match") != null) {
 			Match m = (Match) g.getVariable("match");

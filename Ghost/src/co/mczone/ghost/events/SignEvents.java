@@ -43,7 +43,7 @@ public class SignEvents implements Listener {
 			String[] arr = new String[4];
 			arr[0] = sign.getLine(0);
 			arr[1] = sign.getLine(1);
-			arr[2] = Chat.colors("&lBuy this kit at");
+			arr[2] = Chat.colors("&lBuy this kit:");
 			arr[3] = Chat.colors("&ewww.mczone.co");
 			new SignChangePacket(p, sign, arr, 6).send();
 			return;
@@ -63,7 +63,7 @@ public class SignEvents implements Listener {
 		arr[0] = sign.getLine(0);
 		arr[1] = sign.getLine(1);
 		arr[2] = Chat.colors("&lKIT SELECTED");
-		arr[3] = Chat.colors("&a&oJoin a Match!");
+		arr[3] = Chat.colors("&aJoin a Match!");
 		new SignChangePacket(p, sign, arr, 6).send();
 	}
 	

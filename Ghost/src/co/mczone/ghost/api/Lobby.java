@@ -19,6 +19,8 @@ public class Lobby {
 	public Lobby(Location spawn) {
 		this.world = spawn.getWorld();
 		this.spawn = spawn;
+		
+		spawn.getWorld().setAutoSave(false);
 	}
 	
 	public Sign getKitSign(Sign s) {

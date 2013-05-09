@@ -2,7 +2,6 @@ package co.mczone.ghost.cmds;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map.Entry;
 
 import org.bukkit.command.Command;
@@ -20,6 +19,7 @@ public class GhostCmd implements CommandExecutor {
     
     public GhostCmd() {
     	subCommands.put("edit", new GhostEditCmd());
+    	subCommands.put("save", new GhostSaveCmd());
     }
     
 	@Override

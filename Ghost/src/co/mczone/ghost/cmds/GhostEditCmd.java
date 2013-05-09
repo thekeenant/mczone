@@ -2,6 +2,7 @@ package co.mczone.ghost.cmds;
 
 import lombok.Getter;
 
+import org.bukkit.GameMode;
 import org.bukkit.command.CommandSender;
 
 import co.mczone.api.players.Gamer;
@@ -20,9 +21,11 @@ public class GhostEditCmd implements SubCommand {
 			g.setVariable("edit", ! (boolean) g.getVariable("edit"));
 		
 		if ((boolean) g.getVariable("edit") == true) {
+			g.getPlayer().setGameMode(GameMode.CREATIVE);
 			Chat.player(sender, "&eYou have entered map edit mode. Remember to /ghost save");
 		}
 		else {
+			g.getPlayer().setGameMode(GameMode.SURVIVAL);
 			Chat.player(sender, "&eYou have left map edit mode. Remember to /ghost save");
 		}
 		return false;

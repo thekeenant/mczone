@@ -1,5 +1,6 @@
 package co.mczone.ghost.events;
 
+import org.bukkit.GameMode;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -22,7 +23,7 @@ public class ConnectEvents implements Listener {
 		final Gamer g = Gamer.get(event.getPlayer());
 		g.teleport(Ghost.getLobby().getSpawn());
 		g.removePotionEffects();
-		
+		g.getPlayer().setGameMode(GameMode.SURVIVAL);
 	}
 	
 	@EventHandler

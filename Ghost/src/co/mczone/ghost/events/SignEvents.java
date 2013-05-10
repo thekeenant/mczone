@@ -12,8 +12,8 @@ import co.mczone.api.players.SignChangePacket;
 import co.mczone.events.custom.SignClickEvent;
 import co.mczone.ghost.Ghost;
 import co.mczone.ghost.api.Kit;
-import co.mczone.ghost.api.Match;
-import co.mczone.ghost.api.MatchState;
+import co.mczone.ghost.api.Arena;
+import co.mczone.ghost.api.ArenaState;
 import co.mczone.ghost.api.TeamColor;
 import co.mczone.util.Chat;
 
@@ -72,8 +72,8 @@ public class SignEvents implements Listener {
 	public void onMatchJoin(SignClickEvent event) {
 		Block b = event.getBlock();
 		Player p = event.getPlayer();
-		Match match = null;
-		for (Match m : Match.getList()) {
+		Arena match = null;
+		for (Arena m : Arena.getList()) {
 			if (m.getSign() == null)
 				continue;
 			if (m.getSign().getX() == b.getX() && m.getSign().getY() == b.getY() && m.getSign().getZ() == b.getZ()) {
@@ -86,7 +86,7 @@ public class SignEvents implements Listener {
 		
 		match.updateSign();
 		
-		if (match.getPlayers().size() >= Match.MAX_PER_TEAM * 2) {			
+		if (match.getPlayers().size() >= Arena.MAX_PER_TEAM * 2) {			
 			String[] arr = new String[4];
 			arr[0] = event.getSign().getLine(0);
 			arr[1] = event.getSign().getLine(1);
@@ -96,7 +96,7 @@ public class SignEvents implements Listener {
 			new SignChangePacket(p, event.getSign(), arr, 5);
 			return;
 		}
-		else if (match.getState() != MatchState.WAITING) {
+		else if (match.getState() != ArenaState.WAITING) {
 			String[] arr = new String[4];
 			arr[0] = event.getSign().getLine(0);
 			arr[1] = event.getSign().getLine(1);

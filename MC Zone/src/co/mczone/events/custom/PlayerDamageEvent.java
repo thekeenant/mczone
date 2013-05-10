@@ -14,9 +14,10 @@ public class PlayerDamageEvent extends Event {
 	@Getter Player target;
 	@Getter DamageCause cause;
 	@Getter @Setter boolean cancelled;
-	@Getter boolean entityDamage = false;
+	@Getter boolean damageByEntity;
 	
 	public PlayerDamageEvent(Player player, Player target, DamageCause cause) {
+		this.damageByEntity = true;
 		this.player = player;
 		this.target = target;
 		this.cause = cause;
@@ -24,7 +25,7 @@ public class PlayerDamageEvent extends Event {
 	}
 	
 	public PlayerDamageEvent(Player target, DamageCause cause) {
-		this.entityDamage = true;
+		this.damageByEntity = false;
 		this.target = target;
 		this.cause = cause;
 		this.cancelled = false;

@@ -1,20 +1,17 @@
 package co.mczone.ghost.events;
 
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.Team;
+import org.bukkit.event.entity.EntityDamageEvent;
 
 import co.mczone.api.players.Gamer;
 import co.mczone.events.custom.PlayerDamageEvent;
 import co.mczone.events.custom.PlayerKilledEvent;
 import co.mczone.events.custom.PlayerModifyWorldEvent;
 import co.mczone.ghost.Ghost;
-import co.mczone.ghost.api.Match;
-import co.mczone.ghost.api.MatchState;
+import co.mczone.ghost.api.Arena;
+import co.mczone.ghost.api.ArenaState;
 import co.mczone.util.Chat;
 
 public class GameEvents implements Listener {
@@ -35,14 +32,24 @@ public class GameEvents implements Listener {
 			event.setCancelled(false);
 	}
 	
+	@EventHandler
+	public void onPlayerDamage(EntityDamageEvent event) {
+		if (event.getEntity() instanceof Player) {
+			Gamer g = Gamer.get((Player) event.getEntity());
+			if (g.isInvisible())
+				event.setCancelled(true);
+		}
+	}
+	
 	@EventHandler 
 	public void onPlayerKilled(PlayerKilledEvent event) {
 		Gamer t = Gamer.get(event.getTarget());
-		
-		Match m = (Match) t.getVariable("match");
+		event.getTarget().setHealth(20);
+		Arena m = (Arena) t.getVariable("arena");
 		if (m == null)
 			return;
 		
+		t.setInvisible(true);
 		m.getDead().add(t.getName());
 		m.updateScoreboard();
 		
@@ -67,51 +74,31 @@ public class GameEvents implements Listener {
 	
 	@EventHandler
 	public void onPlayerDamage(PlayerDamageEvent event) {
-		if (!event.isEntityDamage())
-			return;
-		
-		if (event.getPlayer() == null)
-			return;
-		
 		Player p = event.getPlayer();
 		Player t = event.getTarget();
+		event.setCancelled(true);
 		
-		if (Gamer.get(p).getVariable("match") == Gamer.get(t).getVariable("match"))
-			event.setCancelled(true);
-	}
-	
-	@EventHandler
-	public void onPlayerTeamKill(EntityDamageByEntityEvent event) {
-
-		if (event.getEntity() instanceof Player == false)
-			return;
-		
-		Player t = (Player) event.getEntity();
-		Player p = null;
-		
-		
-		if (event.getDamager() instanceof Player) {
-			p = (Player) event.getDamager();
-		} 
-		else if (event.getDamager() instanceof Projectile) {
-			Projectile projectile = (Projectile) event.getDamager();
+		if (Gamer.get(t).getVariable("arena") != null) {
+			Arena targetMatch = (Arena) Gamer.get(t).getVariable("arena");
+			if (targetMatch.getState() != ArenaState.STARTED)
+				return;
 			
-			if (projectile.getShooter() instanceof Player)
-				p = (Player) projectile.getShooter();
-		}
-		
-		if (p != null) {
-			Match match = Match.getMatch(t);
-			Scoreboard board = match.getScoreboard();
-			Team attackedTeam = board.getPlayerTeam(p);
-			Team damagerTeam = board.getPlayerTeam(t);
+			// Natural damage?
+			if (!event.isDamageByEntity()) {
+				event.setCancelled(false);
+				return;
+			}
 			
-			if (attackedTeam == damagerTeam)
-				event.setCancelled(true);
-			else if (attackedTeam.getName().equalsIgnoreCase("spec") || damagerTeam.getName().equalsIgnoreCase("spec"))
-				event.setCancelled(true);
-			else if (match.getState() != MatchState.STARTED)
-				event.setCancelled(true);
+			// Player damage?
+			if (event.isDamageByEntity()) {
+				Arena playerMatch = (Arena) Gamer.get(p).getVariable("arena");
+				
+				if (playerMatch == targetMatch) {
+					// Allow different team damage
+					if (playerMatch.getTeam(p) != playerMatch.getTeam(t))
+						event.setCancelled(false);
+				}
+			}
 		}
 	}
 }

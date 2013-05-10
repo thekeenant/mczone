@@ -9,7 +9,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import co.mczone.api.players.Gamer;
 import co.mczone.ghost.Ghost;
-import co.mczone.ghost.api.Match;
+import co.mczone.ghost.api.Arena;
 
 public class ConnectEvents implements Listener {
 	
@@ -29,7 +29,7 @@ public class ConnectEvents implements Listener {
 	@EventHandler
 	public void onPlayerLeave(PlayerQuitEvent event) {
 		event.setQuitMessage(null);
-		Match match = Match.getMatch(event.getPlayer());
+		Arena match = Arena.getMatch(event.getPlayer());
 		if (match == null)
 			return;
 		

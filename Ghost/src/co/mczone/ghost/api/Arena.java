@@ -2,7 +2,6 @@ package co.mczone.ghost.api;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -14,6 +13,7 @@ import org.bukkit.WorldCreator;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
@@ -22,16 +22,16 @@ import org.bukkit.scoreboard.Team;
 
 import co.mczone.api.players.Gamer;
 import co.mczone.ghost.Ghost;
-import co.mczone.ghost.schedules.MatchSchedule;
+import co.mczone.ghost.schedules.ArenaSchedule;
 import co.mczone.util.Chat;
 
 import lombok.Getter;
 import lombok.Setter;
 
-public class Match {
+public class Arena {
 	public static int MAX_PER_TEAM = Ghost.getConf().getInt("max-per-team", 1);
 	
-	@Getter static List<Match> list = new ArrayList<Match>();
+	@Getter static List<Arena> list = new ArrayList<Arena>();
 	@Getter int id;
 	@Getter String worldName;
 	@Getter String title;
@@ -44,14 +44,14 @@ public class Match {
 	@Getter Team blue;
 	@Getter Team spec;
 	
-	@Getter @Setter MatchState state;
-	@Getter MatchSchedule schedule;
+	@Getter ArenaState state;
+	@Getter ArenaSchedule schedule;
 
 	@Getter Location spawn;
 	@Getter Location redSpawn;
 	@Getter Location blueSpawn;
 	
-	public Match(int id, String title, String world, Block sign, Location spawn, Location redSpawn, Location blueSpawn) {
+	public Arena(int id, String title, String world, Block sign, Location spawn, Location redSpawn, Location blueSpawn) {
 		this.id = id;
 		this.title = title;
 		this.worldName = world;
@@ -63,8 +63,8 @@ public class Match {
 		if (signBlock.getType() == Material.WALL_SIGN || signBlock.getType() == Material.SIGN)
 			this.sign = (Sign) signBlock.getState();
 		
-		this.state = MatchState.WAITING;
-		this.schedule = new MatchSchedule(this);
+		this.state = ArenaState.WAITING;
+		this.schedule = new ArenaSchedule(this);
 		this.schedule.runTaskTimerAsynchronously(Ghost.getInstance(), 0, 20);
 		
 		registerTeams();
@@ -74,7 +74,10 @@ public class Match {
 	}
 	
 	public void startGame() {
-		setState(MatchState.STARTED);
+    	Chat.server("&4# # # # # # # # # # # # # # # #");
+    	Chat.server("&4# # &6The match has started &4# #");
+    	Chat.server("&4# # # # # # # # # # # # # # # #");
+		setState(ArenaState.STARTED);
 
 		for (Player p : getRedPlayers()) {
 			p.teleport(this.getRedSpawn());
@@ -86,30 +89,35 @@ public class Match {
 	}
 	
 	public void endGame() {
-		setState(MatchState.LOADING);
+		// Kick all players out of the match
+
+		scoreboard.clearSlot(DisplaySlot.SIDEBAR);
+		setState(ArenaState.LOADING);
 		schedule.setTime(0);
 		
-		// Kick all players out of the match
-		for (Player p : getPlayers()) {
-			p.teleport(Ghost.getLobby().getSpawn());
-		}
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				for (Player p : getPlayers()) {
+					p.teleport(Ghost.getLobby().getSpawn());
+					Gamer.get(p).setInvisible(false);
+				}
+				registerTeams();
+			}
+		}.runTask(Ghost.getInstance());
+		
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				setState(ArenaState.WAITING);
+			}
+		}.runTaskLater(Ghost.getInstance(), 60);
 	}
 	
 	public void loadWorld() {
 		new WorldCreator(worldName).createWorld();
 		getWorld().setAutoSave(false);
-		setState(MatchState.WAITING);
-	}
-	
-	public void unloadWorld() {
-		// Any players left for some reason?
-		for (Player p : getWorld().getPlayers())
-			p.teleport(Ghost.getLobby().getSpawn());
-		
-		boolean saved = Bukkit.unloadWorld(worldName, false);
-		if (!saved) {
-			Chat.log(Level.SEVERE, "Failed to unload world: " + worldName);
-		}
+		setState(ArenaState.WAITING);
 	}
 	
 	private void registerTeams() {
@@ -177,10 +185,18 @@ public class Match {
 		return list;
 	}
 	
+	public Team getTeam(Player p) {
+		if (getRedPlayers().contains(p))
+			return red;
+		if (getBluePlayers().contains(p))
+			return blue;
+		return null;
+	}
+	
 	public List<Player> getRedPlayers() {
 		List<Player> list = new ArrayList<Player>();
 		for (OfflinePlayer p : red.getPlayers())
-				if (p.isOnline())
+				if (p.isOnline() && !dead.contains(p.getName()))
 					list.add(p.getPlayer());
 		return list;
 	}
@@ -188,7 +204,7 @@ public class Match {
 	public List<Player> getBluePlayers() {
 		List<Player> list = new ArrayList<Player>();
 		for (OfflinePlayer p : blue.getPlayers())
-				if (p.isOnline())
+			if (p.isOnline() && !dead.contains(p.getName()))
 					list.add(p.getPlayer());
 		return list;
 	}
@@ -210,17 +226,17 @@ public class Match {
 		else
 			spec.addPlayer(p);
 		
-		Gamer.get(p).setVariable("match", this);
+		Gamer.get(p).setVariable("arena", this);
 		
 		p.setScoreboard(scoreboard);
 		p.teleport(spawn);
-		sendMessage("  &7&o + " + p.getName() + " has joined the match");
+		sendMessage("  &7&o + " + p.getName() + " has joined the arena");
 		return TeamColor.valueOf(team.toUpperCase());
 	}
 
 	public void leave(Player p) {
 		scoreboard.getPlayerTeam(Bukkit.getOfflinePlayer(p.getName())).removePlayer(p);
-		sendMessage("  &7&o - " + p.getName() + " has left the match");
+		sendMessage("  &7&o - " + p.getName() + " has left the arena");
 	}
 
 	public void updateSign() {
@@ -228,10 +244,10 @@ public class Match {
 			return;
 		
 		Sign sign = getSign();
-		sign.setLine(0, "[Match-" + getId() + "]");
+		sign.setLine(0, "[ARENA-" + getId() + "]");
 		sign.setLine(1, Chat.colors("&o" + getState().getColor() + getState().name()));
 		sign.setLine(2, Chat.colors("&l" + getTitle()));
-		sign.setLine(3, getPlayers().size() + "/" + Match.MAX_PER_TEAM * 2 + " players");
+		sign.setLine(3, getPlayers().size() + "/" + Arena.MAX_PER_TEAM * 2 + " players");
 		sign.update(true);
 	}
 	
@@ -239,10 +255,12 @@ public class Match {
 		Chat.player(getPlayers(), msg);
 	}
 	
-	public static Match getMatch(Player player) {
-		for (Match match : list)
-			if (match.getPlayers().contains(player))
-				return match;
-		return null;
+	public static Arena getMatch(Player player) {
+		return (Arena) Gamer.get(player).getVariable("match");
+	}
+	
+	public void setState(ArenaState state) {
+		this.state = state;
+		updateSign();
 	}
 }

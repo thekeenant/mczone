@@ -90,12 +90,10 @@ public class Gamer {
 				Gamer gt = Gamer.get(t);
 				if (gp.getName().equals(gt.getName()))
 					continue;
-				/*
 				if (gt.isInvisible())
 					gp.getPlayer().hidePlayer(gt.getPlayer());
 				else
 					gp.getPlayer().showPlayer(gt.getPlayer());
-					*/
 			}
 		}
 	}

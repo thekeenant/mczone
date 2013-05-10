@@ -14,7 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import co.mczone.api.ConfigAPI;
 import co.mczone.ghost.api.Kit;
 import co.mczone.ghost.api.Lobby;
-import co.mczone.ghost.api.Match;
+import co.mczone.ghost.api.Arena;
 import co.mczone.ghost.cmds.CmdBase;
 import co.mczone.ghost.events.*;
 import co.mczone.ghost.schedules.KitSchedule;
@@ -62,7 +62,7 @@ public class Ghost extends JavaPlugin {
 			Location red = conf.getLocation(base + "red");
 			Location blue = conf.getLocation(base + "blue");
 			
-			new Match(id, title, worldName, sign, spawn, red, blue);
+			new Arena(id, title, worldName, sign, spawn, red, blue);
 		}
 		
 		new KitSchedule().runTaskTimerAsynchronously(this, 0, 45 * 20);

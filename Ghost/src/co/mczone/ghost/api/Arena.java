@@ -275,4 +275,11 @@ public class Arena {
 			this.sign = (Sign) signBlock.getState();
 		return this.sign;
 	}
+
+	public static Arena get(String string) {
+		for (Arena a : getList())
+			if (a.getWorldName().equalsIgnoreCase(string))
+				return a;
+		return null;
+	}
 }

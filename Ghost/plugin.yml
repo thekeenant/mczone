@@ -6,7 +6,7 @@ description: >
              MC Zone Ghost
 commands:
   matches:
-    aliases: [games]
+    aliases: [games,arenas]
     description: View Ghost matches
     default: true
   ghost:

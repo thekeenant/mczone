@@ -62,7 +62,7 @@ public class Ghost extends JavaPlugin {
 			Location red = conf.getLocation(base + "red");
 			Location blue = conf.getLocation(base + "blue");
 			
-			new Arena(id, title, worldName, sign, spawn, red, blue);
+			new Arena(conf.getConfigurationSection("matches." + worldName), id, title, worldName, sign, spawn, red, blue);
 		}
 		
 		new KitSchedule().runTaskTimerAsynchronously(this, 0, 45 * 20);

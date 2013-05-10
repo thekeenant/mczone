@@ -12,6 +12,7 @@ import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -30,28 +31,30 @@ import lombok.Setter;
 
 public class Arena {
 	public static int MAX_PER_TEAM = Ghost.getConf().getInt("max-per-team", 1);
-	
 	@Getter static List<Arena> list = new ArrayList<Arena>();
+	
 	@Getter int id;
-	@Getter String worldName;
-	@Getter String title;
-	@Getter Block signBlock;
-	@Getter Sign sign;
+	@Getter @Setter String worldName;
+	@Getter @Setter String title;
+	@Getter @Setter Block signBlock;
+	Sign sign;
 	
 	@Getter Scoreboard scoreboard;
 	@Getter Objective sidebar;
 	@Getter Team red;
 	@Getter Team blue;
-	@Getter Team spec;
 	
 	@Getter ArenaState state;
 	@Getter ArenaSchedule schedule;
 
-	@Getter Location spawn;
-	@Getter Location redSpawn;
-	@Getter Location blueSpawn;
+	@Getter @Setter Location spawn;
+	@Getter @Setter Location redSpawn;
+	@Getter @Setter Location blueSpawn;
 	
-	public Arena(int id, String title, String world, Block sign, Location spawn, Location redSpawn, Location blueSpawn) {
+	@Getter ConfigurationSection config;
+	
+	public Arena(ConfigurationSection config, int id, String title, String world, Block sign, Location spawn, Location redSpawn, Location blueSpawn) {
+		this.config = config;
 		this.id = id;
 		this.title = title;
 		this.worldName = world;
@@ -59,9 +62,6 @@ public class Arena {
 		this.redSpawn = redSpawn;
 		this.blueSpawn = blueSpawn;
 		this.signBlock = sign;
-		
-		if (signBlock.getType() == Material.WALL_SIGN || signBlock.getType() == Material.SIGN)
-			this.sign = (Sign) signBlock.getState();
 		
 		this.state = ArenaState.WAITING;
 		this.schedule = new ArenaSchedule(this);
@@ -124,7 +124,6 @@ public class Arena {
 		this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 		red = scoreboard.registerNewTeam("red");
 		blue = scoreboard.registerNewTeam("blue");
-		spec = scoreboard.registerNewTeam("spec");
 
 		// Apparently, opacity doesn't work with friendly fire >:(
 		red.setDisplayName("Red");
@@ -137,31 +136,32 @@ public class Arena {
 		blue.setCanSeeFriendlyInvisibles(true);
 		blue.setPrefix(ChatColor.BLUE + "");
 
-		spec.setDisplayName("Spectators");
-		//spec.setAllowFriendlyFire(false);
-		spec.setCanSeeFriendlyInvisibles(true);
-		spec.setPrefix(ChatColor.GRAY + "");
-
 		sidebar = scoreboard.registerNewObjective("test", "dummy");
 		sidebar.setDisplaySlot(DisplaySlot.SIDEBAR);
 		sidebar.setDisplayName("Teams (0 means dead)");
 	}
 	
-	@Getter List<String> dead = new ArrayList<String>();
 	public void updateScoreboard() {
+		List<String> dead = new ArrayList<String>();
 		// Team Red
 		for (OfflinePlayer p : red.getPlayers()) {
 			if (p.isOnline())
-				if (dead.contains(p.getName()))
+				// Invisible means dead
+				if (Gamer.get(p.getName()).isInvisible()) {
+					dead.add(p.getName());
 					continue;
+				}
 			setScore(p.getName(), 2);
 		}
 		
 		// Team Blue
 		for (OfflinePlayer p : blue.getPlayers()) {
 			if (p.isOnline())
-				if (dead.contains(p.getName()))
+				// Invisible means dead
+				if (Gamer.get(p.getName()).isInvisible()) {
+					dead.add(p.getName());
 					continue;
+				}
 			setScore(p.getName(), 1);
 		}
 		
@@ -196,7 +196,7 @@ public class Arena {
 	public List<Player> getRedPlayers() {
 		List<Player> list = new ArrayList<Player>();
 		for (OfflinePlayer p : red.getPlayers())
-				if (p.isOnline() && !dead.contains(p.getName()))
+				if (p.isOnline() && !Gamer.get(p.getName()).isInvisible())
 					list.add(p.getPlayer());
 		return list;
 	}
@@ -204,7 +204,7 @@ public class Arena {
 	public List<Player> getBluePlayers() {
 		List<Player> list = new ArrayList<Player>();
 		for (OfflinePlayer p : blue.getPlayers())
-			if (p.isOnline() && !dead.contains(p.getName()))
+			if (p.isOnline() && !Gamer.get(p.getName()).isInvisible())
 					list.add(p.getPlayer());
 		return list;
 	}
@@ -223,8 +223,6 @@ public class Arena {
 			red.addPlayer(p);
 		else if (team.equals("blue"))
 			blue.addPlayer(p);
-		else
-			spec.addPlayer(p);
 		
 		Gamer.get(p).setVariable("arena", this);
 		
@@ -262,5 +260,11 @@ public class Arena {
 	public void setState(ArenaState state) {
 		this.state = state;
 		updateSign();
+	}
+	
+	public Sign getSign() {
+		if (signBlock.getType() == Material.WALL_SIGN || signBlock.getType() == Material.SIGN)
+			this.sign = (Sign) signBlock.getState();
+		return this.sign;
 	}
 }

@@ -48,18 +48,19 @@ public class GameEvents implements Listener {
 		Arena m = (Arena) t.getVariable("arena");
 		if (m == null)
 			return;
-		
+
 		t.setInvisible(true);
-		m.getDead().add(t.getName());
 		m.updateScoreboard();
+		m.join(event.getPlayer(), "red");
+		m.join(event.getPlayer(), "blue");
 		
 		String broadcast = "&4[Ghost] &6" + event.getDeathMessage();
 		if (event.isPlayerKill()) {
 			Gamer p = Gamer.get(event.getPlayer());
-			p.giveCredits(3);
+			p.giveCredits(2);
 			for (Player player : m.getPlayers()) {
 				if (player.getName().equals(p.getName()))
-					Chat.player(player, broadcast + " &8[&71 credit&8]");
+					Chat.player(player, broadcast + " &8[&72 credit&8]");
 				else
 					Chat.player(player, broadcast);
 			}

@@ -51,9 +51,9 @@ public class GhostSetCmd implements SubCommand {
 			a.setSpawn(l);
 		}
 		else if (type.contains("sign")) {
-			Block b = g.getPlayer().getTargetBlock(null, 0);
-			if (b.getType() != Material.WALL_SIGN) {
-				Chat.player(sender, "&cYou are not looking at a sign");
+			Block b = g.getPlayer().getTargetBlock(null, 5);
+			if (b == null || b.getType() != Material.WALL_SIGN) {
+				Chat.player(sender, "&cYou must look at a sign to set the sign variable");
 				return true;
 			}
 

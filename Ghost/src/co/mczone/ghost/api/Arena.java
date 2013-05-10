@@ -78,6 +78,7 @@ public class Arena {
     	Chat.server("&4# # &6The match has started &4# #");
     	Chat.server("&4# # # # # # # # # # # # # # # #");
 		setState(ArenaState.STARTED);
+		schedule.setTime(0);
 
 		for (Player p : getRedPlayers()) {
 			p.teleport(this.getRedSpawn());
@@ -92,10 +93,10 @@ public class Arena {
 		int blue = getBluePlayers().size();
 		int red = getRedPlayers().size();
 		
-		if (red == 0)
-        	Chat.server("  &4\u0187 &eRed Team has won in &barena " + id + "&e on &b" + getTitle() + "  &4\u0171");
-		else if (blue == 0)
+		if (red == 0 || blue > red)
         	Chat.server("  &1\u0187 &eBlue Team has won in &barena " + id + "&e on &b" + getTitle() + "  &1\u0171");
+		else if (blue == 0 || red > blue)
+        	Chat.server("  &4\u0187 &eRed Team has won in &barena " + id + "&e on &b" + getTitle() + "  &4\u0171");		
 		
 		scoreboard.clearSlot(DisplaySlot.SIDEBAR);
 		setState(ArenaState.LOADING);

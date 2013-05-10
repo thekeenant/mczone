@@ -5,10 +5,13 @@ import lombok.Setter;
 
 import org.bukkit.scheduler.BukkitRunnable;
 
+import co.mczone.ghost.Ghost;
 import co.mczone.ghost.api.Arena;
 import co.mczone.ghost.api.ArenaState;
+import co.mczone.util.Chat;
 
 public class ArenaSchedule extends BukkitRunnable {
+	public static int TIME_LIMIT = Ghost.getConf().getInt("time-limit", 60 * 10);
 	@Getter @Setter int time = 0;
 	@Getter @Setter Arena match;
 	
@@ -36,9 +39,22 @@ public class ArenaSchedule extends BukkitRunnable {
 			}
 		}
 		else if (match.getState() == ArenaState.STARTED) {
-			if (match.getBluePlayers().size() == 0 || match.getRedPlayers().size() == 0) {
+			boolean broadcast = false;
+			if (time == TIME_LIMIT - 300)
+				broadcast = true;
+			else if (time == TIME_LIMIT - 120)
+				broadcast = true;
+			else if (time == TIME_LIMIT - 60)
+				broadcast = true;
+			else if (time >= TIME_LIMIT - 10 && time != TIME_LIMIT)
+				broadcast = true;
+			
+			if (broadcast)
+				Chat.server("&7Game ending automatically in &f" + Chat.time(TIME_LIMIT - time) + "&7");
+				
+			// Game over?
+			if (time == TIME_LIMIT || match.getBluePlayers().size() == 0 || match.getRedPlayers().size() == 0)
 				match.endGame();
-			}
 		}
 	}
 	

@@ -20,6 +20,7 @@ public class GhostCmd implements CommandExecutor {
     public GhostCmd() {
     	subCommands.put("edit", new GhostEditCmd());
     	subCommands.put("save", new GhostSaveCmd());
+    	subCommands.put("set", new GhostSetCmd());
     }
     
 	@Override

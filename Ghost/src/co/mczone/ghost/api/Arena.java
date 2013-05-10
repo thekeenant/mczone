@@ -89,8 +89,14 @@ public class Arena {
 	}
 	
 	public void endGame() {
-		// Kick all players out of the match
-
+		int blue = getBluePlayers().size();
+		int red = getRedPlayers().size();
+		
+		if (red == 0)
+        	Chat.server("  &4\u0187 &eRed Team has won in &barena " + id + "&e on &b" + getTitle() + "  &4\u0171");
+		else if (blue == 0)
+        	Chat.server("  &1\u0187 &eBlue Team has won in &barena " + id + "&e on &b" + getTitle() + "  &1\u0171");
+		
 		scoreboard.clearSlot(DisplaySlot.SIDEBAR);
 		setState(ArenaState.LOADING);
 		schedule.setTime(0);
@@ -101,6 +107,7 @@ public class Arena {
 				for (Player p : getPlayers()) {
 					p.teleport(Ghost.getLobby().getSpawn());
 					Gamer.get(p).setInvisible(false);
+					getTeam(p).removePlayer(p);
 				}
 				registerTeams();
 			}

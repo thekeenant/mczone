@@ -9,7 +9,8 @@ public enum GameType {
 	NEXUS("Nexus MC", "nexus"),
 	WALLS("The Walls", "walls"),
 	SKYWARS("Sky Wars", "skywars"),
-	LOBBY("Lobby", "lobby");
+	LOBBY("Lobby", "lobby"),
+	GHOST("Ghost Squadron", "ghost");
 	
 	@Getter String title;
 	@Getter String name;

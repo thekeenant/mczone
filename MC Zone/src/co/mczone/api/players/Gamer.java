@@ -170,4 +170,8 @@ public class Gamer {
 	public String getPrefix() {
 		return this.getRank().getPrefix();
 	}
+	
+	public void kill(Player target) {
+		Hive.getInstance().kill(target, name);
+	}
 }

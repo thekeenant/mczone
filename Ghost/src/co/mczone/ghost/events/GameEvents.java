@@ -6,6 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 import co.mczone.api.players.Gamer;
+import co.mczone.api.server.Hive;
 import co.mczone.events.custom.PlayerDamageEvent;
 import co.mczone.events.custom.PlayerKilledEvent;
 import co.mczone.events.custom.PlayerModifyWorldEvent;
@@ -58,9 +59,11 @@ public class GameEvents implements Listener {
 		if (event.isPlayerKill()) {
 			Gamer p = Gamer.get(event.getPlayer());
 			p.giveCredits(2);
+			p.kill(event.getTarget());
+			
 			for (Player player : m.getPlayers()) {
 				if (player.getName().equals(p.getName()))
-					Chat.player(player, broadcast + " &8[&72 credit&8]");
+					Chat.player(player, broadcast + " &8[&72 credits&8]");
 				else
 					Chat.player(player, broadcast);
 			}
@@ -69,6 +72,7 @@ public class GameEvents implements Listener {
 			for (Player player : m.getPlayers()) {
 				Chat.player(player, broadcast);
 			}
+			Hive.getInstance().kill(event.getTarget(), "natural");
 		}
 		event.setDeathMessage(null);
 	}

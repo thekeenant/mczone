@@ -12,6 +12,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import co.mczone.api.ConfigAPI;
+import co.mczone.api.server.GameType;
+import co.mczone.api.server.Hive;
 import co.mczone.ghost.api.Kit;
 import co.mczone.ghost.api.Lobby;
 import co.mczone.ghost.api.Arena;
@@ -29,6 +31,8 @@ public class Ghost extends JavaPlugin {
 	@Getter static ConfigAPI kitConf;
 	
 	public void onEnable() {
+		Hive.getInstance().setType(GameType.GHOST);
+		
 		instance = this;
 		conf = new ConfigAPI(this);
 		kitConf = new ConfigAPI("kits.yml", this);

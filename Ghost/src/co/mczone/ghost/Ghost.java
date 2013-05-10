@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -26,7 +25,7 @@ import co.mczone.util.ItemUtil;
 public class Ghost extends JavaPlugin {
 	@Getter static Ghost instance;
 	@Getter static ConfigAPI conf;
-	@Getter @Setter static Lobby lobby;
+	@Getter static Lobby lobby;
 	
 	@Getter static ConfigAPI kitConf;
 	

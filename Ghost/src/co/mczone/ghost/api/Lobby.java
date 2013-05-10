@@ -10,10 +10,11 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 
 import lombok.Getter;
+import lombok.Setter;
 
 public class Lobby {
-	@Getter World world;
-	@Getter Location spawn;
+	@Getter @Setter World world;
+	@Getter @Setter Location spawn;
 	@Getter List<Block> kitSigns = new ArrayList<Block>();
 	
 	public Lobby(Location spawn) {

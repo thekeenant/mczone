@@ -39,7 +39,8 @@ public class GhostSetCmd implements SubCommand {
 			
 			Location l = g.getPlayer().getLocation();
 			config.set("lobby", l);
-			Ghost.setLobby(new Lobby(l));
+			Ghost.getLobby().setWorld(l.getWorld());
+			Ghost.getLobby().setSpawn(l);
 		}
 		else if (type.contains("spawn")) {
 			if (args.length != 2) {

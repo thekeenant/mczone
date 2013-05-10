@@ -1,7 +1,6 @@
 package co.mczone.ghost.api;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import lombok.Getter;
@@ -16,7 +15,6 @@ import co.mczone.ghost.Ghost;
 import co.mczone.util.Chat;
 
 public class Kit implements Permissible {
-	@Getter static HashMap<String, List<Kit>> purchases = new HashMap<String, List<Kit>>();
 	@Getter static List<Kit> list = new ArrayList<Kit>();
 	@Getter String name;
 	@Getter List<ItemStack> items;
@@ -58,6 +56,9 @@ public class Kit implements Permissible {
 
 	@Override
 	public boolean hasPermission(Gamer g) {
+		@SuppressWarnings("unchecked")
+		List<Kit> purchases = (List<Kit>) g.getVariable("ghost-kits");
+		
 		RankType r = g.getRank().getType();
 		if (r.getLevel() >= RankType.TITAN.getLevel()) {
 			return true;
@@ -70,11 +71,11 @@ public class Kit implements Permissible {
 			if (Ghost.getConf().getStringList("vip-kits").contains(name.toLowerCase()))
 				return true;
 		}
-		else if (Kit.getPurchases().containsKey(g.getName().toLowerCase())) {
-			if (Kit.getPurchases().get(g.getName().toLowerCase()).contains(this))
-				return true;
-		}
+		else if (purchases.contains(this))
+			return true;
 		else {
+			if (name.equals("archer"))
+				return true;
 			if (name.equals("archer"))
 				return true;
 		}

@@ -249,9 +249,9 @@ public class Arena {
 			return;
 		
 		Sign sign = getSign();
-		sign.setLine(0, "[ARENA-" + getId() + "]");
+		sign.setLine(0, "[ARENA " + getId() + "]");
 		sign.setLine(1, Chat.colors("&o" + getState().getColor() + getState().name()));
-		sign.setLine(2, Chat.colors("&l" + getTitle()));
+		sign.setLine(2, Chat.colors("&l" + getTitle().toUpperCase()));
 		sign.setLine(3, getPlayers().size() + "/" + Arena.MAX_PER_TEAM * 2 + " players");
 		sign.update(true);
 	}

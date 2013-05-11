@@ -5,7 +5,7 @@ import lombok.Getter;
 import org.bukkit.ChatColor;
 
 public enum TeamColor {
-	REcD("Red", ChatColor.RED),
+	RED("Red", ChatColor.RED),
 	BLUE("Blue", ChatColor.BLUE);
 	
 	@Getter String name;

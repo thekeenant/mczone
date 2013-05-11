@@ -262,7 +262,7 @@ public class Arena {
 	}
 	
 	public static Arena getMatch(Player player) {
-		return (Arena) Gamer.get(player).getVariable("match");
+		return (Arena) Gamer.get(player).getVariable("arena");
 	}
 	
 	public void setState(ArenaState state) {

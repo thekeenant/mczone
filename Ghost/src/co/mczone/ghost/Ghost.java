@@ -5,7 +5,9 @@ import java.util.List;
 
 import lombok.Getter;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.WorldCreator;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
@@ -60,8 +62,13 @@ public class Ghost extends JavaPlugin {
 			int id = conf.getInt(base + "id", 0);
 			
 			Block sign = conf.getBlock(base + "sign");
-
-			Location spawn = conf.getLocation(base + "spawn");
+			
+			new WorldCreator(worldName).createWorld();
+			
+			Location spawn = Bukkit.getWorld(worldName).getSpawnLocation();
+			if (conf.contains(base + "spawn"))
+				spawn = conf.getLocation(base + "spawn");
+			
 			Location red = conf.getLocation(base + "red");
 			Location blue = conf.getLocation(base + "blue");
 			

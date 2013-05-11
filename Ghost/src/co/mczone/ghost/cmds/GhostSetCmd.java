@@ -12,7 +12,6 @@ import co.mczone.api.players.Gamer;
 import co.mczone.cmds.SubCommand;
 import co.mczone.ghost.Ghost;
 import co.mczone.ghost.api.Arena;
-import co.mczone.ghost.api.Lobby;
 import co.mczone.util.Chat;
 
 public class GhostSetCmd implements SubCommand {
@@ -41,22 +40,6 @@ public class GhostSetCmd implements SubCommand {
 			config.set("lobby", l);
 			Ghost.getLobby().setWorld(l.getWorld());
 			Ghost.getLobby().setSpawn(l);
-		}
-		else if (type.contains("spawn")) {
-			if (args.length != 2) {
-				Chat.player(sender, "&cMust include the arena name");
-				return true;
-			}
-			a = Arena.get(args[1]);
-			if (a == null) {
-				Chat.player(sender, "&cUnknown arena, " + args[1]);
-				return true;
-			}
-			base = "matches." + a.getWorldName() + ".";
-			
-			Location l = g.getPlayer().getLocation();
-			config.set(base + "spawn", l);
-			a.setSpawn(l);
 		}
 		else if (type.contains("sign")) {
 			if (args.length != 2) {
@@ -93,6 +76,11 @@ public class GhostSetCmd implements SubCommand {
 			Location l = g.getPlayer().getLocation();
 			config.set(base + "red", l);
 			a.setBlueSpawn(l);
+		}
+		else if (type.contains("spawn")) {
+			Location l = g.getPlayer().getLocation();
+			config.set(base + "spawn", l);
+			a.setSpawn(l);
 		}
 		else if (type.contains("blue")) {
 			Location l = g.getPlayer().getLocation();

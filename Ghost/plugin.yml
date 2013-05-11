@@ -1,6 +1,7 @@
 name: Ghost
 main: co.mczone.ghost.Ghost
-version: 0.1a
+version: 0.5.9 beta
+depend: [Hive]
 author: funkystudios
 description: >
              MC Zone Ghost

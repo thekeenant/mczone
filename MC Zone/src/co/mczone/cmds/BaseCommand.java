@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -16,7 +17,7 @@ import co.mczone.util.Chat;
 
 public class BaseCommand implements CommandExecutor {
 	@Getter	HashMap<String, SubCommand> subCommands = new HashMap<String, SubCommand>();
-	@Getter	String title = "";
+	@Getter	@Setter String title = "";
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (Rank.getRank(sender.getName()).getType().getLevel() < RankType.ADMIN.getLevel()) {

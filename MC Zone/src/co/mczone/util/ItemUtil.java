@@ -7,6 +7,8 @@ import java.util.logging.Level;
 
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.Material;
 
 public class ItemUtil {
@@ -54,7 +56,7 @@ public class ItemUtil {
         	}
         	for (String ench : enchantments) {
                 if (Enchantment.getByName(ench.split(":")[0].toUpperCase())==null) {
-                    Chat.log(Level.SEVERE, "Bad Enchantment: " + first);
+                    Chat.log(Level.SEVERE, "Bad Enchantment: " + ench.split(":")[0] );
                     continue;
                 }
                 Enchantment e = Enchantment.getByName(ench.split(":")[0].toUpperCase());
@@ -84,5 +86,16 @@ public class ItemUtil {
 		}
 		
 		return name + data + amount + ench;		
+	}
+	
+	public static PotionEffect deserializePotionEffect(String raw) {
+		String[] arr = raw.split(",");
+		PotionEffectType type = PotionEffectType.getByName(arr[0].toUpperCase());
+		int level = Integer.parseInt(arr[1]);
+		int duration = 2147483647;
+		if (arr.length > 2)
+			duration = Integer.parseInt(arr[2]);
+		
+		return new PotionEffect(type, duration, level - 1);
 	}
 }

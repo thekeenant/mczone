@@ -12,6 +12,7 @@ import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
 
 import co.mczone.api.ConfigAPI;
 import co.mczone.api.server.GameType;
@@ -50,10 +51,19 @@ public class Ghost extends JavaPlugin {
 		for (String name : kitConf.getKeys(false)) {
 			ConfigurationSection kit = kitConf.getConfigurationSection(name);
 			List<ItemStack> items = new ArrayList<ItemStack>();
+			
 			for (String raw : kit.getStringList("items"))
 				items.add(ItemUtil.deserializeItem(raw));
 			
-			new Kit(name, items);
+			if (!kit.contains("effects"))
+				new Kit(name, items);
+			else {
+				List<PotionEffect> effects = new ArrayList<PotionEffect>();
+				for (String raw : kit.getStringList("effects"))
+					effects.add(ItemUtil.deserializePotionEffect(raw));
+				
+				new Kit(name, items, effects);
+			}
 		}
 		Chat.log("Loaded " + Kit.getList().size() + " kits");
 		

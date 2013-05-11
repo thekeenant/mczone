@@ -1,7 +1,6 @@
 package co.mczone.ghost.api;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -114,10 +113,11 @@ public class Arena {
 			@Override
 			public void run() {
 				for (Player p : getPlayers()) {
+					Gamer g = Gamer.get(p);
 					p.teleport(Ghost.getLobby().getSpawn());
-					Gamer.get(p).setInvisible(false);
+					g.setInvisible(false);
+					g.removePotionEffects();
 					getTeam(p).removePlayer(p);
-					p.removePotionEffect(PotionEffectType.INVISIBILITY);
 					p.setHealth(20);
 				}
 				registerTeams();

@@ -22,14 +22,23 @@ public class ArenaSchedule extends BukkitRunnable {
 	@Override
 	public void run() {
 		time += 1;
-		
+
+		final Arena a = match;
 		match.updateScoreboard();
 		
 		if (time % 3 == 0) {
 			match.updateSign();
+			
+			if (match.getWorld() != null) {
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						a.getWorld().setTime(16000);
+					}
+				}.runTask(Ghost.getInstance());
+			}
 		}
 		
-		final Arena a = match;
 		if (match.getState() == ArenaState.WAITING) {
 			if (match.getRedPlayers().size() >= Arena.MAX_PER_TEAM && match.getBluePlayers().size() >= Arena.MAX_PER_TEAM) {
 				if (a.isStarting())

@@ -6,9 +6,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import net.minecraft.server.v1_5_R3.Packet41MobEffect;
+import net.minecraft.server.v1_5_R3.Packet42RemoveMobEffect;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.craftbukkit.v1_5_R3.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -98,13 +102,41 @@ public class Gamer {
 		}
 	}
 	
-	public void removePotionEffects() {
-		for (PotionEffect p : getPlayer().getActivePotionEffects())
-			getPlayer().removePotionEffect(p.getType());
+	public void addPotionEffect(PotionEffect effect) {
+		addPotionEffect(effect, true);
 	}
 	
-	public void removePotionEffect(PotionEffectType t) {
-		getPlayer().removePotionEffect(t);
+	public void addPotionEffect(PotionEffect effect, boolean particles) {
+		if (particles) {
+			getPlayer().addPotionEffect(effect);
+		}
+		else {
+			Player p = getPlayer();
+			Packet41MobEffect pm = new Packet41MobEffect();
+			pm.a = p.getEntityId();
+			pm.b = (byte) effect.getType().getId();
+			pm.c = (byte) effect.getAmplifier();
+			pm.d = (short) effect.getDuration();
+			((CraftPlayer) p).getHandle().playerConnection.sendPacket(pm);
+			pm = null;
+		}
+	}
+	
+	public void removePotionEffects() {
+		for (PotionEffect effect : getPlayer().getActivePotionEffects()) {
+			removePotionEffect(effect.getType());
+		}
+	}
+	
+	public void removePotionEffect(PotionEffectType effect) {
+		getPlayer().removePotionEffect(effect);
+		
+		Player p = getPlayer();
+		Packet42RemoveMobEffect pm = new Packet42RemoveMobEffect();
+		pm.a = p.getEntityId();
+		pm.b = (byte) effect.getId();
+		((CraftPlayer) p).getHandle().playerConnection.sendPacket(pm);
+		pm = null;
 	}
 	
 	public void teleport(Object o) {

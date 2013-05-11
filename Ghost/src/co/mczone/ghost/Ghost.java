@@ -40,6 +40,7 @@ public class Ghost extends JavaPlugin {
 		
 		lobby = new Lobby(conf.getLocation("lobby"));
 
+		new GeneralEvents();
 		new ConnectEvents();
 		new SignEvents();
 		new GameEvents();

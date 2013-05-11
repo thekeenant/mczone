@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,6 +32,8 @@ public class ConnectEvents implements Listener {
 		g.teleport(Ghost.getLobby().getSpawn());
 		g.removePotionEffects();
 		g.getPlayer().setGameMode(GameMode.SURVIVAL);
+		g.getPlayer().setHealth(20);
+		g.getPlayer().setFoodLevel(20);
 		
 		List<Kit> kits = new ArrayList<Kit>();
 		ResultSet r = Hive.getInstance().getDatabase().query("SELECT * FROM ghost_donations WHERE username='" + g.getName()  + "'");
@@ -51,11 +54,12 @@ public class ConnectEvents implements Listener {
 	@EventHandler
 	public void onPlayerLeave(PlayerQuitEvent event) {
 		event.setQuitMessage(null);
-		Arena match = Arena.getMatch(event.getPlayer());
+		Arena match = Arena.getArena(event.getPlayer());
 		if (match == null)
 			return;
 		
 		match.leave(event.getPlayer());
+		match.getScoreboard().resetScores(Bukkit.getOfflinePlayer(event.getPlayer().getName()));
 	}
 	
 	@EventHandler

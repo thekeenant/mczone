@@ -27,6 +27,7 @@ public class SignChangePacket {
 		this.lines = lines;
 		this.revertTime = revertTime;
 		this.sentTime = new Date();
+		list.add(this);
 	}
 	
 	public void send() {

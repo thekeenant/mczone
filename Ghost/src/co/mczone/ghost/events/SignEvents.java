@@ -46,7 +46,7 @@ public class SignEvents implements Listener {
 			arr[1] = sign.getLine(1);
 			arr[2] = Chat.colors("&lBuy this kit:");
 			arr[3] = Chat.colors("&ewww.mczone.co");
-			new SignChangePacket(p, sign, arr, 6).send();
+			new SignChangePacket(p, sign, arr, 4).send();
 			return;
 		}
 		
@@ -65,7 +65,7 @@ public class SignEvents implements Listener {
 		arr[1] = sign.getLine(1);
 		arr[2] = Chat.colors("&lKIT SELECTED");
 		arr[3] = Chat.colors("&aJoin a Match!");
-		new SignChangePacket(p, sign, arr, 6).send();
+		new SignChangePacket(p, sign, arr, 4).send();
 	}
 	
 	@EventHandler
@@ -93,7 +93,7 @@ public class SignEvents implements Listener {
 			arr[2] = event.getSign().getLine(2);
 			arr[3] = "&l&cMATCH FULL";
 			
-			new SignChangePacket(p, event.getSign(), arr, 5);
+			new SignChangePacket(p, event.getSign(), arr, 4);
 			return;
 		}
 		else if (match.getState() != ArenaState.WAITING) {
@@ -103,7 +103,7 @@ public class SignEvents implements Listener {
 			arr[2] = event.getSign().getLine(2);
 			arr[3] = "&l&cIN PROGRESS";
 			
-			new SignChangePacket(p, event.getSign(), arr, 5);
+			new SignChangePacket(p, event.getSign(), arr, 4);
 			return;
 		}
 		

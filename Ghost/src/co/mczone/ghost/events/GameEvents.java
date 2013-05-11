@@ -7,6 +7,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 
 import co.mczone.api.players.Gamer;
 import co.mczone.api.server.Hive;
+import co.mczone.events.custom.ModifyWorldAction;
 import co.mczone.events.custom.PlayerDamageEvent;
 import co.mczone.events.custom.PlayerKilledEvent;
 import co.mczone.events.custom.PlayerModifyWorldEvent;
@@ -25,6 +26,18 @@ public class GameEvents implements Listener {
 	public void onPlayerModifyWorld(PlayerModifyWorldEvent event) {
 		Gamer g = Gamer.get(event.getPlayer());
 		event.setCancelled(true);
+		
+		if (g.getVariable("arena") != null) {
+			Arena a = (Arena) g.getVariable("arena");
+			if (a.getState() == ArenaState.STARTED) {
+				if (event.getAction() == ModifyWorldAction.PLAYER_INTERACT)
+					event.setCancelled(false);
+			}
+		}
+		
+		if (g.isInvisible())
+			event.setCancelled(true);
+		
 		if (g.getVariable("edit") == null)
 			return;
 		
@@ -50,10 +63,12 @@ public class GameEvents implements Listener {
 		if (m == null)
 			return;
 
+		t.setAllowFlight(true);
+		t.setFlying(true);
 		t.setInvisible(true);
 		m.updateScoreboard();
-		m.join(event.getPlayer(), "red");
-		m.join(event.getPlayer(), "blue");
+		m.getRed().addPlayer(event.getTarget());
+		m.getBlue().addPlayer(event.getTarget());
 		
 		String broadcast = "&4[Ghost] &6" + event.getDeathMessage();
 		if (event.isPlayerKill()) {
@@ -73,6 +88,9 @@ public class GameEvents implements Listener {
 				Chat.player(player, broadcast);
 			}
 			Hive.getInstance().kill(event.getTarget(), "natural");
+			if (event.getDeathMessage().contains("fell out")) {
+				t.teleport(m.getSpawn());
+			}
 		}
 		event.setDeathMessage(null);
 	}
@@ -103,6 +121,9 @@ public class GameEvents implements Listener {
 					if (playerMatch.getTeam(p) != playerMatch.getTeam(t))
 						event.setCancelled(false);
 				}
+				
+				if (Gamer.get(p).isInvisible())
+					event.setCancelled(true);
 			}
 		}
 	}

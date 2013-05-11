@@ -20,7 +20,7 @@ public class GhostSetCmd implements SubCommand {
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
 		Gamer g = Gamer.get(sender.getName());
-		Arena a = Arena.getMatch(g.getPlayer());
+		Arena a = Arena.getArena(g.getPlayer());
 
 		if (args.length == 0) {
 			Chat.player(sender, "&cWrong arguments: /ghost set [variable] (setting)");
@@ -84,16 +84,17 @@ public class GhostSetCmd implements SubCommand {
 		}
 		else if (type.contains("blue")) {
 			Location l = g.getPlayer().getLocation();
-			config.set(base + "red", l);
-			a.setRedSpawn(l);
+			config.set(base + "blue", l);
+			a.setBlueSpawn(l);
 		}
 		else {
 			Chat.player(sender, "&cUnknown setting, " + args[0]);
 			return true;
 		}
 		
-		Chat.server("&aChanged setting " + type + " in " + a.getTitle());
+		Chat.player(sender, "&aChanged setting " + type + " in " + a.getTitle());
 		Ghost.getConf().set(a.getWorldName(), a.getConfig());
+		Ghost.getInstance().saveConfig();
 		return true;
 	}
 }

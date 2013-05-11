@@ -1,6 +1,7 @@
 package co.mczone.ghost.api;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -14,6 +15,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -53,6 +56,8 @@ public class Arena {
 	
 	@Getter ConfigurationSection config;
 	
+	@Getter @Setter boolean starting;
+	
 	public Arena(ConfigurationSection config, int id, String title, String world, Block sign, Location spawn, Location redSpawn, Location blueSpawn) {
 		this.config = config;
 		this.id = id;
@@ -79,13 +84,16 @@ public class Arena {
     	Chat.server("&4# # # # # # # # # # # # # # # #");
 		setState(ArenaState.STARTED);
 		schedule.setTime(0);
+		setStarting(false);
 
 		for (Player p : getRedPlayers()) {
 			p.teleport(this.getRedSpawn());
+			p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 2147483647, 0), true);
 		}
 		
 		for (Player p : getBluePlayers()) {
 			p.teleport(this.getBlueSpawn());
+			p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 2147483647, 0), true);
 		}
 	}
 	
@@ -94,9 +102,9 @@ public class Arena {
 		int red = getRedPlayers().size();
 		
 		if (red == 0 || blue > red)
-        	Chat.server("  &1\u0187 &eBlue Team has won in &barena " + id + "&e on &b" + getTitle() + "  &1\u0171");
+        	Chat.server("  &4\u00BB &eBlue Team has won in &bARENA " + id + "&e on &b" + getTitle().toUpperCase() + " &4\u00AB");
 		else if (blue == 0 || red > blue)
-        	Chat.server("  &4\u0187 &eRed Team has won in &barena " + id + "&e on &b" + getTitle() + "  &4\u0171");		
+        	Chat.server("  &4\u00BB &eRed Team has won in &bARENA " + id + "&e on &b" + getTitle().toUpperCase() + " &4\u00AB");		
 		
 		scoreboard.clearSlot(DisplaySlot.SIDEBAR);
 		setState(ArenaState.LOADING);
@@ -109,6 +117,8 @@ public class Arena {
 					p.teleport(Ghost.getLobby().getSpawn());
 					Gamer.get(p).setInvisible(false);
 					getTeam(p).removePlayer(p);
+					p.removePotionEffect(PotionEffectType.INVISIBILITY);
+					p.setHealth(20);
 				}
 				registerTeams();
 			}
@@ -241,7 +251,7 @@ public class Arena {
 	}
 
 	public void leave(Player p) {
-		scoreboard.getPlayerTeam(Bukkit.getOfflinePlayer(p.getName())).removePlayer(p);
+		scoreboard.getPlayerTeam(p).removePlayer(p);
 		sendMessage("  &7&o - " + p.getName() + " has left the arena");
 	}
 
@@ -261,7 +271,7 @@ public class Arena {
 		Chat.player(getPlayers(), msg);
 	}
 	
-	public static Arena getMatch(Player player) {
+	public static Arena getArena(Player player) {
 		return (Arena) Gamer.get(player).getVariable("arena");
 	}
 	
@@ -281,5 +291,13 @@ public class Arena {
 			if (a.getWorldName().equalsIgnoreCase(string))
 				return a;
 		return null;
+	}
+
+	public List<Player> getSpectators() {
+		List<Player> list = new ArrayList<Player>();
+		for (Player p : getPlayers())
+			if (Gamer.get(p).isInvisible())
+				list.add(p);
+		return list;
 	}
 }

@@ -174,4 +174,12 @@ public class Gamer {
 	public void kill(Player target) {
 		Hive.getInstance().kill(target, name);
 	}
+	
+	public void setAllowFlight(boolean flight) {
+		getPlayer().setAllowFlight(flight);
+	}
+	
+	public void setFlying(boolean flight) {
+		getPlayer().setFlying(flight);
+	}
 }

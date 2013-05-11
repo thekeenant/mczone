@@ -15,6 +15,8 @@ public class ArenaSchedule extends BukkitRunnable {
 	@Getter @Setter int time = 0;
 	@Getter @Setter Arena match;
 	
+	@Getter @Setter int countdown = Ghost.getConf().getInt("countdown", 60 * 2);
+	
 	public ArenaSchedule(Arena match) {
 		this.match = match;
 	}
@@ -40,10 +42,26 @@ public class ArenaSchedule extends BukkitRunnable {
 		}
 		
 		if (match.getState() == ArenaState.WAITING) {
-			if (match.getRedPlayers().size() >= Arena.MAX_PER_TEAM && match.getBluePlayers().size() >= Arena.MAX_PER_TEAM) {
+			countdown -= 1;
+			boolean start = false;
+			if (match.getRedPlayers().size() >= Arena.MAX_PER_TEAM && match.getBluePlayers().size() >= Arena.MAX_PER_TEAM) 
+				start = true;
+			else if (countdown == 10) {
+				if (match.getRedPlayers().size() < 2 || match.getBluePlayers().size() < 2) {
+					a.sendMessage("&cNeed at least 2 players per team to start the match!");
+					resetCountdown();
+					return;
+				}
+				start = true;
+			}
+			
+			
+			if (start) {
 				if (a.isStarting())
 					return;
 				a.setStarting(true);
+				
+				// Countdown to start
 				new BukkitRunnable() {
 					int time = 10;
 					@Override
@@ -62,7 +80,7 @@ public class ArenaSchedule extends BukkitRunnable {
 			}
 			if (time % 30 == 0) {
 				int more = (Arena.MAX_PER_TEAM * 2) - match.getPlayers().size();
-				match.sendMessage("&eWaiting for &4&l" + more + " players &eto join in order to start the match.");
+				//match.sendMessage("&eWaiting for &4&l" + more + " players &eto join in order to start the match.");
 			}
 		}
 		else if (match.getState() == ArenaState.STARTED) {
@@ -83,6 +101,10 @@ public class ArenaSchedule extends BukkitRunnable {
 			if (time == TIME_LIMIT || match.getBluePlayers().size() == 0 || match.getRedPlayers().size() == 0)
 				match.endGame();
 		}
+	}
+
+	public void resetCountdown() {
+		countdown = Ghost.getConf().getInt("countdown", 60 * 2);
 	}
 	
 }

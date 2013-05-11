@@ -78,9 +78,9 @@ public class Arena {
 	}
 	
 	public void startGame() {
-    	Chat.server("&4# # # # # # # # # # # # # # # #");
-    	Chat.server("&4# # &6The match has started &4# #");
-    	Chat.server("&4# # # # # # # # # # # # # # # #");
+    	sendMessage("&4# # # # # # # # # # # # # # # #");
+    	sendMessage("&4# # &6The match has started &4# #");
+    	sendMessage("&4# # # # # # # # # # # # # # # #");
 		setState(ArenaState.STARTED);
 		schedule.setTime(0);
 		setStarting(false);
@@ -108,6 +108,7 @@ public class Arena {
 		scoreboard.clearSlot(DisplaySlot.SIDEBAR);
 		setState(ArenaState.LOADING);
 		schedule.setTime(0);
+		schedule.resetCountdown();
 		
 		new BukkitRunnable() {
 			@Override
@@ -119,6 +120,7 @@ public class Arena {
 					g.removePotionEffects();
 					getTeam(p).removePlayer(p);
 					p.setHealth(20);
+					Kit.giveKit(p);
 				}
 				registerTeams();
 			}
@@ -160,6 +162,12 @@ public class Arena {
 	}
 	
 	public void updateScoreboard() {
+		if (state == ArenaState.WAITING && !starting)
+			setScore("&aCountdown", schedule.getCountdown());
+		else
+			clearScore("&aCountdown");
+			
+			
 		List<String> dead = new ArrayList<String>();
 		// Team Red
 		for (OfflinePlayer p : red.getPlayers()) {
@@ -190,8 +198,12 @@ public class Arena {
 	}
 	
 	public void setScore(String key, int value) {
-		Score score = sidebar.getScore(Bukkit.getOfflinePlayer(key));
+		Score score = sidebar.getScore(Bukkit.getOfflinePlayer(Chat.colors(key)));
 		score.setScore(value);
+	}
+	
+	public void clearScore(String key) {
+		getScoreboard().resetScores(Bukkit.getOfflinePlayer(Chat.colors(key)));
 	}
 	
 	public List<Player> getPlayers() {

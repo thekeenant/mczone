@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -59,7 +58,7 @@ public class ConnectEvents implements Listener {
 			return;
 		
 		match.leave(event.getPlayer());
-		match.getScoreboard().resetScores(Bukkit.getOfflinePlayer(event.getPlayer().getName()));
+		match.clearScore(event.getPlayer().getName());
 	}
 	
 	@EventHandler

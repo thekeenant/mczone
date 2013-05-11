@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import net.minecraft.server.v1_5_R3.Packet41MobEffect;
@@ -36,6 +37,9 @@ public class Gamer {
 	
 	@Getter @Setter boolean online;
 	@Getter List<Infraction> infractions = new ArrayList<Infraction>();
+	
+	// For potion effects via packets
+	List<PotionEffectType> effects = new ArrayList<PotionEffectType>();
 	
 	public Gamer(String name) {
 		this.name = name;
@@ -116,15 +120,28 @@ public class Gamer {
 			pm.a = p.getEntityId();
 			pm.b = (byte) effect.getType().getId();
 			pm.c = (byte) effect.getAmplifier();
-			pm.d = (short) effect.getDuration();
+			
+			// 32767 means xx:xx
+			if (effect.getDuration() > 32767)
+				pm.d = 32767;
+			else
+				pm.d = (short) effect.getDuration();
 			((CraftPlayer) p).getHandle().playerConnection.sendPacket(pm);
 			pm = null;
 		}
+		
+		effects.add(effect.getType());
 	}
 	
 	public void removePotionEffects() {
 		for (PotionEffect effect : getPlayer().getActivePotionEffects()) {
 			removePotionEffect(effect.getType());
+		}
+		
+		Iterator<PotionEffectType> list = effects.iterator();
+		while (list.hasNext()) {
+			removePotionEffect(list.next());
+			list.remove();
 		}
 	}
 	

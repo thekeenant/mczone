@@ -22,6 +22,10 @@ public class SignChangePacket {
 	@Getter boolean reverted = false;
 	
 	public SignChangePacket(Player player, Sign sign, String[] lines, int revertTime) {
+		for (SignChangePacket packet : list) {
+			if (packet.getSign() == sign)
+				return;
+		}
 		this.player = player;
 		this.sign = sign;
 		this.lines = lines;

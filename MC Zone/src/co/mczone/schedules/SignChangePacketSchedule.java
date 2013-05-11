@@ -12,11 +12,11 @@ public class SignChangePacketSchedule extends BukkitRunnable {
 	public void run() {
 		for (SignChangePacket packet : SignChangePacket.getList()) {
 			if (packet.isReverted())
-				return;
+				continue;
 			
 			Player p = packet.getPlayer();
 			if (p == null || !p.isOnline())
-				return;
+				continue;
 			
 			Date before = packet.getSentTime();
 			Date now = new Date();

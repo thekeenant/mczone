@@ -30,12 +30,7 @@ public class GhostSetCmd implements SubCommand {
 		ConfigAPI config = Ghost.getConf();
 		String base = "";
 		String type = args[0].toLowerCase();
-		if (type.equals("lobby")) {
-			if (a == null) {
-				Chat.player(sender, "&cUnknown arena, " + args[1]);
-				return true;
-			}
-			
+		if (type.equals("lobby")) {			
 			Location l = g.getPlayer().getLocation();
 			config.set("lobby", l);
 			Ghost.getLobby().setWorld(l.getWorld());
@@ -52,7 +47,7 @@ public class GhostSetCmd implements SubCommand {
 				return true;
 			}
 			
-			base = "matches." + a.getWorldName() + ".";
+			base = "arenas." + a.getWorldName() + ".";
 			Block b = g.getPlayer().getTargetBlock(null, 5);
 			if (b == null || b.getType() != Material.WALL_SIGN) {
 				Chat.player(sender, "&cYou must look at a sign to set the sign variable");
@@ -65,35 +60,41 @@ public class GhostSetCmd implements SubCommand {
 			config.set(base + "sign.z", b.getZ());
 			a.setSignBlock(b);
 		}
-		
-		if (a == null) {
-			Chat.player(sender, "&cYou must specify an arena to change settings");
-			return true;
+		else {
+			if (a == null) {
+				Chat.player(sender, "&cYou must specify an arena to change settings");
+				return true;
+			}
+			
+			base = "arenas." + a.getWorldName() + ".";
+			if (type.contains("red")) {
+				Location l = g.getPlayer().getLocation();
+				config.set(base + "red", l);
+				a.setBlueSpawn(l);
+			}
+			else if (type.contains("spawn")) {
+				Location l = g.getPlayer().getLocation();
+				config.set(base + "spawn", l);
+				a.setSpawn(l);
+			}
+			else if (type.contains("blue")) {
+				Location l = g.getPlayer().getLocation();
+				config.set(base + "blue", l);
+				a.setBlueSpawn(l);
+			}
+			else {
+				Chat.player(sender, "&cUnknown setting, " + args[0]);
+				return true;
+			}
 		}
 		
-		base = "matches." + a.getWorldName() + ".";
-		if (type.contains("red")) {
-			Location l = g.getPlayer().getLocation();
-			config.set(base + "red", l);
-			a.setBlueSpawn(l);
-		}
-		else if (type.contains("spawn")) {
-			Location l = g.getPlayer().getLocation();
-			config.set(base + "spawn", l);
-			a.setSpawn(l);
-		}
-		else if (type.contains("blue")) {
-			Location l = g.getPlayer().getLocation();
-			config.set(base + "blue", l);
-			a.setBlueSpawn(l);
+		if (a != null) {
+			Chat.player(sender, "&aChanged setting " + type + " in " + a.getTitle());
+			Ghost.getConf().set("arenas." + a.getWorldName(), a.getConfig());
 		}
 		else {
-			Chat.player(sender, "&cUnknown setting, " + args[0]);
-			return true;
+			Chat.player(sender, "&aChanged setting " + type);
 		}
-		
-		Chat.player(sender, "&aChanged setting " + type + " in " + a.getTitle());
-		Ghost.getConf().set(a.getWorldName(), a.getConfig());
 		Ghost.getInstance().saveConfig();
 		return true;
 	}

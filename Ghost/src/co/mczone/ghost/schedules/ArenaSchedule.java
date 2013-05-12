@@ -47,8 +47,8 @@ public class ArenaSchedule extends BukkitRunnable {
 			if (match.getRedPlayers().size() >= Arena.MAX_PER_TEAM && match.getBluePlayers().size() >= Arena.MAX_PER_TEAM) 
 				start = true;
 			else if (countdown == 10) {
-				if (match.getRedPlayers().size() < 2 || match.getBluePlayers().size() < 2) {
-					a.sendMessage("&cNeed at least 2 players per team to start the match!");
+				if (match.getRedPlayers().size() < 1 || match.getBluePlayers().size() < 1) {
+					a.sendMessage("&cNeed at least 1 player per team to start the match!");
 					resetCountdown();
 					return;
 				}
@@ -79,7 +79,7 @@ public class ArenaSchedule extends BukkitRunnable {
 				return;
 			}
 			if (time % 30 == 0) {
-				int more = (Arena.MAX_PER_TEAM * 2) - match.getPlayers().size();
+				//int more = (Arena.MAX_PER_TEAM * 2) - match.getPlayers().size();
 				//match.sendMessage("&eWaiting for &4&l" + more + " players &eto join in order to start the match.");
 			}
 		}

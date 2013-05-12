@@ -15,40 +15,40 @@ import co.mczone.events.custom.PlayerModifyWorldEvent;
 
 public class ModifyWorldEvents implements Listener {
 	public ModifyWorldEvents() {
-		MCZone.getInstance().getServer().getPluginManager().registerEvents(this, MCZone.getInstance());
+		//MCZone.getInstance().getServer().getPluginManager().registerEvents(this, MCZone.getInstance());
 	}
 
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent event) {
-		PlayerModifyWorldEvent ev = new PlayerModifyWorldEvent(event.getPlayer(), ModifyWorldAction.PLAYER_INTERACT, event);
+		PlayerModifyWorldEvent ev = new PlayerModifyWorldEvent(event.getPlayer(), ModifyWorldAction.PLAYER_INTERACT, event, event.isCancelled());
 		Bukkit.getServer().getPluginManager().callEvent(ev);
 		event.setCancelled(ev.isCancelled());
 	}
 	
 	@EventHandler
 	public void onPlayerDropItem(PlayerDropItemEvent event) {
-		PlayerModifyWorldEvent ev = new PlayerModifyWorldEvent(event.getPlayer(), ModifyWorldAction.ITEM_DROP, event);
+		PlayerModifyWorldEvent ev = new PlayerModifyWorldEvent(event.getPlayer(), ModifyWorldAction.ITEM_DROP, event, event.isCancelled());
 		Bukkit.getServer().getPluginManager().callEvent(ev);
 		event.setCancelled(ev.isCancelled());
 	}
 	
 	@EventHandler
 	public void onPlayerDropItem(PlayerPickupItemEvent event) {
-		PlayerModifyWorldEvent ev = new PlayerModifyWorldEvent(event.getPlayer(), ModifyWorldAction.ITEM_PICKUP, event);
+		PlayerModifyWorldEvent ev = new PlayerModifyWorldEvent(event.getPlayer(), ModifyWorldAction.ITEM_PICKUP, event, event.isCancelled());
 		Bukkit.getServer().getPluginManager().callEvent(ev);
 		event.setCancelled(ev.isCancelled());
 	}
 	
 	@EventHandler
 	public void onBlockPlace(BlockPlaceEvent event) {
-		PlayerModifyWorldEvent ev = new PlayerModifyWorldEvent(event.getPlayer(), ModifyWorldAction.BLOCK_PLACE, event);
+		PlayerModifyWorldEvent ev = new PlayerModifyWorldEvent(event.getPlayer(), ModifyWorldAction.BLOCK_PLACE, event, event.isCancelled());
 		Bukkit.getServer().getPluginManager().callEvent(ev);
 		event.setCancelled(ev.isCancelled());
 	}
 	
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent event) {
-		PlayerModifyWorldEvent ev = new PlayerModifyWorldEvent(event.getPlayer(), ModifyWorldAction.BLOCK_BREAK, event);
+		PlayerModifyWorldEvent ev = new PlayerModifyWorldEvent(event.getPlayer(), ModifyWorldAction.BLOCK_BREAK, event, event.isCancelled());
 		Bukkit.getServer().getPluginManager().callEvent(ev);
 		event.setCancelled(ev.isCancelled());
 	}

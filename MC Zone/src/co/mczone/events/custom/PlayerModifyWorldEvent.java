@@ -14,10 +14,11 @@ public class PlayerModifyWorldEvent extends Event {
 	@Getter Event event;
 	@Getter @Setter boolean cancelled = false;
 	
-	public PlayerModifyWorldEvent(Player player, ModifyWorldAction action, Event event) {
+	public PlayerModifyWorldEvent(Player player, ModifyWorldAction action, Event event, boolean cancelled) {
 		this.player = player;
 		this.action = action;
 		this.event = event;
+		this.cancelled = cancelled;
 	}
 	 
     public HandlerList getHandlers() {

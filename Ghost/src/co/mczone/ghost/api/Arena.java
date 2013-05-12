@@ -88,11 +88,13 @@ public class Arena {
 		for (Player p : getRedPlayers()) {
 			p.teleport(this.getRedSpawn());
 			p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 2147483647, 0), true);
+			Gamer.get(p).setVariable("inMatch", true);
 		}
 		
 		for (Player p : getBluePlayers()) {
 			p.teleport(this.getBlueSpawn());
 			p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 2147483647, 0), true);
+			Gamer.get(p).setVariable("inMatch", true);
 		}
 	}
 	
@@ -115,12 +117,16 @@ public class Arena {
 			public void run() {
 				for (Player p : getPlayers()) {
 					Gamer g = Gamer.get(p);
+					g.clearVariable("inMatch");
 					p.teleport(Ghost.getLobby().getSpawn());
 					g.setInvisible(false);
 					g.removePotionEffects();
 					getTeam(p).removePlayer(p);
 					p.setHealth(20);
 					Kit.giveKit(p);
+					
+					g.setFlying(false);
+					g.setAllowFlight(false);
 				}
 				registerTeams();
 			}
@@ -263,6 +269,10 @@ public class Arena {
 	}
 
 	public void leave(Player p) {
+		clearScore(p.getName());
+		Gamer.get(p).clearVariable("inMatch");
+		Gamer.get(p).setFlying(false);
+		Gamer.get(p).setAllowFlight(false);
 		scoreboard.getPlayerTeam(p).removePlayer(p);
 		sendMessage("  &7&o - " + p.getName() + " has left the arena");
 	}

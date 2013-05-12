@@ -187,6 +187,10 @@ public class Gamer {
 	public Object getVariable(String key) {
 		return getSettings().get(key);
 	}
+
+	public void clearVariable(String string) {
+		getSettings().remove(string);
+	}
 	
 	public void giveItem(ItemStack i) {
 		giveItem(i, true);

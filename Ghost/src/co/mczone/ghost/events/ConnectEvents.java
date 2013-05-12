@@ -30,7 +30,8 @@ public class ConnectEvents implements Listener {
 		final Gamer g = Gamer.get(event.getPlayer());
 		g.teleport(Ghost.getLobby().getSpawn());
 		g.removePotionEffects();
-		g.getPlayer().setGameMode(GameMode.SURVIVAL);
+		if (g.getVariable("edit") == null)
+			g.getPlayer().setGameMode(GameMode.SURVIVAL);
 		g.getPlayer().setHealth(20);
 		g.getPlayer().setFoodLevel(20);
 		
@@ -58,7 +59,6 @@ public class ConnectEvents implements Listener {
 			return;
 		
 		match.leave(event.getPlayer());
-		match.clearScore(event.getPlayer().getName());
 	}
 	
 	@EventHandler

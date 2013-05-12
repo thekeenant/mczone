@@ -67,8 +67,8 @@ public class Ghost extends JavaPlugin {
 		}
 		Chat.log("Loaded " + Kit.getList().size() + " kits");
 		
-		for (String worldName : conf.getConfigurationSection("matches").getKeys(false)) {
-			String base = "matches." + worldName + ".";
+		for (String worldName : conf.getConfigurationSection("arenas").getKeys(false)) {
+			String base = "arenas." + worldName + ".";
 			String title = conf.getString(base + "title", "NULL TITLE");
 			int id = conf.getInt(base + "id", 0);
 			
@@ -83,7 +83,7 @@ public class Ghost extends JavaPlugin {
 			Location red = conf.getLocation(base + "red");
 			Location blue = conf.getLocation(base + "blue");
 			
-			new Arena(conf.getConfigurationSection("matches." + worldName), id, title, worldName, sign, spawn, red, blue);
+			new Arena(conf.getConfigurationSection("arenas." + worldName), id, title, worldName, sign, spawn, red, blue);
 		}
 	}
 }

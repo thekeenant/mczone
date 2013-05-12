@@ -22,9 +22,14 @@ public class GameEvents implements Listener {
 		Ghost.getInstance().getServer().getPluginManager().registerEvents(this, Ghost.getInstance());
 	}
 	
+	/*
 	@EventHandler
 	public void onPlayerModifyWorld(PlayerModifyWorldEvent event) {
 		Gamer g = Gamer.get(event.getPlayer());
+		
+		if (event.isCancelled())
+			return;
+		
 		event.setCancelled(true);
 		
 		if (g.getVariable("arena") != null) {
@@ -45,6 +50,7 @@ public class GameEvents implements Listener {
 		if (editMode) 
 			event.setCancelled(false);
 	}
+	*/
 	
 	@EventHandler
 	public void onPlayerDamage(EntityDamageEvent event) {

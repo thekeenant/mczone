@@ -1,5 +1,7 @@
 package co.mczone.ghost;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +17,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 
 import co.mczone.api.ConfigAPI;
+import co.mczone.api.players.Gamer;
+import co.mczone.api.players.GamerRunnable;
 import co.mczone.api.server.GameType;
 import co.mczone.api.server.Hive;
 import co.mczone.ghost.api.Kit;
@@ -85,5 +89,25 @@ public class Ghost extends JavaPlugin {
 			
 			new Arena(conf.getConfigurationSection("arenas." + worldName), id, title, worldName, sign, spawn, red, blue);
 		}
+		
+		Gamer.addFunction("load-kits", new GamerRunnable() {
+			@Override
+			public void run() {
+				List<Kit> kits = new ArrayList<Kit>();
+				ResultSet r = Hive.getInstance().getDatabase().query("SELECT * FROM ghost_donations WHERE username='" + gamer.getName()  + "'");
+				try {
+					while (r.next()) {
+						Kit kit = Kit.get(r.getString("kit"));
+						if (kit == null)
+							continue;
+						
+						kits.add(kit);
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				gamer.setVariable("ghost-kits", kits);
+			}
+		});
 	}
 }

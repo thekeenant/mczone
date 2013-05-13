@@ -20,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import co.mczone.MCZone;
 import co.mczone.api.infractions.Infraction;
 import co.mczone.api.server.Hive;
 
@@ -28,7 +29,10 @@ import lombok.Setter;
 
 public class Gamer {
 	@Getter static List<Gamer> list = new ArrayList<Gamer>();
-	@Getter HashMap<String, Object> settings = new HashMap<String, Object>();
+	
+	private static HashMap<String, GamerRunnable> functions = new HashMap<String, GamerRunnable>();
+	private HashMap<String, Object> settings = new HashMap<String, Object>();
+	
 	@Getter String name;
 	@Getter @Setter Rank rank;
 	@Getter boolean invisible = false;
@@ -181,15 +185,15 @@ public class Gamer {
 	
 	// Custom settings
 	public void setVariable(String key, Object value) {
-		getSettings().put(key, value);
+		settings.put(key, value);
 	}
 
 	public Object getVariable(String key) {
-		return getSettings().get(key);
+		return settings.get(key);
 	}
 
 	public void clearVariable(String string) {
-		getSettings().remove(string);
+		settings.remove(string);
 	}
 	
 	public void giveItem(ItemStack i) {
@@ -234,5 +238,15 @@ public class Gamer {
 	
 	public void setFlying(boolean flight) {
 		getPlayer().setFlying(flight);
+	}
+	
+	public void run(String function) {
+		GamerRunnable r = functions.get(function);
+		r.setGamer(this);
+		r.runTaskAsynchronously(MCZone.getInstance());
+	}
+	
+	public static void addFunction(String key, GamerRunnable function) {
+		functions.put(key, function);
 	}
 }

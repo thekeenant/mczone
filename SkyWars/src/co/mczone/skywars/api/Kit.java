@@ -72,7 +72,12 @@ public class Kit implements Permissible {
 		List<Kit> purchases = (List<Kit>) g.getVariable("skywars-kits");
 		
 		RankType r = g.getRank().getType();
-		if (r.getLevel() >= RankType.TITAN.getLevel()) {
+
+		if (name.equals("archer"))
+			return true;
+		else if (name.equals("barbarian"))
+			return true;
+		else if (r.getLevel() >= RankType.TITAN.getLevel()) {
 			return true;
 		}
 		else if (r.getLevel() >= RankType.ELITE.getLevel()) {
@@ -87,12 +92,6 @@ public class Kit implements Permissible {
 			return true;
 		else if (g.getVariable("skywars-vote") == this)
 			return true;
-		else {
-			if (name.equals("archer"))
-				return true;
-			if (name.equals("barbarian"))
-				return true;
-		}
 		
 		return false;
 	}

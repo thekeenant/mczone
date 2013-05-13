@@ -35,20 +35,7 @@ public class ConnectEvents implements Listener {
 		g.getPlayer().setHealth(20);
 		g.getPlayer().setFoodLevel(20);
 		
-		List<Kit> kits = new ArrayList<Kit>();
-		ResultSet r = Hive.getInstance().getDatabase().query("SELECT * FROM ghost_donations WHERE username='" + g.getName()  + "'");
-		try {
-			while (r.next()) {
-				Kit kit = Kit.get(r.getString("kit"));
-				if (kit == null)
-					continue;
-				
-				kits.add(kit);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		g.setVariable("ghost-kits", kits);
+		g.run("load-kits");
 	}
 	
 	@EventHandler

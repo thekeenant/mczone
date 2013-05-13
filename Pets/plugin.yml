@@ -1,0 +1,12 @@
+name: Pets
+version: 1.0
+author: funkystudios
+main: co.mczone.pets.Pets
+depend: [MCZone]
+description: >
+             MCZone Pets Plugin
+commands:
+  pet:
+    aliases: [pets]
+    description: MC Zone Pets
+    default: true

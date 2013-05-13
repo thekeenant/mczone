@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 
-import co.mczone.lobby.Lobby;
 import co.mczone.util.Chat;
 
 import lombok.Getter;
@@ -45,8 +45,14 @@ public class MiniGame {
 			}
 			
 			List<Block> blocks = new ArrayList<Block>();
-			for (String raw : servers.getStringList(name + ".signs")) {
-				blocks.add(Lobby.getConfigAPI().parseBlock(raw));
+			for (String s : servers.getStringList(name + ".signs")) {
+				
+		        int x = Integer.parseInt(s.split(",")[0]);
+		        int y = Integer.parseInt(s.split(",")[1]);
+		        int z = Integer.parseInt(s.split(",")[2]);
+
+				Block b = Bukkit.getWorld("void").getBlockAt(x, y, z);
+				blocks.add(b);
 			}
 			
 			MiniGame g = new MiniGame(ranges, blocks);

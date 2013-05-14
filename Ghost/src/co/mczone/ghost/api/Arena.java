@@ -173,14 +173,12 @@ public class Arena {
 		else
 			clearScore("&aCountdown");
 			
-			
-		List<String> dead = new ArrayList<String>();
 		// Team Red
 		for (OfflinePlayer p : red.getPlayers()) {
 			if (p.isOnline())
 				// Invisible means dead
 				if (Gamer.get(p.getName()).isInvisible()) {
-					dead.add(p.getName());
+					setScore(ChatColor.STRIKETHROUGH + p.getName(), 3);
 					continue;
 				}
 			setScore(p.getName(), 2);
@@ -191,15 +189,10 @@ public class Arena {
 			if (p.isOnline())
 				// Invisible means dead
 				if (Gamer.get(p.getName()).isInvisible()) {
-					dead.add(p.getName());
+					setScore(ChatColor.STRIKETHROUGH + p.getName(), 2);
 					continue;
 				}
 			setScore(p.getName(), 1);
-		}
-		
-		// Dead/Spectators		
-		for (String s : dead) {
-			setScore(s, 0);
 		}
 	}
 	

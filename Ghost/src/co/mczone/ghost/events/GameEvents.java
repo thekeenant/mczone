@@ -41,8 +41,6 @@ public class GameEvents implements Listener {
 		t.setFlying(true);
 		t.setInvisible(true);
 		m.updateScoreboard();
-		m.getRed().addPlayer(event.getTarget());
-		m.getBlue().addPlayer(event.getTarget());
 		
 		String broadcast = "&4[Ghost] &6" + event.getDeathMessage();
 		if (event.isPlayerKill()) {

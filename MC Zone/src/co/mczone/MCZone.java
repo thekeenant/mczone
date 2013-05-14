@@ -23,7 +23,6 @@ public class MCZone extends JavaPlugin {
 		new InfractionSchedule().runTaskTimerAsynchronously(this, 0, 20 * 30);
 		new SignChangePacketSchedule().runTaskTimerAsynchronously(this, 0, 20 * 1);
 		
-		new ModifyWorldEvents();
 		new ConnectEvents();
 		new GeneralEvents();
 		new DamageEvents();

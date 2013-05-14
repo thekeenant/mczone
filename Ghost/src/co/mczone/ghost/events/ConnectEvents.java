@@ -1,10 +1,5 @@
 package co.mczone.ghost.events;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.GameMode;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,10 +8,8 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import co.mczone.api.players.Gamer;
-import co.mczone.api.server.Hive;
 import co.mczone.ghost.Ghost;
 import co.mczone.ghost.api.Arena;
-import co.mczone.ghost.api.Kit;
 
 public class ConnectEvents implements Listener {
 	

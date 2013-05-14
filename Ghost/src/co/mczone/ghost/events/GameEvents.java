@@ -7,10 +7,8 @@ import org.bukkit.event.entity.EntityDamageEvent;
 
 import co.mczone.api.players.Gamer;
 import co.mczone.api.server.Hive;
-import co.mczone.events.custom.ModifyWorldAction;
 import co.mczone.events.custom.PlayerDamageEvent;
 import co.mczone.events.custom.PlayerKilledEvent;
-import co.mczone.events.custom.PlayerModifyWorldEvent;
 import co.mczone.ghost.Ghost;
 import co.mczone.ghost.api.Arena;
 import co.mczone.ghost.api.ArenaState;
@@ -21,36 +19,6 @@ public class GameEvents implements Listener {
 	public GameEvents() {
 		Ghost.getInstance().getServer().getPluginManager().registerEvents(this, Ghost.getInstance());
 	}
-	
-	/*
-	@EventHandler
-	public void onPlayerModifyWorld(PlayerModifyWorldEvent event) {
-		Gamer g = Gamer.get(event.getPlayer());
-		
-		if (event.isCancelled())
-			return;
-		
-		event.setCancelled(true);
-		
-		if (g.getVariable("arena") != null) {
-			Arena a = (Arena) g.getVariable("arena");
-			if (a.getState() == ArenaState.STARTED) {
-				if (event.getAction() == ModifyWorldAction.PLAYER_INTERACT)
-					event.setCancelled(false);
-			}
-		}
-		
-		if (g.isInvisible())
-			event.setCancelled(true);
-		
-		if (g.getVariable("edit") == null)
-			return;
-		
-		boolean editMode = (boolean) g.getVariable("edit");
-		if (editMode) 
-			event.setCancelled(false);
-	}
-	*/
 	
 	@EventHandler
 	public void onPlayerDamage(EntityDamageEvent event) {

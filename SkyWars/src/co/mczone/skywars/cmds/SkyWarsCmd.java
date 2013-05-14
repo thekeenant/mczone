@@ -16,7 +16,7 @@ public class SkyWarsCmd extends BaseCommand implements CommandExecutor {
 
 	@Override
 	public boolean hasPermission(Gamer g) {
-		if (g.getRank().getLevel() < RankType.MOD.getLevel())
+		if (g.getRank().getLevel() < RankType.OFFICER.getLevel())
 			return false;
 		return true;
 	}

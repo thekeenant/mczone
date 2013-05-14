@@ -6,8 +6,8 @@ author: funkystudios
 description: >
              MC Zone Ghost
 commands:
-  matches:
-    aliases: [games,arenas]
+  arenas:
+    aliases: [games,matches]
     description: View Ghost matches
     default: true
   ghost:

@@ -20,3 +20,6 @@ commands:
   kick:
     description: Kick an MC Zone player
     usage: /kick <player> <reason>
+  list:
+    description: List online players
+    usage: /list

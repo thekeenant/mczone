@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.entity.Player;
 
+import co.mczone.api.modules.Sidebar;
 import co.mczone.api.players.Gamer;
 import co.mczone.api.server.Hive;
 
@@ -14,9 +15,10 @@ import lombok.Setter;
 public class Game {
 	@Getter @Setter int gameID;
 	@Getter @Setter int players;
+	@Getter Sidebar sidebar;
 	
 	public Game() {
-		
+		sidebar = new Sidebar("&4Survival Games");
 	}
 	
 	public void start() {

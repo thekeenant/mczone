@@ -34,15 +34,21 @@ public class Scheduler extends TimerTask {
 		
 	@Override
 	public void run() {
+		
+		// Set time to day
 		new BukkitRunnable() {
 			@Override
 			public void run() {
 				SurvivalGames.getMainWorld().setTime(6000);
 			}
 		}.runTask(SurvivalGames.getInstance());
+		
+		// Before game
 		if (getState() == State.PREP) {
 			if (seconds % 30 == 0 && seconds < countdown || (seconds >= countdown - 5 && seconds < countdown))
 				Chat.server("&2[SG] &aVoting period ends in &4" + Chat.time(countdown - seconds) + "");
+			
+			SurvivalGames.getGame().getSidebar().set("&aCountdown", countdown - seconds);
 			
 			if (seconds > countdown) {
 				if (Game.getTributes().size() < minPlayers) {
@@ -65,7 +71,11 @@ public class Scheduler extends TimerTask {
 				seconds = countdown - 10;
 			}
 		}
+		
+		// Waiting period
 		else if (getState() == State.WAITING) {
+			SurvivalGames.getGame().getSidebar().clearScore("&aCountdown");
+			SurvivalGames.getGame().getSidebar().set("&cCountdown", 30 - seconds);
 			if (seconds >= 30) {
 				Bukkit.getPluginManager().registerEvents(new GameEvents(), SurvivalGames.getInstance());
 	        	Chat.server("&4# # # # # # # # # # # # # # # #");
@@ -76,9 +86,7 @@ public class Scheduler extends TimerTask {
 				ResultSet r = Hive.getInstance().getDatabase().query("SELECT id FROM sg_games ORDER BY start DESC LIMIT 1");
 				try {
 					while (r.next()) {
-						Game game = new Game();
-						game.setGameID(r.getInt("id"));
-						SurvivalGames.setGame(game);
+						SurvivalGames.getGame().setGameID(r.getInt("id"));
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -99,6 +107,7 @@ public class Scheduler extends TimerTask {
 				Chat.server("&2[SG] &aGame beginning in &4" + Chat.time(30 - seconds));
 		}
 		else if (getState() == State.PVP) {
+			SurvivalGames.getGame().getSidebar().clearScore("&aCountdown");
 			List<Gamer> gamers = Game.getTributes();
 			if (gamers.size() == 0)
 				Bukkit.shutdown();

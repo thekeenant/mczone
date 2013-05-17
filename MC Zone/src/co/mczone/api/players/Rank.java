@@ -32,4 +32,8 @@ public class Rank {
 	public String getPrefix() {
 		return type.getPrefix();
 	}
+	
+	public boolean isConsole() {
+		return type == RankType.CONSOLE;
+	}
 }

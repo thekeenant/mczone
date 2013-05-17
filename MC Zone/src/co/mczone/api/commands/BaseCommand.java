@@ -1,4 +1,4 @@
-package co.mczone.cmds;
+package co.mczone.api.commands;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -14,18 +14,20 @@ import org.bukkit.entity.Player;
 
 import co.mczone.api.players.Gamer;
 import co.mczone.api.players.Permissible;
-import co.mczone.api.players.RankType;
 import co.mczone.util.Chat;
 
-public class BaseCommand implements CommandExecutor,Permissible {
+public class BaseCommand implements CommandExecutor {
 	@Getter	HashMap<String, SubCommand> subCommands = new HashMap<String, SubCommand>();
 	@Getter	@Setter String title = "";
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (sender instanceof Player) {
-			if (!hasPermission(Gamer.get(sender.getName()))) {
-				Chat.player(sender, "&cYou don't have permission to use that command.");
-				return true;
+			if (this instanceof Permissible) {
+				Permissible perm = (Permissible) this;
+				if (!perm.hasPermission(Gamer.get(sender.getName()))) {
+					Chat.player(sender, "&cYou don't have permission to use that command.");
+					return true;
+				}
 			}
 		}
 		
@@ -34,26 +36,35 @@ public class BaseCommand implements CommandExecutor,Permissible {
 			for (Entry<String, SubCommand> e : subCommands.entrySet()) {
 				String s = e.getKey();
 				SubCommand c = e.getValue();
+				if (c instanceof Permissible) {
+					Permissible perm = (Permissible) c;
+					if (!perm.hasPermission(Gamer.get(sender))) {
+						continue;
+					}
+				}
 				Chat.player(sender, "&6/ghost " + s + "&f: " + c.getAbout());
 			}
 			return true;
 		} 
 		else {
+			SubCommand sub = null;
 			for (Entry<String, SubCommand> e : subCommands.entrySet()) {
 				if (e.getKey().equalsIgnoreCase(args[0]))
-					return e.getValue().execute(sender,
-							Arrays.copyOfRange(args, 1, args.length));
+					sub = e.getValue();
+			}
+			if (sub != null) {
+				if (sub instanceof Permissible) {
+					Permissible perm = (Permissible) sub;
+					if (!perm.hasPermission(Gamer.get(sender))) {
+						Chat.player(sender, "&cYou don't have permission to do that.");
+						return true;
+					}
+				}
+				return sub.execute(sender,	Arrays.copyOfRange(args, 1, args.length));
 			}
 
 			Chat.player(sender, "&cInvalid sub command.");
 			return true;
 		}
-	}
-
-	@Override
-	public boolean hasPermission(Gamer g) {
-		if (g.getRank().getLevel() < RankType.ADMIN.getLevel())
-			return false;
-		return true;
 	}
 }

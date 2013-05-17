@@ -8,13 +8,15 @@ import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 
 import co.mczone.api.ConfigAPI;
+import co.mczone.api.commands.SubCommand;
 import co.mczone.api.players.Gamer;
-import co.mczone.cmds.SubCommand;
+import co.mczone.api.players.Permissible;
+import co.mczone.api.players.RankType;
 import co.mczone.ghost.Ghost;
 import co.mczone.ghost.api.Arena;
 import co.mczone.util.Chat;
 
-public class GhostSetCmd implements SubCommand {
+public class GhostSetCmd implements SubCommand,Permissible {
 	@Getter String about = "Modify arena settings";
 	
 	@Override
@@ -96,6 +98,13 @@ public class GhostSetCmd implements SubCommand {
 			Chat.player(sender, "&aChanged setting " + type);
 		}
 		Ghost.getInstance().saveConfig();
+		return true;
+	}
+
+	@Override
+	public boolean hasPermission(Gamer g) {
+		if (g.getRank().getLevel() < RankType.ADMIN.getLevel())
+			return false;
 		return true;
 	}
 }

@@ -5,11 +5,13 @@ import lombok.Getter;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 
+import co.mczone.api.commands.SubCommand;
 import co.mczone.api.players.Gamer;
-import co.mczone.cmds.SubCommand;
+import co.mczone.api.players.Permissible;
+import co.mczone.api.players.RankType;
 import co.mczone.util.Chat;
 
-public class GhostSaveCmd implements SubCommand {
+public class GhostSaveCmd implements SubCommand,Permissible {
 	@Getter String about = "Toggle map edit mode";
 	
 	@Override
@@ -21,5 +23,12 @@ public class GhostSaveCmd implements SubCommand {
 		
 		Chat.player(sender, "&eYou have saved the world!");
 		return false;
+	}
+
+	@Override
+	public boolean hasPermission(Gamer g) {
+		if (g.getRank().getLevel() < RankType.ADMIN.getLevel())
+			return false;
+		return true;
 	}
 }

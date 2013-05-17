@@ -2,11 +2,12 @@ package co.mczone.ghost.cmds;
 
 import org.bukkit.command.CommandExecutor;
 
+import co.mczone.api.commands.BaseCommand;
 import co.mczone.api.players.Gamer;
+import co.mczone.api.players.Permissible;
 import co.mczone.api.players.RankType;
-import co.mczone.cmds.BaseCommand;
 
-public class GhostCmd extends BaseCommand implements CommandExecutor {
+public class GhostCmd extends BaseCommand implements CommandExecutor,Permissible {
     public GhostCmd() {
     	this.setTitle("&7&m&l -------- &bMC Zone Ghost Commands &7&m&l--------");
     	this.getSubCommands().put("edit", new GhostEditCmd());
@@ -16,7 +17,7 @@ public class GhostCmd extends BaseCommand implements CommandExecutor {
 
 	@Override
 	public boolean hasPermission(Gamer g) {
-		if (g.getRank().getLevel() < RankType.MOD.getLevel())
+		if (g.getRank().getLevel() < RankType.ADMIN.getLevel())
 			return false;
 		return true;
 	}

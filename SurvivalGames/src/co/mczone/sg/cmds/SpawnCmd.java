@@ -7,16 +7,15 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import co.mczone.api.players.Gamer;
+import co.mczone.api.players.Permissible;
+import co.mczone.api.players.RankType;
 import co.mczone.sg.Scheduler;
 import co.mczone.sg.SurvivalGames;
 import co.mczone.sg.api.State;
 
-public class SpawnCmd implements CommandExecutor {
+public class SpawnCmd implements CommandExecutor, Permissible {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-    	if (!CmdBase.isPlayer(sender))
-    		return true;
-    	
     	Player p = (Player) sender;
     	
     	if (Scheduler.getState() != State.PREP && !Gamer.get(p.getName()).isInvisible()) {
@@ -29,4 +28,11 @@ public class SpawnCmd implements CommandExecutor {
     	
 		return true;
     }
+
+	@Override
+	public boolean hasPermission(Gamer g) {
+		if (g.getRank().getLevel() == RankType.CONSOLE.getLevel())
+			return false;
+		return true;
+	}
 }

@@ -13,6 +13,7 @@ import net.minecraft.server.v1_5_R3.Packet42RemoveMobEffect;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_5_R3.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -50,6 +51,11 @@ public class Gamer {
 		list.add(this);
 	}
 	
+	public Gamer(String name, Rank rank) {
+		this.name = name;
+		this.rank = rank;
+	}
+	
 	public Player getPlayer() {
 		Player p = Bukkit.getPlayerExact(name);
 		if (p == null || !p.isOnline()) {
@@ -62,6 +68,17 @@ public class Gamer {
 	public static Gamer get(String name) {
 		for (Gamer g : list)
 			if (g.getName().equalsIgnoreCase(name))
+				return g;
+		return null;
+	}
+	
+	public static Gamer get(CommandSender sender) {
+		if (sender instanceof Player == false) {
+			return new Gamer("CONSOLE", new Rank(RankType.CONSOLE));
+		}
+		
+		for (Gamer g : list)
+			if (g.getName().equalsIgnoreCase(sender.getName()))
 				return g;
 		return null;
 	}

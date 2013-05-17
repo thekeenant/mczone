@@ -1,6 +1,10 @@
 package co.mczone.sg.cmds;
 
 import org.bukkit.Bukkit;
+
+import co.mczone.api.players.Gamer;
+import co.mczone.api.players.Permissible;
+import co.mczone.api.players.RankType;
 import co.mczone.util.Chat;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
@@ -9,15 +13,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class WorldCmd implements CommandExecutor {
+public class WorldCmd implements CommandExecutor, Permissible {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-    	if (!CmdBase.isPlayer(sender))
-    		return true;
-    	
-    	if (!CmdBase.isAdmin(sender))
-    		return true;
-    	
     	Player p = (Player) sender;
     	
     	if (args.length != 1) {
@@ -37,4 +35,11 @@ public class WorldCmd implements CommandExecutor {
     	
 		return true;
     }
+
+	@Override
+	public boolean hasPermission(Gamer g) {
+		if (g.getRank().getLevel() < RankType.ADMIN.getLevel())
+			return false;
+		return true;
+	}
 }

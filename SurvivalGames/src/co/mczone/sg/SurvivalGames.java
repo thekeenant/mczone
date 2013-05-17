@@ -169,6 +169,8 @@ public class SurvivalGames extends JavaPlugin {
 			items.add(new ItemStack(Material.BREAD, 4));
 		
 		
+		game = new Game();
+		
 		new BukkitRunnable() {
 			@Override
 			public void run() {

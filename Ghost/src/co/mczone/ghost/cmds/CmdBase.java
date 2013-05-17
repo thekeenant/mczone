@@ -1,10 +1,11 @@
 package co.mczone.ghost.cmds;
 
+import co.mczone.api.server.Hive;
 import co.mczone.ghost.Ghost;
 
 public class CmdBase {
     public CmdBase() {
-    	Ghost.getInstance().getCommand("arenas").setExecutor(new ArenasCmd());
-    	Ghost.getInstance().getCommand("ghost").setExecutor(new GhostCmd());
+    	Hive.getInstance().registerCommand(Ghost.getInstance(), "arenas", new ArenasCmd());
+    	Hive.getInstance().registerCommand(Ghost.getInstance(), "ghost", new GhostCmd());
     }
 }

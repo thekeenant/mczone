@@ -5,8 +5,8 @@ import lombok.Getter;
 import org.bukkit.GameMode;
 import org.bukkit.command.CommandSender;
 
+import co.mczone.api.commands.SubCommand;
 import co.mczone.api.players.Gamer;
-import co.mczone.cmds.SubCommand;
 import co.mczone.util.Chat;
 
 public class GhostEditCmd implements SubCommand {

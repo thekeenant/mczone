@@ -5,16 +5,16 @@ import java.io.File;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import co.mczone.api.commands.SubCommand;
+import co.mczone.api.players.Gamer;
+import co.mczone.api.players.Permissible;
+import co.mczone.api.players.RankType;
 import co.mczone.sg.api.ConfigAPI;
 import co.mczone.sg.api.Map;
-import co.mczone.sg.api.SubCommand;
 import co.mczone.util.Chat;
 
-public class AdminDeleteSpawnCmd implements SubCommand {
+public class AdminDeleteSpawnCmd implements SubCommand, Permissible {
     public boolean execute(CommandSender sender, String[] args) {
-    	if (!CmdBase.isPlayer(sender))
-    		return true;
-    	
     	if (args.length != 1) {
     		Chat.player(sender, "&cPlease include the spawn name.");
     		return true;
@@ -40,4 +40,16 @@ public class AdminDeleteSpawnCmd implements SubCommand {
     	Chat.player(sender, "&aRemoved spawn, &2" + spawnName + "&a from " + map.getTitle());
         return true;
     }
+
+	@Override
+	public boolean hasPermission(Gamer g) {
+		if (g.getRank().getLevel() < RankType.ADMIN.getLevel())
+			return false;
+		return true;
+	}
+
+	@Override
+	public String getAbout() {
+		return "Remove team spawn";
+	}
 }

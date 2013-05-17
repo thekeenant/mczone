@@ -8,8 +8,12 @@ import java.util.HashMap;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
+import co.mczone.api.commands.HiveCommandExecutor;
 import co.mczone.api.database.MySQL;
 import co.mczone.api.players.Gamer;
 
@@ -85,5 +89,14 @@ public class Hive {
 	
 	public Object getVariable(String key)  {
 		return variables.get(key);
+	}
+
+	public void registerCommand(PluginCommand command, CommandExecutor executor) {
+		command.setExecutor(new HiveCommandExecutor());
+		HiveCommandExecutor.getCommands().put(command.getName(), executor);
+	}
+	
+	public void registerCommand(JavaPlugin plugin, String name, CommandExecutor executor) {
+		registerCommand(plugin.getCommand(name), executor);
 	}
 }

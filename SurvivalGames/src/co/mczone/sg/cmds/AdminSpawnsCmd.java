@@ -6,14 +6,14 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import co.mczone.api.commands.SubCommand;
+import co.mczone.api.players.Gamer;
+import co.mczone.api.players.Permissible;
+import co.mczone.api.players.RankType;
 import co.mczone.sg.api.Map;
-import co.mczone.sg.api.SubCommand;
 
-public class AdminSpawnsCmd implements SubCommand {
-    public boolean execute(CommandSender sender, String[] args) {
-    	if (!CmdBase.isPlayer(sender))
-    		return true;
-    	
+public class AdminSpawnsCmd implements SubCommand, Permissible {
+    public boolean execute(CommandSender sender, String[] args) {    	
     	Player p = (Player) sender;
     	
     	if (args.length != 1) {
@@ -34,4 +34,16 @@ public class AdminSpawnsCmd implements SubCommand {
     	
         return true;
     }
+
+	@Override
+	public boolean hasPermission(Gamer g) {
+		if (g.getRank().getLevel() < RankType.ADMIN.getLevel())
+			return false;
+		return true;
+	}
+
+	@Override
+	public String getAbout() {
+		return "Show spawn points with glowstone";
+	}
 }

@@ -5,16 +5,16 @@ import java.io.File;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import co.mczone.api.commands.SubCommand;
+import co.mczone.api.players.Gamer;
+import co.mczone.api.players.Permissible;
+import co.mczone.api.players.RankType;
 import co.mczone.sg.api.ConfigAPI;
 import co.mczone.sg.api.Map;
-import co.mczone.sg.api.SubCommand;
 import co.mczone.util.Chat;
 
-public class AdminAddSpawnCmd implements SubCommand {
+public class AdminAddSpawnCmd implements SubCommand,Permissible {
     public boolean execute(CommandSender sender, String[] args) {
-    	if (!CmdBase.isPlayer(sender))
-    		return true;
-    	
     	Player p = (Player) sender;
     	
     	if (args.length != 1) {
@@ -40,4 +40,16 @@ public class AdminAddSpawnCmd implements SubCommand {
     	Chat.player(sender, "&aAdded spawn &2" + name +"&a to &2" + map.getTitle());
         return true;
     }
+
+	@Override
+	public String getAbout() {
+		return "Add a spawn location";
+	}
+
+	@Override
+	public boolean hasPermission(Gamer g) {
+		if (g.getRank().getLevel() < RankType.ADMIN.getLevel())
+			return false;
+		return true;
+	}
 }

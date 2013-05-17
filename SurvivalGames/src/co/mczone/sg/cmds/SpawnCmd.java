@@ -6,9 +6,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import co.mczone.api.players.Gamer;
 import co.mczone.sg.Scheduler;
 import co.mczone.sg.SurvivalGames;
-import co.mczone.sg.api.GamerSG;
 import co.mczone.sg.api.State;
 
 public class SpawnCmd implements CommandExecutor {
@@ -19,7 +19,7 @@ public class SpawnCmd implements CommandExecutor {
     	
     	Player p = (Player) sender;
     	
-    	if (Scheduler.getState() != State.PREP && !GamerSG.get(p.getName()).isSpectator()) {
+    	if (Scheduler.getState() != State.PREP && !Gamer.get(p.getName()).isInvisible()) {
     		Chat.player(sender, "&4[SG] &cYou cannot use /spawn at this time");
     		return true;
     	}

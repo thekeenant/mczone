@@ -26,7 +26,7 @@ import co.mczone.api.players.Gamer;
 import co.mczone.api.server.Hive;
 import co.mczone.events.custom.PlayerKilledEvent;
 import co.mczone.sg.SurvivalGames;
-import co.mczone.sg.api.GamerSG;
+import co.mczone.sg.api.Game;
 import co.mczone.util.Chat;
 
 public class GameEvents implements Listener {
@@ -51,11 +51,6 @@ public class GameEvents implements Listener {
 		event.setCancelled(true);
 	}
 	
-	
-	public void kill(String cause, Player target) {
-		Hive.getInstance().getDatabase().update("INSERT INTO kills (server,game_id,player,target) VALUES ('sg'," + SurvivalGames.getGame().getGameID() + ",'" + cause + "','" + target.getName() + "')");
-	}
-	
 	@EventHandler
 	public void onPlayerKilled(PlayerKilledEvent event) {
 		Player t = event.getTarget();
@@ -65,26 +60,25 @@ public class GameEvents implements Listener {
 		if (event.isPlayerKill()) {
 			Player p = event.getPlayer();
 			g.giveCredits(1);
-			kill(p.getName(), t);
+			g.kill(p);
 			broadcast = broadcast.replace(" " + p.getName(), " " + g.getPrefix() + "&f" + p.getName());
 			for (Player pl : Bukkit.getOnlinePlayers()) {
 				if (pl.getName().equals(p.getName()))
 					Chat.player(pl, broadcast + " &8[&71 credit&8]");
 				else
 					Chat.player(pl, broadcast);
-				Chat.player(pl, "&4[SG] &6There are " + (GamerSG.getTributes().size() - 1) + " tributes remaining");
+				Chat.player(pl, "&4[SG] &6There are " + (Game.getTributes().size() - 1) + " tributes remaining");
 			}
 		}
 		else {
-			kill("natural", t);
+			Hive.getInstance().kill(t, "natural");
 			Chat.server(broadcast);
-			Chat.server("&4[SG] &6There are " + (GamerSG.getTributes().size() - 1) + " tributes remaining");
+			Chat.server("&4[SG] &6There are " + (Game.getTributes().size() - 1) + " tributes remaining");
 		}
 		
-		g.setVariable("death", t.getLocation());
+		g.setVariable("death-location", t.getLocation());
 		g.setInvisible(true);
 		t.setHealth(20);
-		GamerSG.hideSpectators();
 		event.setDeathMessage(null);
 		g.getPlayer().getWorld().strikeLightning(g.getPlayer().getLocation().add(0, 50, 0));
 	}
@@ -96,16 +90,15 @@ public class GameEvents implements Listener {
 			return;
 		
 		Player p = event.getPlayer();
-		GamerSG t = GamerSG.get(event.getPlayer().getName());
+		Gamer t = Gamer.get(event.getPlayer());
 		
-		if (!GamerSG.getTributes().contains(t))
+		if (!Game.getTributes().contains(t))
 			return;
 
-		kill("quit", p);
-		t.setDeathLocation(event.getPlayer().getLocation());
+		Hive.getInstance().kill(p, "quit");
+		t.setVariable("death-location", event.getPlayer().getLocation());
 		Chat.server("&4[SG &6" + Gamer.get(p).getPrefix()  + t.getName() + " &6has quit the game!");
-		Chat.server("&4[SG] &6There are " + (GamerSG.getTributes().size() - 1) + " tributes remaining");
-		GamerSG.get(event.getPlayer().getName()).remove();
+		Chat.server("&4[SG] &6There are " + (Game.getTributes().size() - 1) + " tributes remaining");
 	}
 	
 	@EventHandler
@@ -119,7 +112,7 @@ public class GameEvents implements Listener {
 					if (!(e instanceof Player))
 						continue;
 					Player t = (Player) e;
-					if (GamerSG.get(t.getName()).isSpectator())
+					if (Gamer.get(t.getName()).isInvisible())
 						continue;
 					p.setCompassTarget(e.getLocation());
 					Chat.player(p, "&2[SG] &aCompass points to &7" + ((Player) e).getDisplayName() + "&a!");
@@ -132,8 +125,8 @@ public class GameEvents implements Listener {
 			}
 			if (!found) {
 				Chat.player(p, "&cNo players in range. Compass points to spawn location.");
-				GamerSG g = GamerSG.get(p.getName());
-				p.setCompassTarget(g.getSpawnBlock());
+				Gamer g = Gamer.get(p.getName());
+				p.setCompassTarget(g.getLocation("spawn-block"));
 			}
 		}
 	}

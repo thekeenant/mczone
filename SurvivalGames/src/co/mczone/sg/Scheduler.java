@@ -14,7 +14,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import co.mczone.api.players.Gamer;
 import co.mczone.api.server.Hive;
 import co.mczone.sg.api.Game;
-import co.mczone.sg.api.GamerSG;
 import co.mczone.sg.api.Map;
 import co.mczone.sg.api.State;
 import co.mczone.sg.events.GameEvents;
@@ -46,7 +45,7 @@ public class Scheduler extends TimerTask {
 				Chat.server("&2[SG] &aVoting period ends in &4" + Chat.time(countdown - seconds) + "");
 			
 			if (seconds > countdown) {
-				if (GamerSG.getTributes().size() < minPlayers) {
+				if (Game.getTributes().size() < minPlayers) {
 					Chat.server("&4[SG] &eRestarting countdown, need more players!");
 					seconds = 0;
 					return;
@@ -61,13 +60,12 @@ public class Scheduler extends TimerTask {
 				return;
 			}
 			
-			if (GamerSG.getTributes().size() >= 24 && seconds < (countdown - 30)) {
+			if (Game.getTributes().size() >= 24 && seconds < (countdown - 30)) {
 				Chat.server("&2[SG] &aShortening time &410 seconds");
 				seconds = countdown - 10;
 			}
 		}
 		else if (getState() == State.WAITING) {
-			Shop.setAllow(true);
 			if (seconds >= 30) {
 				Bukkit.getPluginManager().registerEvents(new GameEvents(), SurvivalGames.getInstance());
 	        	Chat.server("&4# # # # # # # # # # # # # # # #");
@@ -101,8 +99,7 @@ public class Scheduler extends TimerTask {
 				Chat.server("&2[SG] &aGame beginning in &4" + Chat.time(30 - seconds));
 		}
 		else if (getState() == State.PVP) {
-			Shop.setAllow(false);
-			List<GamerSG> gamers = GamerSG.getTributes();
+			List<Gamer> gamers = Game.getTributes();
 			if (gamers.size() == 0)
 				Bukkit.shutdown();
 			if (gamers.size() == 1) {
@@ -123,7 +120,8 @@ public class Scheduler extends TimerTask {
 						new BukkitRunnable() {
 							@Override
 							public void run() {
-								for (GamerSG g : GamerSG.getList()) {
+								for (Gamer g : Gamer
+										.getList()) {
 									if (SurvivalGames.getWinner().getName().equals(g.getName())) {
 										g.getPlayer().kickPlayer(Chat.colors("&2[SG] &eYou have won this match! &8[&710 credits&8]"));
 										Gamer.get(g.getPlayer()).giveCredits(10);
@@ -136,10 +134,6 @@ public class Scheduler extends TimerTask {
 						}.runTask(SurvivalGames.getInstance());
 					}
 				}
-			}
-			
-			if (seconds % 5 == 0) {
-				GamerSG.hideSpectators();
 			}
 			
 			if (deathmatch == false && (Bukkit.getOnlinePlayers().length <= 5 || seconds == compass)) {

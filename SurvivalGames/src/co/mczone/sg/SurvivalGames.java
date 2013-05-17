@@ -15,11 +15,12 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import co.mczone.api.players.Gamer;
+import co.mczone.api.players.GamerRunnable;
 import co.mczone.api.server.GameType;
 import co.mczone.api.server.Hive;
 import co.mczone.sg.api.ConfigAPI;
@@ -28,6 +29,7 @@ import co.mczone.sg.api.Map;
 import co.mczone.sg.cmds.CmdBase;
 import co.mczone.sg.events.ConnectEvents;
 import co.mczone.sg.events.Events;
+import co.mczone.util.Chat;
 
 public class SurvivalGames extends JavaPlugin {
 	@Getter static SurvivalGames instance;
@@ -50,6 +52,7 @@ public class SurvivalGames extends JavaPlugin {
 		
 		timer.scheduleAtFixedRate(new Scheduler(), 0, 1000);
 
+		/*
 		new ShopItemStack("steak", "Cooked Steak", new ItemStack(Material.COOKED_BEEF), 15);
 		new ShopItemStack("apples", "Golden Apple", new ItemStack(Material.GOLDEN_APPLE), 30);
 		new ShopItemStack("iron", "Iron Ingot", new ItemStack(Material.IRON_INGOT), 300);
@@ -59,6 +62,7 @@ public class SurvivalGames extends JavaPlugin {
 		new ShopAbility("invisible", "Invisibility (15 sec)", new PotionEffect(PotionEffectType.INVISIBILITY, 20 * 15, 1), 100);
 		new ShopEnchantment("knockback", "Knockback I", Enchantment.KNOCKBACK, 1, 25);
 		new ShopEnchantment("sharpness", "Sharpness I", Enchantment.DAMAGE_ALL, 1, 75);
+		*/
 		
 		Hive.getInstance().setType(GameType.SURVIVAL_GAMES);
 		
@@ -174,6 +178,38 @@ public class SurvivalGames extends JavaPlugin {
 				}
 			}
 		}.runTask(SurvivalGames.getInstance());
+		
+		Gamer.addFunction("give-book", new GamerRunnable() {
+			@Getter @Setter boolean sync = true;
+			
+			@Override
+			public void run() {
+				ItemStack book = new ItemStack(Material.WRITTEN_BOOK, 1);
+		        BookMeta data = (BookMeta) book.getItemMeta();
+		        data.setAuthor(Chat.colors("&7&oMC Zone"));
+		        data.setTitle(Chat.colors("&2&lSurvival Games"));
+		        String page1 = "     ";
+		        String page2 = "";
+		        
+		        // Page 1
+		        page1 += "&3&lSurvival Games\n";
+		        page1 += "    &6&oHow To Guide\n";
+		        page1 += "\n";
+		        page1 += "&0The Survival Games is a minigame based on the popular book series, The Hunger Games. Fight to the death against 23 other players in a map filled with traps, puzzles, and items. Commands are on the next page.";
+		        page1 += "\n\n&7www.nxmc.org";
+		        // Page 2
+		        page2 += "       &4&oCommands\n";
+		        page2 += "\n";
+		        page2 += "&6/leave &0Spectate game\n";
+		        page2 += "&6/help &0Show commands\n";
+		        page2 += "&6/vote &0Vote for a map\n";
+		        page2 += "&6/spawn &0TP to the lobby";
+		        
+		        data.setPages(Chat.colors(page1), Chat.colors(page2));
+		        book.setItemMeta(data);
+		        gamer.giveItem(book);
+			}
+		});
 	}
 	
 	public static World getMainWorld() {

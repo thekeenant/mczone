@@ -14,7 +14,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
-import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -25,7 +24,7 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import co.mczone.api.players.Gamer;
 import co.mczone.events.custom.PlayerDamageEvent;
 import co.mczone.sg.Scheduler;
-import co.mczone.sg.api.GamerSG;
+import co.mczone.sg.api.Game;
 import co.mczone.sg.api.State;
 
 public class Events implements Listener {
@@ -33,23 +32,23 @@ public class Events implements Listener {
 		
 	@EventHandler
 	public void onPlayerDamage(PlayerDamageEvent event) {
-		GamerSG g = GamerSG.get(event.getTarget().getName());
-		if (g.isSpectator())
+		Gamer g = Gamer.get(event.getTarget().getName());
+		if (g.isInvisible())
 			event.setCancelled(true);
 	}
 	
 	@EventHandler
 	public void onPlayerChat(AsyncPlayerChatEvent event) {
-		GamerSG g = GamerSG.get(event.getPlayer().getName());
-		if (g.isSpectator()) {
+		Gamer g = Gamer.get(event.getPlayer().getName());
+		if (g.isInvisible()) {
 			event.getRecipients().clear();
-			for (GamerSG t : GamerSG.getList())
-				if (t.isSpectator())
+			for (Gamer t : Gamer.getList())
+				if (t.isInvisible())
 					event.getRecipients().add(t.getPlayer());
 		}
 		else {
 			event.getRecipients().clear();
-			for (GamerSG t : GamerSG.getTributes())
+			for (Gamer t : Game.getTributes())
 				event.getRecipients().add(t.getPlayer());
 		}
 	}
@@ -62,21 +61,21 @@ public class Events implements Listener {
 
 	@EventHandler
 	public void onDropItem(PlayerDropItemEvent event) {
-		if (Scheduler.getState() != State.PVP || GamerSG.get(event.getPlayer().getName()).isSpectator())
+		if (Scheduler.getState() != State.PVP || Gamer.get(event.getPlayer().getName()).isInvisible())
 			event.setCancelled(true);
 	}
 	
 	@EventHandler
 	public void onPickupItem(PlayerPickupItemEvent event) {
-		if (Scheduler.getState() != State.PVP || GamerSG.get(event.getPlayer().getName()).isSpectator())
+		if (Scheduler.getState() != State.PVP || Gamer.get(event.getPlayer().getName()).isInvisible())
 			event.setCancelled(true);
 	}
 	
 	@EventHandler
 	public void onSpectatorInteract(PlayerInteractEvent event) {
 		Player p = event.getPlayer();
-		GamerSG g = GamerSG.get(p.getName());
-		if (!g.isSpectator())
+		Gamer g = Gamer.get(p.getName());
+		if (!g.isInvisible())
 			return;
 		
 		if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.PHYSICAL) {
@@ -84,22 +83,22 @@ public class Events implements Listener {
 			return;
 		}
 		
-		int cur = g.getSpectating();
+		int cur = (Integer) g.getVariable("spectating");
 		int next = cur + 1;
-		if (next + 1 >= GamerSG.getTributes().size())
+		if (next + 1 >= Game.getTributes().size())
 			next = 0;
-		g.setSpectating(next);
-		Player t = GamerSG.getTributes().get(next).getPlayer();
-		g.getPlayer().teleport(t);
-		Chat.player(g.getPlayer(), "&2[SG] &eCurrently spectating " + Players.getPrefix(t.getName()) + t.getName());
+		g.setVariable("spectating", next);
+		Gamer t = Game.getTributes().get(next);
+		g.getPlayer().teleport(t.getPlayer().getLocation());
+		Chat.player(g.getPlayer(), "&2[SG] &eCurrently spectating " + g.getPrefix() + g.getName());
 		event.setCancelled(true);
 	}
 	
 	@EventHandler
 	public void onEntityDamage(EntityDamageEvent event) {
 		if (event.getEntity() instanceof Player) {
-			GamerSG g = GamerSG.get(((Player) event.getEntity()).getName());
-			if (g.isSpectator())
+			Gamer g = Gamer.get(((Player) event.getEntity()).getName());
+			if (g.isInvisible())
 				event.setCancelled(true);
 		}
 		if (Scheduler.getState() != State.PVP)
@@ -107,17 +106,12 @@ public class Events implements Listener {
 	}
 	
 	@EventHandler
-	public void onEntityTeleport(EntityTeleportEvent event) {
-		GamerSG.hideSpectators();
-	}
-	
-	@EventHandler
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
 		if (!(event.getDamager() instanceof Player))
 			return;
 		
-		GamerSG g = GamerSG.get(((Player) event.getDamager()).getName());
-		if (g.isSpectator())
+		Gamer g = Gamer.get(((Player) event.getDamager()).getName());
+		if (g.isInvisible())
 			event.setCancelled(true);
 	}
 	
@@ -126,26 +120,28 @@ public class Events implements Listener {
 		if (Scheduler.getState() != State.PVP)
 			event.setCancelled(true);
 		if (event.getTarget() instanceof Player) {
-			GamerSG g = GamerSG.get(((Player) event.getTarget()).getName());
+			Gamer g = Gamer.get(((Player) event.getTarget()).getName());
 			if (g == null) {
 				((Player) event.getTarget()).kickPlayer("ERROR");
 				return;
 			}
-			if (g.isSpectator())
+			if (g.isInvisible())
 				event.setCancelled(true);
 		}
 	}
 	
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent event) {
-		GamerSG g = GamerSG.get(event.getPlayer().getName());
-		if (Scheduler.getState() == State.WAITING && !g.isMoveable()) {
-			Location to = g.getSpawnBlock();
+		Gamer g = Gamer.get(event.getPlayer().getName());
+		if (Scheduler.getState() == State.WAITING && !g.getBoolean("moveable")) {
+			Location to = g.getLocation("spawn-block");
+			if (to == null)
+				return;
 			to.setYaw(event.getPlayer().getLocation().getYaw());
 			to.setPitch(event.getPlayer().getLocation().getPitch());
-			if (g.getSpawnBlock().getBlock().getX() != event.getTo().getBlock().getX())
+			if (to.getBlock().getX() != event.getTo().getBlock().getX())
 				event.getPlayer().teleport(to);
-			else if (g.getSpawnBlock().getBlock().getZ() != event.getTo().getBlock().getZ())
+			else if (to.getBlock().getZ() != event.getTo().getBlock().getZ())
 				event.getPlayer().teleport(to);
 		}
 	}

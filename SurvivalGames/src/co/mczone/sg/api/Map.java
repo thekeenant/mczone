@@ -3,7 +3,9 @@ package co.mczone.sg.api;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -12,8 +14,10 @@ import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import co.mczone.api.players.Gamer;
 import co.mczone.sg.SurvivalGames;
 import co.mczone.sg.util.Files;
 import co.mczone.util.Chat;
@@ -33,12 +37,17 @@ public class Map {
 	@Getter @Setter List<String> votes = new ArrayList<String>();
 	@Getter YamlConfiguration config;
 	
+	@Getter HashMap<Location, Player> places = new HashMap<Location, Player>();
+	
 	public Map(String title, String worldName, List<Location> spawns, Location specSpawn) {
         list.add(this);
 		this.id = list.size();
 		this.title = title;
 		this.worldName = worldName;
 		this.spawns = spawns;
+		for (Location l : spawns)
+			places.put(l, null);
+		
 		this.specSpawn = specSpawn;
         File file = new File(SurvivalGames.getInstance().getDataFolder() + File.separator + "maps", worldName + ".yml");
         if (!file.exists()) {
@@ -61,16 +70,15 @@ public class Map {
 				for (Location l : getSpawns())
 					l.setWorld(getWorld());
 				getSpecSpawn().setWorld(getWorld());
-    			for (GamerSG g : GamerSG.getTributes()) {
-    				g.setSpawnBlock(getNextSpawn());
-    				g.getPlayer().teleport(g.getSpawnBlock());
-    				g.setSpectator(false);
-    				g.setMoveable(false);
+    			for (Gamer g : Game.getTributes()) {
+    				places.put(getNextSpawn(), g.getPlayer());
+    				g.setVariable("spawn-block", getNextSpawn());
+    				g.getPlayer().teleport((Location) g.getVariable("spawn-block"));
+    				g.setInvisible(false);
+    				g.setVariable("moveable", false);
+    				g.getPlayer().setHealth(20);
     				g.clearInventory();
-    				g.heal();
     			}
-    			Map.nextSpawn = 0;
-    			GamerSG.hideSpectators();
 			}
 		}.runTask(SurvivalGames.getInstance());
 	}
@@ -128,14 +136,14 @@ public class Map {
         Chat.log("Loaded a total of " + Map.getList().size() + " maps!");
     }
 	
-	public static int nextSpawn = 0;
 	public Location getNextSpawn() {
-		nextSpawn +=1;
-		if (nextSpawn - 1 > spawns.size() - 1) {
-			Chat.log("Error! Wrong spawn count!");
-			return spawns.get(0);
+		Location l = null;
+		for (Entry<Location, Player> e : Map.getCurrent().getPlaces().entrySet()) {
+			if (e.getValue() == null) {
+				l = e.getKey();
+			}
 		}
-		return spawns.get(nextSpawn - 1);
+		return l;
 	}
 	
 	public World getWorld() {

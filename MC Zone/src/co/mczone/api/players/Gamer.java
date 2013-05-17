@@ -196,6 +196,30 @@ public class Gamer {
 		settings.remove(string);
 	}
 	
+	public boolean getBoolean(String key) {
+		if (!settings.containsKey(key))
+			return false;
+		return (boolean) settings.get(key);
+	}
+	
+	public String getString(String key) {
+		if (!settings.containsKey(key))
+			return null;
+		return (String) settings.get(key);
+	}
+
+	public int getInt(String key) {
+		if (!settings.containsKey(key))
+			return 0;
+		return (int) settings.get(key);
+	}
+
+	public Location getLocation(String key) {
+		if (!settings.containsKey(key))
+			return null;
+		return (Location) settings.get(key);
+	}
+	
 	public void giveItem(ItemStack i) {
 		giveItem(i, true);
 	}
@@ -243,7 +267,11 @@ public class Gamer {
 	public void run(String function) {
 		GamerRunnable r = functions.get(function);
 		r.setGamer(this);
-		r.runTaskAsynchronously(MCZone.getInstance());
+		
+		if (r.isSync())
+			r.runTask(MCZone.getInstance());
+		else
+			r.runTaskAsynchronously(MCZone.getInstance());
 	}
 	
 	public static void addFunction(String key, GamerRunnable function) {

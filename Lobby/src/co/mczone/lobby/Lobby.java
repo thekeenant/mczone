@@ -29,6 +29,8 @@ import co.mczone.api.ConfigAPI;
 import co.mczone.api.server.GameType;
 import co.mczone.api.server.Hive;
 import co.mczone.lobby.api.*;
+import co.mczone.lobby.cmds.HatCmd;
+import co.mczone.lobby.cmds.SpawnCmd;
 import co.mczone.lobby.events.*;
 import co.mczone.lobby.util.Random;
 import co.mczone.util.Chat;
@@ -110,6 +112,7 @@ public class Lobby extends JavaPlugin implements Listener {
 		}.runTaskTimerAsynchronously(this, 0, 20);
 
         getCommand("spawn").setExecutor(new SpawnCmd());
+        getCommand("hat").setExecutor(new HatCmd());
         
         // Compass Item!
         ItemStack c = new ItemStack(Material.COMPASS);

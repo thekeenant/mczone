@@ -11,7 +11,8 @@ public enum RankType {
 	MOD(5, "Mod", "&c[Mod]&f "),
 	OFFICER(6, "Officer", "&1[Officer]&f "),
 	ADMIN(7, "Admin", "&4[Admin]&f "),
-	OWNER(8, "Owner", "&2[Owner]&f ");
+	OWNER(8, "Owner", "&2[Owner]&f "),
+	CONSOLE(500, "Console", "&4[Console]&f ");
 	
 	@Getter int level;
 	@Getter String title;

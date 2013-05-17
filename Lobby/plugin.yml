@@ -2,10 +2,12 @@ name: Lobby
 version: 1.0
 startup: startup
 author: funkystudios
-depend: [Hive]
+depend: [MC Zone]
 main: co.mczone.lobby.Lobby
 description: >
              MC Zone Lobby
 commands:
   spawn:
     description: TP to spawn
+  hat:
+    description: Set your hat!

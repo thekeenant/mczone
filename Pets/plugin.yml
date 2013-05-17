@@ -2,7 +2,7 @@ name: Pets
 version: 1.0
 author: funkystudios
 main: co.mczone.pets.Pets
-depend: [MCZone]
+depend: [MC Zone]
 description: >
              MCZone Pets Plugin
 commands:

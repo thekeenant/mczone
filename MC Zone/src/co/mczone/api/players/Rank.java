@@ -18,7 +18,9 @@ public class Rank {
 	
 	public static Rank getRank(String name) {
 		if (name.equals("CONSOLE"))
-			return new Rank(RankType.ADMIN);
+			return new Rank(RankType.CONSOLE);
+		if (!ranks.containsKey(name))
+			return new Rank(RankType.USER);
 		
 		return ranks.get(name);
 	}

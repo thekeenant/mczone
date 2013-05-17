@@ -9,7 +9,7 @@ import co.mczone.api.players.Rank;
 import co.mczone.api.players.RankType;
 import co.mczone.api.server.Hive;
 
-public class RankSchedule extends BukkitRunnable {	
+public class RankSchedule extends BukkitRunnable {
 	@Override
 	public void run() {
 		ResultSet r = Hive.getInstance().getDatabase().query("SELECT username, subscription, subscription_end, subscription_cancelled FROM players WHERE subscription IS NOT NULL");

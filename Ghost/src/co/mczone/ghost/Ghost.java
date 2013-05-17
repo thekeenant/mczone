@@ -110,4 +110,10 @@ public class Ghost extends JavaPlugin {
 			}
 		});
 	}
+	
+	public void onDisable() {
+		Chat.log("Cancelling arena schedules...");
+		for (Arena a : Arena.getList())
+			a.getSchedule().cancel();
+	}
 }

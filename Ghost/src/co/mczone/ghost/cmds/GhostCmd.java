@@ -13,6 +13,8 @@ public class GhostCmd extends BaseCommand implements CommandExecutor,Permissible
     	this.getSubCommands().put("edit", new GhostEditCmd());
     	this.getSubCommands().put("save", new GhostSaveCmd());
     	this.getSubCommands().put("set", new GhostSetCmd());
+    	
+    	this.setCarryPermissions(true);
     }
 
 	@Override

@@ -1,18 +1,20 @@
 package co.mczone.parkour.cmds;
 
+import lombok.Getter;
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import co.mczone.api.commands.SubCommand;
 import co.mczone.parkour.*;
 import co.mczone.util.Chat;
 
 public class ParkourStartCmd implements SubCommand {
+	@Getter String about = "Set parkour start";
+	
     public boolean execute(CommandSender sender, String[] args) {
-    	if (!CmdBase.isPlayer(sender))
-    		return true;
-    	
     	if (args.length != 1) {
     		Chat.player(sender, "&cPlease include the name.");
     		return true;

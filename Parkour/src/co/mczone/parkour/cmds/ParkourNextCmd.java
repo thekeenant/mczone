@@ -1,15 +1,17 @@
 package co.mczone.parkour.cmds;
 
+import lombok.Getter;
+
 import org.bukkit.command.CommandSender;
 
+import co.mczone.api.commands.SubCommand;
 import co.mczone.parkour.*;
 import co.mczone.util.Chat;
 
 public class ParkourNextCmd implements SubCommand {
+	@Getter String about = "Set parkour series";
+	
     public boolean execute(CommandSender sender, String[] args) {
-    	if (!CmdBase.isPlayer(sender))
-    		return true;
-    	
     	if (args.length != 2) {
     		Chat.player(sender, "&cPlease include the name and the next parkour course.");
     		return true;

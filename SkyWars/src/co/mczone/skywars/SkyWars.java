@@ -24,7 +24,7 @@ import co.mczone.api.server.Hive;
 import co.mczone.skywars.api.Arena;
 import co.mczone.skywars.api.Kit;
 import co.mczone.skywars.api.Lobby;
-import co.mczone.skywars.cmds.CmdBase;
+import co.mczone.skywars.cmds.SkyWarsCmd;
 import co.mczone.skywars.events.*;
 import co.mczone.util.Chat;
 import co.mczone.util.ItemUtil;
@@ -50,7 +50,7 @@ public class SkyWars extends JavaPlugin {
 		new SignEvents();
 		new GameEvents();
 		
-		new CmdBase();
+		Hive.getInstance().registerCommand(this, "skywars", new SkyWarsCmd());
 		
 		for (String name : kitConf.getKeys(false)) {
 			ConfigurationSection kit = kitConf.getConfigurationSection(name);

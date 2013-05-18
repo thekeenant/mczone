@@ -19,9 +19,10 @@ import co.mczone.util.Chat;
 public class BaseCommand implements CommandExecutor {
 	@Getter	HashMap<String, SubCommand> subCommands = new HashMap<String, SubCommand>();
 	@Getter	@Setter String title = "";
+	@Getter @Setter boolean carryPermissions = false;
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if (sender instanceof Player) {
+		if (sender instanceof Player && carryPermissions) {
 			if (this instanceof Permissible) {
 				Permissible perm = (Permissible) this;
 				if (!perm.hasPermission(Gamer.get(sender.getName()))) {
@@ -36,13 +37,13 @@ public class BaseCommand implements CommandExecutor {
 			for (Entry<String, SubCommand> e : subCommands.entrySet()) {
 				String s = e.getKey();
 				SubCommand c = e.getValue();
-				if (c instanceof Permissible) {
+				if (c instanceof Permissible && !carryPermissions) {
 					Permissible perm = (Permissible) c;
 					if (!perm.hasPermission(Gamer.get(sender))) {
 						continue;
 					}
 				}
-				Chat.player(sender, "&6/ghost " + s + "&f: " + c.getAbout());
+				Chat.player(sender, "&6/" + label + " " + s + "&f: " + c.getAbout());
 			}
 			return true;
 		} 
@@ -53,7 +54,7 @@ public class BaseCommand implements CommandExecutor {
 					sub = e.getValue();
 			}
 			if (sub != null) {
-				if (sub instanceof Permissible) {
+				if (sub instanceof Permissible && !carryPermissions) {
 					Permissible perm = (Permissible) sub;
 					if (!perm.hasPermission(Gamer.get(sender))) {
 						Chat.player(sender, "&cYou don't have permission to do that.");

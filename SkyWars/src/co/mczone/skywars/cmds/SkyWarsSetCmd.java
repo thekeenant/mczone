@@ -8,8 +8,8 @@ import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 
 import co.mczone.api.ConfigAPI;
+import co.mczone.api.commands.SubCommand;
 import co.mczone.api.players.Gamer;
-import co.mczone.cmds.SubCommand;
 import co.mczone.skywars.SkyWars;
 import co.mczone.skywars.api.Arena;
 import co.mczone.util.Chat;

@@ -20,6 +20,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import co.mczone.api.ConfigAPI;
 import co.mczone.api.players.Gamer;
+import co.mczone.api.server.Hive;
 import co.mczone.parkour.cmds.*;
 import co.mczone.util.Chat;
 
@@ -32,9 +33,10 @@ public class Parkour extends JavaPlugin implements Listener {
 		Bukkit.getPluginManager().registerEvents(this, this);
 		instance = this;
 		configAPI = new ConfigAPI(this);
-		new CmdBase();
 		
 		loadCourses();
+		
+		Hive.getInstance().registerCommand(this, "parkour", new ParkourCmd());
 	}
 	
 	public void loadCourses() {

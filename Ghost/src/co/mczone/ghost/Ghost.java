@@ -24,7 +24,8 @@ import co.mczone.api.server.Hive;
 import co.mczone.ghost.api.Kit;
 import co.mczone.ghost.api.Lobby;
 import co.mczone.ghost.api.Arena;
-import co.mczone.ghost.cmds.CmdBase;
+import co.mczone.ghost.cmds.ArenasCmd;
+import co.mczone.ghost.cmds.GhostCmd;
 import co.mczone.ghost.events.*;
 import co.mczone.util.Chat;
 import co.mczone.util.ItemUtil;
@@ -49,8 +50,9 @@ public class Ghost extends JavaPlugin {
 		new ConnectEvents();
 		new SignEvents();
 		new GameEvents();
-		
-		new CmdBase();
+
+    	Hive.getInstance().registerCommand(Ghost.getInstance(), "arenas", new ArenasCmd());
+    	Hive.getInstance().registerCommand(Ghost.getInstance(), "ghost", new GhostCmd());
 		
 		for (String name : kitConf.getKeys(false)) {
 			ConfigurationSection kit = kitConf.getConfigurationSection(name);

@@ -266,7 +266,11 @@ public class Arena {
 		Gamer.get(p).clearVariable("inMatch");
 		Gamer.get(p).setFlying(false);
 		Gamer.get(p).setAllowFlight(false);
-		scoreboard.getPlayerTeam(p).removePlayer(p);
+		
+		Scoreboard emptyBoard = Bukkit.getScoreboardManager().getNewScoreboard();
+		p.setScoreboard(emptyBoard);
+		
+		getTeam(p).removePlayer(p);
 		sendMessage("  &7&o - " + p.getName() + " has left the arena");
 	}
 

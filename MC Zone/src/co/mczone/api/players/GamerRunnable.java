@@ -14,4 +14,9 @@ public class GamerRunnable extends BukkitRunnable {
 		
 	}
 
+	public GamerRunnable newInstance() {
+		GamerRunnable r= new GamerRunnable();
+		r.setSync(sync);
+		return r;
+	}
 }

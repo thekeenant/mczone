@@ -83,7 +83,7 @@ public class Kit implements Permissible {
 			if (Ghost.getConf().getStringList("vip-kits").contains(name.toLowerCase()))
 				return true;
 		}
-		else if (purchases.contains(this))
+		else if (purchases != null && purchases.contains(this))
 			return true;
 		else {
 			if (name.equals("archer"))

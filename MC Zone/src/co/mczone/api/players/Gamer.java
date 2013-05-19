@@ -199,7 +199,7 @@ public class Gamer {
 	public boolean getBoolean(String key) {
 		if (!settings.containsKey(key))
 			return false;
-		return (boolean) settings.get(key);
+		return (Boolean) settings.get(key);
 	}
 	
 	public String getString(String key) {
@@ -211,7 +211,7 @@ public class Gamer {
 	public int getInt(String key) {
 		if (!settings.containsKey(key))
 			return 0;
-		return (int) settings.get(key);
+		return (Integer) settings.get(key);
 	}
 
 	public Location getLocation(String key) {

@@ -287,7 +287,7 @@ public class Gamer {
 	}
 	
 	public void run(String function) {
-		GamerRunnable r = functions.get(function);
+		GamerRunnable r = functions.get(function).newInstance();
 		r.setGamer(this);
 		
 		if (r.isSync())

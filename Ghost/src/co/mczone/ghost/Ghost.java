@@ -27,6 +27,10 @@ import co.mczone.ghost.api.Arena;
 import co.mczone.ghost.api.Map;
 import co.mczone.ghost.cmds.ArenasCmd;
 import co.mczone.ghost.cmds.GhostCmd;
+<<<<<<< HEAD
+=======
+import co.mczone.ghost.cmds.HelpCmd;
+>>>>>>> 785aa7363758cf9c2e05dc7743fee6556873ff64
 import co.mczone.ghost.cmds.LeaveCmd;
 import co.mczone.ghost.events.*;
 import co.mczone.util.Chat;
@@ -54,6 +58,8 @@ public class Ghost extends JavaPlugin {
 		new GameEvents();
 
     	Hive.getInstance().registerCommand(Ghost.getInstance(), "arenas", new ArenasCmd());
+    	Hive.getInstance().registerCommand(Ghost.getInstance(), "leave", new LeaveCmd());
+    	Hive.getInstance().registerCommand(Ghost.getInstance(), "help", new HelpCmd());
     	Hive.getInstance().registerCommand(Ghost.getInstance(), "ghost", new GhostCmd());
     	Hive.getInstance().registerCommand(Ghost.getInstance(), "leave", new LeaveCmd());
 		

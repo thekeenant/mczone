@@ -273,6 +273,7 @@ public class Arena {
 
 	public void leave(Player p) {
 		clearScore(p.getName());
+<<<<<<< HEAD
 		Gamer g = Gamer.get(p);
 		g.clearVariable("inMatch");
 		g.clearVariable("team");
@@ -280,6 +281,17 @@ public class Arena {
 		g.setAllowFlight(false);
 		scoreboard.getPlayerTeam(p).removePlayer(p);
 		g.clearScoreboard();
+=======
+		Gamer.get(p).clearVariable("inMatch");
+		Gamer.get(p).setFlying(false);
+		Gamer.get(p).setAllowFlight(false);
+		
+		Scoreboard emptyBoard = Bukkit.getScoreboardManager().getNewScoreboard();
+		p.setScoreboard(emptyBoard);
+		
+		getTeam(p).removePlayer(p);
+		sendMessage("  &7&o - " + p.getName() + " has left the arena");
+>>>>>>> 785aa7363758cf9c2e05dc7743fee6556873ff64
 	}
 
 	public void updateSign() {

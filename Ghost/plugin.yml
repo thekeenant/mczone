@@ -13,3 +13,9 @@ commands:
   ghost:
     description: Ghost administration
     default: true
+  leave:
+    description: Ghost leave command
+    default: true
+  help:
+    description: Ghost help command
+    default: true

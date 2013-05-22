@@ -5,6 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -35,6 +36,20 @@ public class GeneralEvents implements Listener {
 	}
 	
 	@EventHandler
+	public void onEntityDamage(EntityDamageEvent event) {
+		if (event.getEntity() instanceof Player) {
+			event.setCancelled(true);
+			Gamer g = Gamer.get((Player) event.getEntity());
+			if (g.getVariable("arena") == null)
+				return;
+			
+			Arena a = (Arena) g.getVariable("arena");
+			if (a.getState() == ArenaState.STARTED)
+				event.setCancelled(false);
+		}
+	}
+	
+	@EventHandler
 	public void onPlayerChat(AsyncPlayerChatEvent event) {
 		Gamer g = Gamer.get(event.getPlayer());
 		if (g.isInvisible()) {
@@ -50,11 +65,12 @@ public class GeneralEvents implements Listener {
 			return;
 		
 		Gamer g = Gamer.get(event.getPlayer());
-		event.setCancelled(true);
 		
-		if (g.getVariable("inMatch") != null) {
-			event.setCancelled(false);
-			return;
+		event.setCancelled(true);
+		if (g.getVariable("arena") != null) {
+			Arena a = (Arena) g.getVariable("arena");
+			if (a.getState() == ArenaState.STARTED)
+				event.setCancelled(false);
 		}
 		
 		if (g.getVariable("edit") != null) {

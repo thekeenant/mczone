@@ -49,7 +49,7 @@ public class GhostSetCmd implements SubCommand,Permissible {
 				return true;
 			}
 			
-			base = "arenas." + a.getWorldName() + ".";
+			base = "arenas." + a.getCurrent().getWorldName() + ".";
 			Block b = g.getPlayer().getTargetBlock(null, 5);
 			if (b == null || b.getType() != Material.WALL_SIGN) {
 				Chat.player(sender, "&cYou must look at a sign to set the sign variable");
@@ -68,21 +68,21 @@ public class GhostSetCmd implements SubCommand,Permissible {
 				return true;
 			}
 			
-			base = "arenas." + a.getWorldName() + ".";
+			base = "maps." + a.getCurrent().getWorldName() + ".";
 			if (type.contains("red")) {
 				Location l = g.getPlayer().getLocation();
 				config.set(base + "red", l);
-				a.setBlueSpawn(l);
+				a.getCurrent().setBlueSpawn(l);
 			}
 			else if (type.contains("spawn")) {
 				Location l = g.getPlayer().getLocation();
 				config.set(base + "spawn", l);
-				a.setSpawn(l);
+				a.getCurrent().setSpawn(l);
 			}
 			else if (type.contains("blue")) {
 				Location l = g.getPlayer().getLocation();
 				config.set(base + "blue", l);
-				a.setBlueSpawn(l);
+				a.getCurrent().setBlueSpawn(l);
 			}
 			else {
 				Chat.player(sender, "&cUnknown setting, " + args[0]);
@@ -91,8 +91,7 @@ public class GhostSetCmd implements SubCommand,Permissible {
 		}
 		
 		if (a != null) {
-			Chat.player(sender, "&aChanged setting " + type + " in " + a.getTitle());
-			Ghost.getConf().set("arenas." + a.getWorldName(), a.getConfig());
+			Chat.player(sender, "&aChanged setting " + type + " in " + a.getCurrent().getTitle());
 		}
 		else {
 			Chat.player(sender, "&aChanged setting " + type);

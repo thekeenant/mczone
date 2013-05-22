@@ -9,7 +9,7 @@ import co.mczone.api.players.RankType;
 
 public class GhostCmd extends BaseCommand implements CommandExecutor,Permissible {
     public GhostCmd() {
-    	this.setTitle("&7&m&l -------- &bMC Zone Ghost Commands &7&m&l--------");
+    	this.setTitle("&bMC Zone Ghost Commands");
     	this.getSubCommands().put("edit", new GhostEditCmd());
     	this.getSubCommands().put("save", new GhostSaveCmd());
     	this.getSubCommands().put("set", new GhostSetCmd());

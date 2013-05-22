@@ -23,3 +23,6 @@ commands:
   list:
     description: List online players
     usage: /list
+  hive:
+    description: MC Zone admin command
+    usage: /hive <args>

@@ -1,0 +1,35 @@
+arenas:
+  ghost1:
+    maps:
+    - quartz
+    sign:
+      world: lobby
+      x: 205
+      y: 8
+      z: -27
+maps:
+  quartz:
+    id: 1
+    world: arenas_a
+    title: Quartz Mine
+    red:
+      world: arenas_a
+      x: 1985.5650072215917
+      y: 92.0
+      z: -57.39043052887031
+      yaw: 278.7213439941406
+      pitch: -0.6388314366340637
+    blue:
+      world: arenas_a
+      x: 1985.508789898367
+      y: 92.0
+      z: 24.46254376164287
+      yaw: 261.9508972167969
+      pitch: 3.444003105163574
+    spawn:
+      world: arenas_a
+      x: 2019.3606678397944
+      y: 101.0
+      z: -16.39910285435503
+      yaw: 90.63886260986328
+      pitch: 1.2665148973464966

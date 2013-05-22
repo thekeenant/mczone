@@ -24,7 +24,7 @@ public class ArenasCmd implements CommandExecutor {
 				color = match.getState() == ArenaState.WAITING ? ChatColor.GREEN : ChatColor.RED;
 			
 			
-			String t = color + match.getTitle() + "&f, ";
+			String t = color + match.getCurrent().getTitle() + "&f, ";
 			list += t;
 		}
 		

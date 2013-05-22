@@ -12,7 +12,6 @@ import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -36,10 +35,10 @@ public class Arena {
 	@Getter static List<Arena> list = new ArrayList<Arena>();
 	
 	@Getter int id;
-	@Getter @Setter String worldName;
-	@Getter @Setter String title;
+	
 	@Getter @Setter Block signBlock;
 	Sign sign;
+	
 	
 	@Getter Scoreboard scoreboard;
 	@Getter Objective sidebar;
@@ -48,23 +47,18 @@ public class Arena {
 	
 	@Getter ArenaState state;
 	@Getter ArenaSchedule schedule;
-
-	@Getter @Setter Location spawn;
-	@Getter @Setter Location redSpawn;
-	@Getter @Setter Location blueSpawn;
 	
-	@Getter ConfigurationSection config;
+	//@Getter ConfigurationSection config;
 	
 	@Getter @Setter boolean starting;
 	
-	public Arena(ConfigurationSection config, int id, String title, String world, Block sign, Location spawn, Location redSpawn, Location blueSpawn) {
-		this.config = config;
+	@Getter int index;
+	@Getter List<Map> maps;
+	
+	public Arena(int id, Block sign, List<Map> maps) {
 		this.id = id;
-		this.title = title;
-		this.worldName = world;
-		this.spawn = spawn;
-		this.redSpawn = redSpawn;
-		this.blueSpawn = blueSpawn;
+		this.maps = maps;
+		this.index = 0;
 		this.signBlock = sign;
 		
 		this.state = ArenaState.WAITING;
@@ -75,6 +69,15 @@ public class Arena {
 		loadWorld();
 		
 		list.add(this);
+	}
+	
+	public void next() {
+		int max = maps.size() - 1;
+		int next = index + 1;
+		if (next > max)
+			next = 0;
+		
+		index = next;
 	}
 	
 	public void startGame() {
@@ -103,34 +106,39 @@ public class Arena {
 		int red = getRedPlayers().size();
 		
 		if (red == 0 || blue > red)
-        	Chat.server("  &4\u00BB &eBlue Team has won in &bARENA " + id + "&e on &b" + getTitle().toUpperCase() + " &4\u00AB");
+        	Chat.server("  &4\u00BB &eBlue Team has won in &bARENA " + id + "&e on &b" + getCurrent().getTitle().toUpperCase() + " &4\u00AB");
 		else if (blue == 0 || red > blue)
-        	Chat.server("  &4\u00BB &eRed Team has won in &bARENA " + id + "&e on &b" + getTitle().toUpperCase() + " &4\u00AB");		
+        	Chat.server("  &4\u00BB &eRed Team has won in &bARENA " + id + "&e on &b" + getCurrent().getTitle().toUpperCase() + " &4\u00AB");		
 		
 		scoreboard.clearSlot(DisplaySlot.SIDEBAR);
 		setState(ArenaState.LOADING);
 		schedule.setTime(0);
 		schedule.resetCountdown();
 		
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				for (Player p : getPlayers()) {
-					Gamer g = Gamer.get(p);
-					g.clearVariable("inMatch");
-					p.teleport(Ghost.getLobby().getSpawn());
-					g.setInvisible(false);
-					g.removePotionEffects();
-					getTeam(p).removePlayer(p);
-					p.setHealth(20);
-					Kit.giveKit(p);
-					
-					g.setFlying(false);
-					g.setAllowFlight(false);
-				}
-				registerTeams();
-			}
-		}.runTask(Ghost.getInstance());
+		next();
+		
+		registerTeams();
+		
+		for (Player p : getPlayers()) {
+			Gamer g = Gamer.get(p);
+			p.teleport(getSpawn());
+			g.setInvisible(false);
+			g.removePotionEffects();
+			
+			g.clearScoreboard();
+			
+			p.setHealth(20);
+			Kit.giveKit(p);
+			
+			g.setFlying(false);
+			g.setAllowFlight(false);
+			
+			if (g.getVariable("team") == null)
+				join(p);
+			else
+				join(p, (String) g.getVariable("team"));
+		}
+		
 		
 		new BukkitRunnable() {
 			@Override
@@ -141,7 +149,7 @@ public class Arena {
 	}
 	
 	public void loadWorld() {
-		new WorldCreator(worldName).createWorld();
+		new WorldCreator(getCurrent().worldName).createWorld();
 		getWorld().setAutoSave(false);
 		setState(ArenaState.WAITING);
 	}
@@ -239,7 +247,7 @@ public class Arena {
 	}
 	
 	public World getWorld() {
-		return Bukkit.getWorld(worldName);
+		return Bukkit.getWorld(getCurrent().worldName);
 	}
 	
 	public TeamColor join(Player p) {
@@ -253,21 +261,25 @@ public class Arena {
 		else if (team.equals("blue"))
 			blue.addPlayer(p);
 		
-		Gamer.get(p).setVariable("arena", this);
+		Gamer g = Gamer.get(p);
+		g.setVariable("arena", this);
+		g.setVariable("team", team);
+	
 		
 		p.setScoreboard(scoreboard);
-		p.teleport(spawn);
-		sendMessage("  &7&o + " + p.getName() + " has joined the arena");
+		p.teleport(getCurrent().spawn);
 		return TeamColor.valueOf(team.toUpperCase());
 	}
 
 	public void leave(Player p) {
 		clearScore(p.getName());
-		Gamer.get(p).clearVariable("inMatch");
-		Gamer.get(p).setFlying(false);
-		Gamer.get(p).setAllowFlight(false);
+		Gamer g = Gamer.get(p);
+		g.clearVariable("inMatch");
+		g.clearVariable("team");
+		g.setFlying(false);
+		g.setAllowFlight(false);
 		scoreboard.getPlayerTeam(p).removePlayer(p);
-		sendMessage("  &7&o - " + p.getName() + " has left the arena");
+		g.clearScoreboard();
 	}
 
 	public void updateSign() {
@@ -277,7 +289,7 @@ public class Arena {
 		Sign sign = getSign();
 		sign.setLine(0, "[ARENA " + getId() + "]");
 		sign.setLine(1, Chat.colors("&o" + getState().getColor() + getState().name()));
-		sign.setLine(2, Chat.colors("&l" + getTitle().toUpperCase()));
+		sign.setLine(2, Chat.colors("&l" + getCurrent().getTitle().toUpperCase()));
 		sign.setLine(3, getPlayers().size() + "/" + Arena.MAX_PER_TEAM * 2 + " players");
 		sign.update(true);
 	}
@@ -303,7 +315,7 @@ public class Arena {
 
 	public static Arena get(String string) {
 		for (Arena a : getList())
-			if (a.getWorldName().equalsIgnoreCase(string))
+			if (a.getCurrent().getWorldName().equalsIgnoreCase(string))
 				return a;
 		return null;
 	}
@@ -314,5 +326,23 @@ public class Arena {
 			if (Gamer.get(p).isInvisible())
 				list.add(p);
 		return list;
+	}
+	
+	public Map getCurrent() {
+		return maps.get(index);
+	}
+	
+	// Maps
+	
+	public Location getRedSpawn() {
+		return getCurrent().getRedSpawn();
+	}
+	
+	public Location getBlueSpawn() {
+		return getCurrent().getBlueSpawn();
+	}
+	
+	public Location getSpawn() {
+		return getCurrent().getSpawn();
 	}
 }

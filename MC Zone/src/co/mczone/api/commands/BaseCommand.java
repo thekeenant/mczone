@@ -21,6 +21,10 @@ public class BaseCommand implements CommandExecutor {
 	@Getter	@Setter String title = "";
 	@Getter @Setter boolean carryPermissions = false;
 
+	public void addCommand(String name, SubCommand cmd) {
+		subCommands.put(name, cmd);
+	}
+	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (sender instanceof Player && carryPermissions) {
 			if (this instanceof Permissible) {
@@ -33,7 +37,7 @@ public class BaseCommand implements CommandExecutor {
 		}
 		
 		if (args.length == 0) {
-			Chat.player(sender, title);
+			Chat.player(sender, "&7&m&l -------- " + title + " &7&m&l--------");
 			for (Entry<String, SubCommand> e : subCommands.entrySet()) {
 				String s = e.getKey();
 				SubCommand c = e.getValue();

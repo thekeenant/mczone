@@ -84,10 +84,18 @@ public class ConfigAPI {
 			config.set(s, o);
 		}
 	}
-
+	
 	public Location getLocation(String s) {
 		String base = s + ".";
         String worldName = getString(base + "world");
+        if (worldName == null)
+        	return null;
+        
+        return getLocation(s, worldName);
+	}
+
+	public Location getLocation(String s, String worldName) {
+		String base = s + ".";
         double x = config.getDouble(base + "x");
 		double y = config.getDouble(base + "y");
 		double z = config.getDouble(base + "z");

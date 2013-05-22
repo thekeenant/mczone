@@ -24,8 +24,10 @@ import co.mczone.api.server.Hive;
 import co.mczone.ghost.api.Kit;
 import co.mczone.ghost.api.Lobby;
 import co.mczone.ghost.api.Arena;
+import co.mczone.ghost.api.Map;
 import co.mczone.ghost.cmds.ArenasCmd;
 import co.mczone.ghost.cmds.GhostCmd;
+import co.mczone.ghost.cmds.LeaveCmd;
 import co.mczone.ghost.events.*;
 import co.mczone.util.Chat;
 import co.mczone.util.ItemUtil;
@@ -53,6 +55,7 @@ public class Ghost extends JavaPlugin {
 
     	Hive.getInstance().registerCommand(Ghost.getInstance(), "arenas", new ArenasCmd());
     	Hive.getInstance().registerCommand(Ghost.getInstance(), "ghost", new GhostCmd());
+    	Hive.getInstance().registerCommand(Ghost.getInstance(), "leave", new LeaveCmd());
 		
 		for (String name : kitConf.getKeys(false)) {
 			ConfigurationSection kit = kitConf.getConfigurationSection(name);
@@ -73,12 +76,11 @@ public class Ghost extends JavaPlugin {
 		}
 		Chat.log("Loaded " + Kit.getList().size() + " kits");
 		
-		for (String worldName : conf.getConfigurationSection("arenas").getKeys(false)) {
-			String base = "arenas." + worldName + ".";
+		
+		for (String name : conf.getConfigurationSection("maps").getKeys(false)) {
+			String base = "maps." + name + ".";
 			String title = conf.getString(base + "title", "NULL TITLE");
-			int id = conf.getInt(base + "id", 0);
-			
-			Block sign = conf.getBlock(base + "sign");
+			String worldName = conf.getString(base + "world");
 			
 			new WorldCreator(worldName).createWorld();
 			
@@ -89,7 +91,21 @@ public class Ghost extends JavaPlugin {
 			Location red = conf.getLocation(base + "red");
 			Location blue = conf.getLocation(base + "blue");
 			
-			new Arena(conf.getConfigurationSection("arenas." + worldName), id, title, worldName, sign, spawn, red, blue);
+			new Map(name, title, worldName, spawn, red, blue);
+		}
+		
+		for (String arenaName : conf.getConfigurationSection("arenas").getKeys(false)) {
+			String base = "arenas." + arenaName + ".";
+			int id = conf.getInt(base + "id", 0);
+			
+			Block sign = conf.getBlock(base + "sign");
+			
+			List<Map> maps = new ArrayList<Map>();
+			for (String s : conf.getStringList(base + "maps")) {
+				maps.add(Map.get(s));
+			}
+			
+			new Arena(id, sign, maps);
 		}
 		
 		Gamer.addFunction("load-kits", new GamerRunnable() {

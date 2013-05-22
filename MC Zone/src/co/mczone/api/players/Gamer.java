@@ -1,5 +1,8 @@
 package co.mczone.api.players;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -24,6 +27,7 @@ import org.bukkit.potion.PotionEffectType;
 import co.mczone.MCZone;
 import co.mczone.api.infractions.Infraction;
 import co.mczone.api.server.Hive;
+import co.mczone.util.Chat;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -210,7 +214,8 @@ public class Gamer {
 	}
 
 	public void clearVariable(String string) {
-		settings.remove(string);
+		if (settings.containsKey(string))
+			settings.remove(string);
 	}
 	
 	public boolean getBoolean(String key) {
@@ -293,5 +298,51 @@ public class Gamer {
 	
 	public static void addFunction(String key, GamerRunnable function) {
 		functions.put(key, function);
+	}
+
+	public void clearScoreboard() {
+		getPlayer().setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());	
+	}
+	
+	public void sendMessage(String msg) {
+		Chat.player(this, msg);
+	}
+	
+	public void sendToHub() {
+		sendToHub(null);
+	}
+	
+	public void sendToHub(String msg) {
+		if (msg != null)
+			sendMessage(msg);
+
+		ByteArrayOutputStream b = new ByteArrayOutputStream();
+		DataOutputStream out = new DataOutputStream(b);
+		try {
+		    out.writeUTF("Connect");
+		    out.writeUTF("login"); // Target Server
+		} catch (IOException e) {
+		    // Can never happen
+		}
+		getPlayer().sendPluginMessage(MCZone.getInstance(), "BungeeCord", b.toByteArray());
+	}
+	
+	public void sendToServer(String ip, int port) {
+		sendToServer(null, ip, port);
+	}
+	
+	public void sendToServer(String msg, String ip, int port) {
+		if (msg != null)
+			sendMessage(msg);
+
+		ByteArrayOutputStream b = new ByteArrayOutputStream();
+		DataOutputStream out = new DataOutputStream(b);
+		try {
+		    out.writeUTF("Transfer");
+		    out.writeUTF(ip + ":" + port); // Target Server
+		} catch (IOException e) {
+		    // Can never happen
+		}
+		getPlayer().sendPluginMessage(MCZone.getInstance(), "BungeeCord", b.toByteArray());
 	}
 }

@@ -3,6 +3,7 @@ package co.mczone;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -24,6 +25,7 @@ public class MCZone extends JavaPlugin {
 	@Getter List<BukkitRunnable> schedules = new ArrayList<BukkitRunnable>();
 	
 	public void onEnable() {
+		Bukkit.getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 		instance = this;
 		new ConfigAPI(this);
 		new Hive(new MySQL("alpha.mczone.co", "3306", "mczone", "root", "johnt#@!"));

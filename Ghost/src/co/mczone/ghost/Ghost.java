@@ -27,10 +27,7 @@ import co.mczone.ghost.api.Arena;
 import co.mczone.ghost.api.Map;
 import co.mczone.ghost.cmds.ArenasCmd;
 import co.mczone.ghost.cmds.GhostCmd;
-<<<<<<< HEAD
-=======
 import co.mczone.ghost.cmds.HelpCmd;
->>>>>>> 785aa7363758cf9c2e05dc7743fee6556873ff64
 import co.mczone.ghost.cmds.LeaveCmd;
 import co.mczone.ghost.events.*;
 import co.mczone.util.Chat;

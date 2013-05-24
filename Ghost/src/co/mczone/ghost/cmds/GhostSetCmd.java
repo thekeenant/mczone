@@ -49,7 +49,7 @@ public class GhostSetCmd implements SubCommand,Permissible {
 				return true;
 			}
 			
-			base = "arenas." + a.getCurrent().getWorldName() + ".";
+			base = "arenas." + a.getName() + ".";
 			Block b = g.getPlayer().getTargetBlock(null, 5);
 			if (b == null || b.getType() != Material.WALL_SIGN) {
 				Chat.player(sender, "&cYou must look at a sign to set the sign variable");
@@ -61,6 +61,10 @@ public class GhostSetCmd implements SubCommand,Permissible {
 			config.set(base + "sign.y", b.getY());
 			config.set(base + "sign.z", b.getZ());
 			a.setSignBlock(b);
+			
+			Chat.player(sender, "&aChanged setting " + type + " in " + a.getName());
+			save();
+			return true;
 		}
 		else {
 			if (a == null) {
@@ -96,7 +100,7 @@ public class GhostSetCmd implements SubCommand,Permissible {
 		else {
 			Chat.player(sender, "&aChanged setting " + type);
 		}
-		Ghost.getInstance().saveConfig();
+		save();
 		return true;
 	}
 
@@ -105,5 +109,9 @@ public class GhostSetCmd implements SubCommand,Permissible {
 		if (g.getRank().getLevel() < RankType.ADMIN.getLevel())
 			return false;
 		return true;
+	}
+	
+	public void save() {
+		Ghost.getInstance().saveConfig();
 	}
 }

@@ -73,10 +73,10 @@ public class ConnectEvents implements Listener {
 			if (r.getLevel() >= RankType.VIP.getLevel()) {
 				event.allow();
 			}
-		}
-		else {
-			event.disallow(Result.KICK_FULL, Chat.colors("&cJoin full servers with a VIP or above subscription!"));
-			return;
+			else {
+				event.disallow(Result.KICK_FULL, Chat.colors("&4[Full Server] &cGet VIP or above to join a full server.\n&7www.mczone.co/shop"));
+				return;
+			}
 		}
 
 		g.updateCredits();

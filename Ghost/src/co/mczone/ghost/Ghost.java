@@ -89,10 +89,10 @@ public class Ghost extends JavaPlugin {
 			
 			Location spawn = Bukkit.getWorld(worldName).getSpawnLocation();
 			if (conf.contains(base + "spawn"))
-				spawn = conf.getLocation(base + "spawn");
+				spawn = conf.getLocation(base + "spawn", worldName);
 			
-			Location red = conf.getLocation(base + "red");
-			Location blue = conf.getLocation(base + "blue");
+			Location red = conf.getLocation(base + "red", worldName);
+			Location blue = conf.getLocation(base + "blue", worldName);
 			
 			new Map(name, title, worldName, spawn, red, blue);
 		}
@@ -100,7 +100,8 @@ public class Ghost extends JavaPlugin {
 		for (String arenaName : conf.getConfigurationSection("arenas").getKeys(false)) {
 			String base = "arenas." + arenaName + ".";
 			int id = conf.getInt(base + "id", 0);
-			
+
+			String worldName = conf.getString(base + "world", null);
 			Block sign = conf.getBlock(base + "sign");
 			
 			List<Map> maps = new ArrayList<Map>();
@@ -108,7 +109,7 @@ public class Ghost extends JavaPlugin {
 				maps.add(Map.get(s));
 			}
 			
-			new Arena(id, sign, maps);
+			new Arena(arenaName, worldName, id, sign, maps);
 		}
 		
 		Gamer.addFunction("load-kits", new GamerRunnable() {

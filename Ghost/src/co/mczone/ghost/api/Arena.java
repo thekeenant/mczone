@@ -15,7 +15,6 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
@@ -34,6 +33,7 @@ public class Arena {
 	public static int MAX_PER_TEAM = Ghost.getConf().getInt("max-per-team", 1);
 	@Getter static List<Arena> list = new ArrayList<Arena>();
 	
+	@Getter String name;
 	@Getter int id;
 	
 	@Getter @Setter Block signBlock;
@@ -48,15 +48,18 @@ public class Arena {
 	@Getter ArenaState state;
 	@Getter ArenaSchedule schedule;
 	
-	//@Getter ConfigurationSection config;
+	// Force world over the map
+	@Getter String worldName;
 	
 	@Getter @Setter boolean starting;
 	
 	@Getter int index;
 	@Getter List<Map> maps;
 	
-	public Arena(int id, Block sign, List<Map> maps) {
+	public Arena(String name, String worldName, int id, Block sign, List<Map> maps) {
+		this.name = name;
 		this.id = id;
+		this.worldName = worldName;		
 		this.maps = maps;
 		this.index = 0;
 		this.signBlock = sign;
@@ -90,12 +93,16 @@ public class Arena {
 
 		for (Player p : getRedPlayers()) {
 			p.teleport(this.getRedSpawn());
+			p.setFlying(false);
+			p.setAllowFlight(false);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 2147483647, 0), true);
 			Gamer.get(p).setVariable("inMatch", true);
 		}
 		
 		for (Player p : getBluePlayers()) {
 			p.teleport(this.getBlueSpawn());
+			p.setFlying(false);
+			p.setAllowFlight(false);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 2147483647, 0), true);
 			Gamer.get(p).setVariable("inMatch", true);
 		}
@@ -111,15 +118,15 @@ public class Arena {
         	Chat.server("  &4\u00BB &eRed Team has won in &bARENA " + id + "&e on &b" + getCurrent().getTitle().toUpperCase() + " &4\u00AB");		
 		
 		scoreboard.clearSlot(DisplaySlot.SIDEBAR);
-		setState(ArenaState.LOADING);
+		setState(ArenaState.WAITING);
 		schedule.setTime(0);
 		schedule.resetCountdown();
 		
 		next();
-		
+		List<Player> players = getPlayers();
 		registerTeams();
 		
-		for (Player p : getPlayers()) {
+		for (Player p : players) {
 			Gamer g = Gamer.get(p);
 			p.teleport(getSpawn());
 			g.setInvisible(false);
@@ -130,22 +137,11 @@ public class Arena {
 			p.setHealth(20);
 			Kit.giveKit(p);
 			
-			g.setFlying(false);
-			g.setAllowFlight(false);
-			
 			if (g.getVariable("team") == null)
 				join(p);
 			else
 				join(p, (String) g.getVariable("team"));
 		}
-		
-		
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				setState(ArenaState.WAITING);
-			}
-		}.runTaskLater(Ghost.getInstance(), 60);
 	}
 	
 	public void loadWorld() {
@@ -265,9 +261,10 @@ public class Arena {
 		g.setVariable("arena", this);
 		g.setVariable("team", team);
 	
-		
+		p.setAllowFlight(true);
+		p.setFlying(true);
 		p.setScoreboard(scoreboard);
-		p.teleport(getCurrent().spawn);
+		p.teleport(getSpawn());
 		return TeamColor.valueOf(team.toUpperCase());
 	}
 
@@ -278,7 +275,7 @@ public class Arena {
 		g.clearVariable("team");
 		g.setFlying(false);
 		g.setAllowFlight(false);
-		scoreboard.getPlayerTeam(p).removePlayer(p);
+		scoreboard.getPlayerTeam(Bukkit.getOfflinePlayer(p.getName())).removePlayer(Bukkit.getOfflinePlayer(p.getName()));
 		g.clearScoreboard();
 	}
 
@@ -315,7 +312,7 @@ public class Arena {
 
 	public static Arena get(String string) {
 		for (Arena a : getList())
-			if (a.getCurrent().getWorldName().equalsIgnoreCase(string))
+			if (a.getName().equalsIgnoreCase(string))
 				return a;
 		return null;
 	}
@@ -335,14 +332,20 @@ public class Arena {
 	// Maps
 	
 	public Location getRedSpawn() {
-		return getCurrent().getRedSpawn();
+		Location l = getCurrent().getRedSpawn();
+		l.setWorld(Bukkit.getWorld(worldName));
+		return l;
 	}
 	
 	public Location getBlueSpawn() {
-		return getCurrent().getBlueSpawn();
+		Location l = getCurrent().getBlueSpawn();
+		l.setWorld(Bukkit.getWorld(worldName));
+		return l;
 	}
 	
 	public Location getSpawn() {
-		return getCurrent().getSpawn();
+		Location l = getCurrent().getSpawn();
+		l.setWorld(Bukkit.getWorld(worldName));
+		return l;
 	}
 }

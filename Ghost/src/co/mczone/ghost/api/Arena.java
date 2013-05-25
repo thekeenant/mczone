@@ -255,6 +255,10 @@ public class Arena {
 	}
 	
 	public TeamColor join(Player p, String team) {
+		if (team.equals("spec")) {
+			// something special?
+		}
+		
 		if (team.equals("red"))
 			red.addPlayer(p);
 		else if (team.equals("blue"))
@@ -278,6 +282,7 @@ public class Arena {
 		g.clearVariable("team");
 		g.setFlying(false);
 		g.setAllowFlight(false);
+		g.removePotionEffects();
 		scoreboard.getPlayerTeam(Bukkit.getOfflinePlayer(p.getName())).removePlayer(Bukkit.getOfflinePlayer(p.getName()));
 		g.clearScoreboard();
 	}

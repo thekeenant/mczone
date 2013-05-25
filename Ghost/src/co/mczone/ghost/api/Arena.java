@@ -31,6 +31,7 @@ import lombok.Setter;
 
 public class Arena {
 	public static int MAX_PER_TEAM = Ghost.getConf().getInt("max-per-team", 1);
+	public static int MIN_PER_TEAM = Ghost.getConf().getInt("min-per-team", 1);
 	@Getter static List<Arena> list = new ArrayList<Arena>();
 	
 	@Getter String name;
@@ -182,7 +183,8 @@ public class Arena {
 			if (p.isOnline())
 				// Invisible means dead
 				if (Gamer.get(p.getName()).isInvisible()) {
-					setScore(ChatColor.STRIKETHROUGH + p.getName(), 3);
+					clearScore(p.getName());
+					setScore(ChatColor.RED + "" + ChatColor.STRIKETHROUGH + p.getName(), 2);
 					continue;
 				}
 			setScore(p.getName(), 2);
@@ -193,7 +195,8 @@ public class Arena {
 			if (p.isOnline())
 				// Invisible means dead
 				if (Gamer.get(p.getName()).isInvisible()) {
-					setScore(ChatColor.STRIKETHROUGH + p.getName(), 2);
+					clearScore(p.getName());
+					setScore(ChatColor.BLUE + "" + ChatColor.STRIKETHROUGH + p.getName(), 1);
 					continue;
 				}
 			setScore(p.getName(), 1);

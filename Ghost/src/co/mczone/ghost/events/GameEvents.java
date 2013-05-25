@@ -74,10 +74,12 @@ public class GameEvents implements Listener {
 		event.setCancelled(true);
 		
 		if (Gamer.get(t).getVariable("arena") != null) {
+			
 			Arena targetMatch = (Arena) Gamer.get(t).getVariable("arena");
+			
 			if (targetMatch.getState() != ArenaState.STARTED)
 				return;
-			
+
 			// Natural damage?
 			if (!event.isDamageByEntity()) {
 				event.setCancelled(false);
@@ -85,7 +87,7 @@ public class GameEvents implements Listener {
 			}
 			
 			// Player damage?
-			if (event.isDamageByEntity()) {
+			else {
 				Arena playerMatch = (Arena) Gamer.get(p).getVariable("arena");
 				
 				if (playerMatch == targetMatch) {

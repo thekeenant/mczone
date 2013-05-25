@@ -47,7 +47,7 @@ public class ArenaSchedule extends BukkitRunnable {
 			if (match.getRedPlayers().size() >= Arena.MAX_PER_TEAM && match.getBluePlayers().size() >= Arena.MAX_PER_TEAM) 
 				start = true;
 			else if (countdown == 10) {
-				if (match.getRedPlayers().size() < 1 || match.getBluePlayers().size() < 1) {
+				if (match.getRedPlayers().size() < Arena.MIN_PER_TEAM || match.getBluePlayers().size() < Arena.MIN_PER_TEAM) {
 					a.sendMessage("&cNeed at least 1 player per team to start the match!");
 					resetCountdown();
 					return;

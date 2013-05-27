@@ -60,7 +60,7 @@ public class GameEvents implements Listener {
 		if (event.isPlayerKill()) {
 			Player p = event.getPlayer();
 			g.giveCredits(1);
-			g.kill(p);
+			g.kill(p, SurvivalGames.getGame().getGameID());
 			broadcast = broadcast.replace(" " + p.getName(), " " + g.getPrefix() + "&f" + p.getName());
 			for (Player pl : Bukkit.getOnlinePlayers()) {
 				if (pl.getName().equals(p.getName()))
@@ -71,13 +71,15 @@ public class GameEvents implements Listener {
 			}
 		}
 		else {
-			Hive.getInstance().kill(t, "natural");
+			Hive.getInstance().kill(t, "natural", SurvivalGames.getGame().getGameID());
 			Chat.server(broadcast);
 			Chat.server("&4[SG] &6There are " + (Game.getTributes().size() - 1) + " tributes remaining");
 		}
 		
 		g.setVariable("death-location", t.getLocation());
 		g.setInvisible(true);
+		g.getPlayer().setAllowFlight(true);
+		g.getPlayer().setFlying(true);
 		t.setHealth(20);
 		event.setDeathMessage(null);
 		g.getPlayer().getWorld().strikeLightning(g.getPlayer().getLocation().add(0, 50, 0));
@@ -95,7 +97,7 @@ public class GameEvents implements Listener {
 		if (!Game.getTributes().contains(t))
 			return;
 
-		Hive.getInstance().kill(p, "quit");
+		Hive.getInstance().kill(p, "quit", SurvivalGames.getGame().getGameID());
 		t.setVariable("death-location", event.getPlayer().getLocation());
 		Chat.server("&4[SG &6" + Gamer.get(p).getPrefix()  + t.getName() + " &6has quit the game!");
 		Chat.server("&4[SG] &6There are " + (Game.getTributes().size() - 1) + " tributes remaining");

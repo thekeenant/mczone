@@ -18,7 +18,7 @@ public class SpawnCmd implements CommandExecutor, Permissible {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
     	Player p = (Player) sender;
     	
-    	if (Scheduler.getState() != State.PREP && !Gamer.get(p.getName()).isInvisible()) {
+    	if (Scheduler.getState() != State.PREP) {
     		Chat.player(sender, "&4[SG] &cYou cannot use /spawn at this time");
     		return true;
     	}

@@ -36,12 +36,13 @@ public class ConnectEvents implements Listener {
 	@EventHandler  
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player p = event.getPlayer();
-		Gamer g = Gamer.get(p);
+		final Gamer g = Gamer.get(p);
 		g.getPlayer().setHealth(20);
 		g.getPlayer().setFoodLevel(20);
 		g.clearInventory();
-		g.run("give-book");
+		g.run("give-items");
 		
+		SurvivalGames.getGame().getSidebar().add(p);
 
 		Chat.player(p, "&7--------------------------------------------");
 		Chat.player(p, "&aWelcome to MC Zone's &2The Survival Games");
@@ -50,6 +51,7 @@ public class ConnectEvents implements Listener {
 		
 		if (Scheduler.getState() == State.PVP) {
 			g.setInvisible(true);
+			p.teleport(Map.getCurrent().getWorld().getSpawnLocation());
 		}
 		if (Scheduler.getState() == State.WAITING) {
 			if (Game.getTributes().size() < 24) {

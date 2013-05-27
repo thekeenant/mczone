@@ -274,8 +274,8 @@ public class Gamer {
 		return this.getRank().getPrefix();
 	}
 	
-	public void kill(Player target) {
-		Hive.getInstance().kill(target, name);
+	public void kill(Player target, int game_id) {
+		Hive.getInstance().kill(target, name, game_id);
 	}
 	
 	public void setAllowFlight(boolean flight) {
@@ -287,13 +287,13 @@ public class Gamer {
 	}
 	
 	public void run(String function) {
-		GamerRunnable r = functions.get(function).newInstance();
+		GamerRunnable r = functions.get(function);
 		r.setGamer(this);
 		
 		if (r.isSync())
-			r.runTask(MCZone.getInstance());
+			r.run();
 		else
-			r.runTaskAsynchronously(MCZone.getInstance());
+			new Thread(r).run();
 	}
 	
 	public static void addFunction(String key, GamerRunnable function) {

@@ -1,11 +1,9 @@
 package co.mczone.api.players;
 
-import org.bukkit.scheduler.BukkitRunnable;
-
 import lombok.Getter;
 import lombok.Setter;
 
-public class GamerRunnable extends BukkitRunnable {
+public class GamerRunnable implements Runnable {
 	@Getter @Setter	public Gamer gamer;
 	@Getter @Setter boolean sync = false;
 	
@@ -15,7 +13,7 @@ public class GamerRunnable extends BukkitRunnable {
 	}
 
 	public GamerRunnable newInstance() {
-		GamerRunnable r= new GamerRunnable();
+		GamerRunnable r = new GamerRunnable();
 		r.setSync(sync);
 		return r;
 	}

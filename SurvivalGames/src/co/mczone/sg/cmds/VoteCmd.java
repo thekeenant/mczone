@@ -5,15 +5,18 @@ import co.mczone.util.Chat;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import co.mczone.sg.Scheduler;
 import co.mczone.sg.api.Map;
 import co.mczone.sg.api.State;
+import co.mczone.sg.api.VotePanel;
 
 public class VoteCmd implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
     	if (args.length != 1) {
+    		new VotePanel((Player) sender).show();
 			Bukkit.dispatchCommand(sender, "maps");
     		return true;
     	}
@@ -35,15 +38,9 @@ public class VoteCmd implements CommandExecutor {
     		Chat.player(sender, "&4[SG] &cCould not find a map with the ID of " + id);
     		return true;
     	}
-    	if (map.getVotes().contains(sender.getName()))
-    		map.getVotes().remove(sender.getName());
-    	
-    	for (Map m : Map.getList()) {
-    		if (m.getVotes().contains(sender.getName()))
-    			m.getVotes().remove(sender.getName());
-    	}
-    	
-    	map.getVotes().add(sender.getName());
+
+
+    	map.addVote((Player) sender);
     	Chat.player(sender, "&2[SG] &aThe map, &f" + map.getTitle() + " &anow has " + map.getVotes().size() + " votes");
 		return true;
     }

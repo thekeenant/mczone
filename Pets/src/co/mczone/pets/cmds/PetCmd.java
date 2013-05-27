@@ -2,8 +2,8 @@ package co.mczone.pets.cmds;
 
 import org.bukkit.command.CommandExecutor;
 
+import co.mczone.api.commands.BaseCommand;
 import co.mczone.api.players.Gamer;
-import co.mczone.cmds.BaseCommand;
 
 public class PetCmd extends BaseCommand implements CommandExecutor {
     public PetCmd() {

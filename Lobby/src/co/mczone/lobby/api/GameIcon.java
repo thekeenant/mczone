@@ -20,6 +20,7 @@ public class GameIcon {
 	@Getter
 	static List<GameIcon> list = new ArrayList<GameIcon>();
 	@Getter Material material;
+	@Getter int damage = 0;
 	@Getter String title;
 	@Getter Location to;
 	@Getter boolean glow = false;
@@ -39,8 +40,16 @@ public class GameIcon {
 		list.add(this);
 	}
 	
+	public GameIcon(Material material, int damage, String title, Location to) {
+		this.material = material;
+		this.damage = damage;
+		this.title = title;
+		this.to = to;
+		list.add(this);
+	}
+	
 	public ItemStack getItemStack() {
-		ItemStack stack = new ItemStack(material);
+		ItemStack stack = new ItemStack(material, 1, (short) damage);
 		ItemMeta meta = stack.getItemMeta();
 		meta.setDisplayName(Chat.colors(title));
 		stack.setItemMeta(meta);

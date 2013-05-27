@@ -46,7 +46,7 @@ public class GameEvents implements Listener {
 		if (event.isPlayerKill()) {
 			Gamer p = Gamer.get(event.getPlayer());
 			p.giveCredits(2);
-			p.kill(event.getTarget());
+			p.kill(event.getTarget(), 0);
 			
 			for (Player player : m.getPlayers()) {
 				if (player.getName().equals(p.getName()))
@@ -59,7 +59,7 @@ public class GameEvents implements Listener {
 			for (Player player : m.getPlayers()) {
 				Chat.player(player, broadcast);
 			}
-			Hive.getInstance().kill(event.getTarget(), "natural");
+			Hive.getInstance().kill(event.getTarget(), "natural", 0);
 			if (event.getDeathMessage().contains("fell out")) {
 				t.teleport(m.getSpawn());
 			}

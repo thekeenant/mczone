@@ -20,7 +20,6 @@ public class InfractionSchedule extends BukkitRunnable {
                 if (r.getInt("active")==0)
                     continue;
                 
-                
                 Date date = r.getTimestamp("date");
                 Date end = r.getTimestamp("end");
                 String reason = r.getString("reason");

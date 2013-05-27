@@ -3,6 +3,8 @@ package co.mczone.sg.api;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -105,6 +107,14 @@ public class Map {
 				return m;
 		}
 		return null;
+	}	
+	
+	public static Map getByTitle(String name) {
+		for (Map m : getList()) {
+			if (m.getTitle().equalsIgnoreCase(name))
+				return m;
+		}
+		return null;
 	}
 	
 	public static void load() {
@@ -133,6 +143,15 @@ public class Map {
             
             new Map(title, worldName, spawns, specSpawn);
         }
+        
+		Comparator<Map> comp = new Comparator<Map>() {
+			public int compare(Map m1, Map m2) {
+				return m1.getTitle().compareTo(m2.getTitle());
+			}
+		};
+		
+		Collections.sort(list, comp);
+        
         Chat.log("Loaded a total of " + Map.getList().size() + " maps!");
     }
 	
@@ -172,5 +191,17 @@ public class Map {
 
 	public void unload() {
 		Bukkit.unloadWorld(worldName, false);
+	}
+
+	public void addVote(Player p) {
+    	if (getVotes().contains(p.getName()))
+    		getVotes().remove(p.getName());
+    	
+    	for (Map m : Map.getList()) {
+    		if (m.getVotes().contains(p.getName()))
+    			m.getVotes().remove(p.getName());
+    	}
+    	
+    	getVotes().add(p.getName());
 	}
 }

@@ -62,6 +62,8 @@ public class Lobby extends JavaPlugin implements Listener {
 		
 		new GameIcon(Material.IRON_SWORD, "&9Nexus MC", new Location(Bukkit.getWorld("void"), 8.5, 69.5, 78.5, 0, 0));
 		new GameIcon(Material.BOW, "&bSky Wars", new Location(Bukkit.getWorld("void"), 8.5, 69.5, -34, 180, 0), true);
+		
+		new GameIcon(Material.POTION, 16462, "&bGhost Squadron", new Location(Bukkit.getWorld("void"), 22.5, 69.5, 22.5, 270, 0));
 
 		// Events!
 		new CompassEvents();

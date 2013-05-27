@@ -1,11 +1,13 @@
 package co.mczone.ghost.events;
 
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -22,6 +24,15 @@ public class GeneralEvents implements Listener {
 		Ghost.getInstance().getServer().getPluginManager().registerEvents(this, Ghost.getInstance());
 	}
 	
+	@EventHandler
+	public void onDestroyByEntity(HangingBreakByEntityEvent event) {
+		if ((event.getRemover() instanceof Player)) {
+			if (event.getEntity().getType() == EntityType.ITEM_FRAME) {
+				event.setCancelled(true);
+			}
+		}
+	}
+	        
 	@EventHandler
 	public void onFoodLevelChange(FoodLevelChangeEvent event) {
 		Gamer g = Gamer.get(event.getEntity().getName());

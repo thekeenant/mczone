@@ -16,6 +16,7 @@ import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -29,6 +30,7 @@ import co.mczone.sg.api.Map;
 import co.mczone.sg.cmds.CmdBase;
 import co.mczone.sg.events.ConnectEvents;
 import co.mczone.sg.events.Events;
+import co.mczone.sg.events.VotePanelEvents;
 import co.mczone.util.Chat;
 
 public class SurvivalGames extends JavaPlugin {
@@ -49,7 +51,9 @@ public class SurvivalGames extends JavaPlugin {
 
 		Bukkit.getPluginManager().registerEvents(new ConnectEvents(), this);
 		Bukkit.getPluginManager().registerEvents(new Events(), this);
-		
+		Bukkit.getPluginManager().registerEvents(new VotePanelEvents(), this);
+
+		game = new Game();
 		timer.scheduleAtFixedRate(new Scheduler(), 0, 1000);
 
 		/*
@@ -169,7 +173,6 @@ public class SurvivalGames extends JavaPlugin {
 			items.add(new ItemStack(Material.BREAD, 4));
 		
 		
-		game = new Game();
 		
 		new BukkitRunnable() {
 			@Override
@@ -181,7 +184,7 @@ public class SurvivalGames extends JavaPlugin {
 			}
 		}.runTask(SurvivalGames.getInstance());
 		
-		Gamer.addFunction("give-book", new GamerRunnable() {
+		Gamer.addFunction("give-items", new GamerRunnable() {
 			@Getter @Setter boolean sync = true;
 			
 			@Override
@@ -210,6 +213,13 @@ public class SurvivalGames extends JavaPlugin {
 		        data.setPages(Chat.colors(page1), Chat.colors(page2));
 		        book.setItemMeta(data);
 		        gamer.giveItem(book);
+		        
+
+				ItemStack item = new ItemStack(Material.EMERALD);
+				ItemMeta meta = item.getItemMeta();
+				meta.setDisplayName(Chat.colors("&aVoting Panel"));
+				item.setItemMeta(meta);
+				gamer.giveItem(item);
 			}
 		});
 	}

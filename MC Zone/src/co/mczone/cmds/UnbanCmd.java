@@ -2,6 +2,8 @@ package co.mczone.cmds;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -9,6 +11,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import co.mczone.api.infractions.Ban;
+import co.mczone.api.infractions.Infraction;
 import co.mczone.api.players.Rank;
 import co.mczone.api.players.RankType;
 import co.mczone.api.server.Hive;
@@ -54,6 +58,15 @@ public class UnbanCmd implements CommandExecutor {
         if (!found) {
         	Chat.player(sender, "&cThe player, " + username + ", has not been banned.");
         	return true;
+        }
+        
+        Iterator<Entry<Infraction, String>> i = Infraction.getList().entrySet().iterator();
+        while (i.hasNext()) {
+        	Entry<Infraction, String> e = i.next();
+        	if (e.getValue().equalsIgnoreCase(username)) {
+        		if (e.getKey() instanceof Ban)
+        			i.remove();
+        	}
         }
         
         Hive.getInstance().getDatabase().update("UPDATE infractions SET active=0 WHERE username='" + username + "'");

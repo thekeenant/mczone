@@ -1,5 +1,7 @@
 package co.mczone.ghost.api;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +24,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import co.mczone.api.players.Gamer;
+import co.mczone.api.server.Hive;
 import co.mczone.ghost.Ghost;
 import co.mczone.ghost.schedules.ArenaSchedule;
 import co.mczone.util.Chat;
@@ -32,6 +35,7 @@ import lombok.Setter;
 public class Arena {
 	public static int MAX_PER_TEAM = Ghost.getConf().getInt("max-per-team", 1);
 	public static int MIN_PER_TEAM = Ghost.getConf().getInt("min-per-team", 1);
+	public static boolean TRACK_GAMES = Ghost.getConf().getBoolean("track-games", false);
 	@Getter static List<Arena> list = new ArrayList<Arena>();
 	
 	@Getter String name;
@@ -40,6 +44,7 @@ public class Arena {
 	@Getter @Setter Block signBlock;
 	Sign sign;
 	
+	@Getter int gameID;
 	
 	@Getter Scoreboard scoreboard;
 	@Getter Objective sidebar;
@@ -92,21 +97,56 @@ public class Arena {
 		schedule.setTime(0);
 		setStarting(false);
 
+		
+		String query = "INSERT INTO ghost_player (username, game_id, kit, team) VALUES ";		
+		boolean track = Arena.TRACK_GAMES;
+		if (track) {
+			String game = "INSERT INTO ghost_games (start) VALUES (now())";
+			Hive.getInstance().getDatabase().syncUpdate(game);
+			
+			ResultSet r = Hive.getInstance().getDatabase().query("SELECT id FROM ghost_games ORDER BY id DESC");
+			try {
+				while (r.next())
+					gameID = r.getInt("id");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		for (Player p : getRedPlayers()) {
+			Gamer g = Gamer.get(p);
 			p.teleport(this.getRedSpawn());
 			p.setFlying(false);
 			p.setAllowFlight(false);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 2147483647, 0), true);
-			Gamer.get(p).setVariable("inMatch", true);
+			g.setVariable("inMatch", true);
+			
+			String kit = "";
+			if (g.getVariable("kit") != null)
+				kit = ((Kit) g.getVariable("kit")).getName().toLowerCase();
+			
+			query += "('" + p.getName() + "'," + gameID + ",'" + kit + "','red'),";
 		}
 		
 		for (Player p : getBluePlayers()) {
+			Gamer g = Gamer.get(p);
 			p.teleport(this.getBlueSpawn());
 			p.setFlying(false);
 			p.setAllowFlight(false);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 2147483647, 0), true);
-			Gamer.get(p).setVariable("inMatch", true);
+			g.setVariable("inMatch", true);
+			
+			String kit = "";
+			if (g.getVariable("kit") != null)
+				kit = ((Kit) g.getVariable("kit")).getName().toLowerCase();
+			
+			query += "('" + p.getName() + "'," + gameID + ",'" + kit + "','blue'),";
 		}
+		
+		query = query.substring(0, query.length() - 1);
+		
+		if  (track)
+			Hive.getInstance().getDatabase().update(query);
 	}
 	
 	public void endGame() {
@@ -142,6 +182,10 @@ public class Arena {
 				join(p);
 			else
 				join(p, (String) g.getVariable("team"));
+		}
+		
+		if (TRACK_GAMES) {
+			Hive.getInstance().getDatabase().update("UPDATE ghost_games SET end=now() WHERE id=" + gameID);
 		}
 	}
 	
@@ -180,26 +224,40 @@ public class Arena {
 			
 		// Team Red
 		for (OfflinePlayer p : red.getPlayers()) {
+			String name = p.getName();
+			if (Gamer.get(p.getName()).isInvisible())
+				name = ChatColor.RED + "" + ChatColor.STRIKETHROUGH + p.getName();
+			
+			if (name.length() > 16)
+				name = name.substring(0, 16);
+			
 			if (p.isOnline())
 				// Invisible means dead
 				if (Gamer.get(p.getName()).isInvisible()) {
 					clearScore(p.getName());
-					setScore(ChatColor.RED + "" + ChatColor.STRIKETHROUGH + p.getName(), 2);
+					setScore(name, 2);
 					continue;
 				}
-			setScore(p.getName(), 2);
+			setScore(name, 2);
 		}
 		
 		// Team Blue
 		for (OfflinePlayer p : blue.getPlayers()) {
+			String name = p.getName();
+			if (Gamer.get(p.getName()).isInvisible())
+				name = ChatColor.BLUE + "" + ChatColor.STRIKETHROUGH + p.getName();
+			
+			if (name.length() > 16)
+				name = name.substring(0, 16);
+			
 			if (p.isOnline())
 				// Invisible means dead
 				if (Gamer.get(p.getName()).isInvisible()) {
 					clearScore(p.getName());
-					setScore(ChatColor.BLUE + "" + ChatColor.STRIKETHROUGH + p.getName(), 1);
+					setScore(name, 2);
 					continue;
 				}
-			setScore(p.getName(), 1);
+			setScore(name, 2);
 		}
 	}
 	

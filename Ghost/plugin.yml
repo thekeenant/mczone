@@ -19,3 +19,6 @@ commands:
   help:
     description: Ghost help command
     default: true
+  kit:
+    description: Ghost kit command
+    default: true

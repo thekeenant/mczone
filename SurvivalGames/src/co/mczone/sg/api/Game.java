@@ -39,7 +39,7 @@ public class Game {
 	public static List<Gamer> getTributes() {
 		List<Gamer> list = new ArrayList<Gamer>();
 		for (Gamer g : Gamer.getList())
-			if (g.getVariable("spectator") == null)
+			if (!g.isInvisible())
 				list.add(g);
 		return list;
 	}

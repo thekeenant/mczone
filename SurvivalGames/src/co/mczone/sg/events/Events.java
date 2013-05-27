@@ -83,7 +83,10 @@ public class Events implements Listener {
 			return;
 		}
 		
-		int cur = (Integer) g.getVariable("spectating");
+		
+		int cur = 0;
+		if (g.getVariable("spectating") != null)
+			cur = (Integer) g.getVariable("spectating");
 		int next = cur + 1;
 		if (next + 1 >= Game.getTributes().size())
 			next = 0;

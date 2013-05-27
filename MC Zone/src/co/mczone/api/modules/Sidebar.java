@@ -3,6 +3,7 @@ package co.mczone.api.modules;
 import lombok.Getter;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -34,5 +35,13 @@ public class Sidebar {
 	
 	public void clearScore(String key) {
 		getScoreboard().resetScores(Bukkit.getOfflinePlayer(Chat.colors(key)));
+	}
+
+	public void hide() {
+		for (OfflinePlayer op : scoreboard.getPlayers()) {
+			Player p = op.getPlayer();
+			if (p != null && p.isOnline())
+				p.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+		}
 	}
 }

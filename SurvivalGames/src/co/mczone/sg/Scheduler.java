@@ -27,7 +27,7 @@ public class Scheduler extends TimerTask {
 	@Getter @Setter static State state = State.PREP;
 	int countdown = SurvivalGames.getInstance().getConfigAPI().getInt("countdown", 120);
 	int compass = SurvivalGames.getInstance().getConfigAPI().getInt("compass", 1200);
-	int minPlayers = 5;
+	int minPlayers = 2;
 	
 	
 	boolean deathmatch = false;
@@ -45,10 +45,13 @@ public class Scheduler extends TimerTask {
 		
 		// Before game
 		if (getState() == State.PREP) {
+
+	    	for (Map m : Map.getList()) {
+	        	SurvivalGames.getGame().getSidebar().set(m.getTitle(), m.getVotes().size());
+	    	}
+			
 			if (seconds % 30 == 0 && seconds < countdown || (seconds >= countdown - 5 && seconds < countdown))
 				Chat.server("&2[SG] &aVoting period ends in &4" + Chat.time(countdown - seconds) + "");
-			
-			SurvivalGames.getGame().getSidebar().set("&aCountdown", countdown - seconds);
 			
 			if (seconds > countdown) {
 				if (Game.getTributes().size() < minPlayers) {
@@ -60,7 +63,7 @@ public class Scheduler extends TimerTask {
 				Map m = Map.getCurrent();
 				m.loadWorld();
 				Chat.server("&2[SG] &6Map chosen: &f" + m.getTitle() + " &8[&7" + m.getVotes().size() + " votes&8]");
-				
+				SurvivalGames.getGame().getSidebar().hide();
 				seconds = 0;
 				setState(State.WAITING);
 				return;
@@ -74,8 +77,6 @@ public class Scheduler extends TimerTask {
 		
 		// Waiting period
 		else if (getState() == State.WAITING) {
-			SurvivalGames.getGame().getSidebar().clearScore("&aCountdown");
-			SurvivalGames.getGame().getSidebar().set("&cCountdown", 30 - seconds);
 			if (seconds >= 30) {
 				Bukkit.getPluginManager().registerEvents(new GameEvents(), SurvivalGames.getInstance());
 	        	Chat.server("&4# # # # # # # # # # # # # # # #");
@@ -107,7 +108,6 @@ public class Scheduler extends TimerTask {
 				Chat.server("&2[SG] &aGame beginning in &4" + Chat.time(30 - seconds));
 		}
 		else if (getState() == State.PVP) {
-			SurvivalGames.getGame().getSidebar().clearScore("&aCountdown");
 			List<Gamer> gamers = Game.getTributes();
 			if (gamers.size() == 0)
 				Bukkit.shutdown();

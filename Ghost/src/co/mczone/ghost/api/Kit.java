@@ -45,6 +45,8 @@ public class Kit implements Permissible {
 		Kit k = (Kit) g.getVariable("kit");
 		
 		if (k == null) {
+			g.setVariable("kit", Kit.get("bruiser"));
+			k = Kit.get("bruiser");
 			return;
 		}
 		
@@ -88,7 +90,7 @@ public class Kit implements Permissible {
 		else {
 			if (name.equals("archer"))
 				return true;
-			if (name.equals("archer"))
+			if (name.equals("bruiser"))
 				return true;
 		}
 		

@@ -37,13 +37,13 @@ public class Hive {
 		return Gamer.get(name);
 	}
 	
-	public void kill(Player target, String cause) {
-		String query = "INSERT INTO kills (server, player, target) VALUES ('" + type.getName() + "',";
+	public void kill(Player target, String cause, int game_id) {
+		String query = "INSERT INTO kills (server, player, target, game_id) VALUES ('" + type.getName() + "',";
 		if (cause != null)
 			query += "'" + cause + "','" + target.getName() + "'";
 		else
 			query += "'natural','" + target.getName() + "'";
-		database.update(query + ")");
+		database.update(query + ", " + game_id + ")");
 	}
 	
 	public boolean playerExists(String name) {

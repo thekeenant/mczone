@@ -1,0 +1,7 @@
+name: Lobby V2
+version: 1.0
+author: funkystudios
+depend: [MC Zone]
+main: co.mczone.lobby.Lobby
+description: >
+             MC Zone

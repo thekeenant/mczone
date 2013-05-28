@@ -7,9 +7,13 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
 
-public class DataReceiver implements Runnable {
-	static int port = 950;
+import co.mczone.backend.api.Chat;
+import co.mczone.backend.api.ServerStatus;
+
+public class DataHandler implements Runnable {
+	static int port = 850;
 	
 	public static class Handler implements Runnable {
 
@@ -18,7 +22,26 @@ public class DataReceiver implements Runnable {
 			BufferedWriter bw =	new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
 			String line = "";
 			while ((line = br.readLine()) != null) {
-				bw.write(line + "\n");
+				Chat.log("Handling request: " + line);
+				
+				// name:id,players,status
+				
+				if (line.startsWith("get/")) {
+					String get = line.replace("get/", "");
+					if (get.equalsIgnoreCase("all")) {
+						String result = "";
+						for (List<ServerStatus> list : ServerStatus.getServers().values())
+							for (ServerStatus server : list) {
+								result += server.getName() + ":" + server.getId() + ",";
+								result += server.getPlayerCount() + ",";
+								result += server.getStatus().getValue() + "/";
+							}
+						
+						bw.write(result);
+					}
+				}
+				
+				bw.newLine();
 				bw.flush();
 			}
 

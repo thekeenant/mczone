@@ -8,6 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import co.mczone.api.ConfigAPI;
+import co.mczone.api.backend.Status;
 import co.mczone.api.database.MySQL;
 import co.mczone.api.infractions.Infraction;
 import co.mczone.api.players.Rank;
@@ -28,20 +29,33 @@ public class MCZone extends JavaPlugin {
 		Bukkit.getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 		instance = this;
 		new ConfigAPI(this);
+		
+		Chat.log("Connecting to database...");
 		new Hive(new MySQL("alpha.mczone.co", "3306", "mczone", "root", "johnt#@!"));
 
+		Hive.getInstance().setStatus(Status.OPEN);
+		
 		BukkitRunnable schedule = null;
 		
-		schedule = new RankSchedule();
-		schedule.runTaskTimerAsynchronously(this, 0, 20 * 60);
-		schedules.add(schedule);
-		
-		schedule = new InfractionSchedule();
-		schedule.runTaskTimerAsynchronously(this, 0, 20 * 30);
-		schedules.add(schedule);
+		if (Hive.getInstance().getDatabase().checkConnection()) {
+			schedule = new RankSchedule();
+			schedule.runTaskTimerAsynchronously(this, 0, 20 * 60);
+			schedules.add(schedule);
+			
+			schedule = new InfractionSchedule();
+			schedule.runTaskTimerAsynchronously(this, 0, 20 * 30);
+			schedules.add(schedule);
+		}
+		else {
+			Chat.log("No DB connection. No ranks/infractions registered.");
+		}
 		
 		schedule = new SignChangePacketSchedule();
 		schedule.runTaskTimerAsynchronously(this, 0, 20 * 1);
+		schedules.add(schedule);
+		
+		schedule = new DataSenderSchedule();
+		schedule.runTaskTimerAsynchronously(this, 0, 20 * 5);
 		schedules.add(schedule);
 		
 		new ConnectEvents();
@@ -52,6 +66,7 @@ public class MCZone extends JavaPlugin {
 	}
 	
 	public void onDisable() {
+		Hive.getInstance().setStatus(Status.CLOSED);
 		Chat.log("Cancelling tasks...");
 		for (BukkitRunnable runnable : schedules) {
 			Chat.log("Cancelling: #" + runnable.getTaskId() + " runnable");

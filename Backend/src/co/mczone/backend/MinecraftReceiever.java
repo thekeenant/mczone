@@ -8,6 +8,7 @@ import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import co.mczone.backend.api.Chat;
 import co.mczone.backend.api.ServerStatus;
 
 public class MinecraftReceiever implements Runnable {
@@ -20,6 +21,7 @@ public class MinecraftReceiever implements Runnable {
 			BufferedWriter bw =	new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
 			String line = "";
 			while ((line = br.readLine()) != null) {
+				Chat.log("Receieved: " + line);
 				// line: Name:ID,Players,Status
 				
 				String[] arr = line.split(",");
@@ -30,7 +32,8 @@ public class MinecraftReceiever implements Runnable {
 				int status = Integer.parseInt(arr[2]);
 				new ServerStatus(name, id, count, status);
 				
-				bw.write("1\n");
+				bw.write("1");
+				bw.newLine();
 				bw.flush();
 			}
 

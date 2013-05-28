@@ -1,5 +1,6 @@
 package co.mczone.api.server;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
@@ -8,11 +9,14 @@ import java.util.HashMap;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import co.mczone.api.backend.DataSender;
+import co.mczone.api.backend.Status;
 import co.mczone.api.commands.HiveCommandExecutor;
 import co.mczone.api.database.MySQL;
 import co.mczone.api.players.Gamer;
@@ -23,10 +27,35 @@ public class Hive {
 	@Getter static Hive instance;
 	@Getter @Setter GameType type;
 	
+	DataSender sender;
+	@Getter Status status;
+	
 	public Hive(MySQL database) {
 		instance = this;
 		this.database = database;
 		database.open();
+		
+		sender = new DataSender();
+	}
+	
+	public void setStatus(Status status) {
+		this.status = status;
+		updateStatus();
+	}
+	
+	public void updateStatus() {
+		String port = Integer.toString(Bukkit.getPort());
+		int id = Integer.valueOf(port.substring(port.length() - 2));
+		
+		if (type == null)
+			return;
+		
+		// Chat.log("Updating status of " + type.getName() + ":" + id + " to " + Bukkit.getOnlinePlayers().length + " players with status " + status.name() + "!");
+		try {
+			sender.send(type.getName(), id, Bukkit.getOnlinePlayers().length, status.getValue());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public Gamer getGamer(Player p) {

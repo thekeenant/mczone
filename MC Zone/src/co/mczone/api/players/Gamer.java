@@ -328,10 +328,10 @@ public class Gamer {
 	}
 	
 	public void sendToServer(String ip, int port) {
-		sendToServer(null, ip, port);
+		sendToServer(ip, port, null);
 	}
 	
-	public void sendToServer(String msg, String ip, int port) {
+	public void sendToServer(String ip, int port, String msg) {
 		if (msg != null)
 			sendMessage(msg);
 

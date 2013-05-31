@@ -15,6 +15,7 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import co.mczone.api.ConfigAPI;
 import co.mczone.api.backend.DataSender;
 import co.mczone.api.backend.Status;
 import co.mczone.api.commands.HiveCommandExecutor;
@@ -27,12 +28,16 @@ public class Hive {
 	@Getter static Hive instance;
 	@Getter @Setter GameType type;
 	
+	@Getter ConfigAPI config;
+	
 	DataSender sender;
 	@Getter Status status;
 	
-	public Hive(MySQL database) {
+	public Hive(MySQL database, ConfigAPI config) {
 		instance = this;
 		this.database = database;
+		this.config = config;
+		
 		database.open();
 		
 		sender = new DataSender();
@@ -43,9 +48,12 @@ public class Hive {
 		updateStatus();
 	}
 	
+	public int getServerID() {
+		return Bukkit.getPort();
+	}
+	
 	public void updateStatus() {
-		String port = Integer.toString(Bukkit.getPort());
-		int id = Integer.valueOf(port.substring(port.length() - 2));
+		int id = getServerID();
 		
 		if (type == null)
 			return;
@@ -127,5 +135,11 @@ public class Hive {
 	
 	public void registerCommand(JavaPlugin plugin, String name, CommandExecutor executor) {
 		registerCommand(plugin.getCommand(name), executor);
+	}
+	
+	public String getServerIP(GameType server) {
+		if (config.contains(server.getName()))
+			return config.getString(server.getName());
+		return server.getIp();
 	}
 }

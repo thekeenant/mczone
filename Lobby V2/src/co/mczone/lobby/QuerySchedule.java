@@ -1,19 +1,43 @@
 package co.mczone.lobby;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.bukkit.scheduler.BukkitRunnable;
 
 import co.mczone.MCZone;
-import co.mczone.util.Chat;
+import co.mczone.lobby.api.Portal;
+import co.mczone.lobby.api.ServerStatus;
+import co.mczone.lobby.api.Status;
 
 public class QuerySchedule extends BukkitRunnable {
 
 	@Override
 	public void run() {
-		String query = query();
+		ServerStatus.fromArray(query().split("/"));
 		
-		Chat.log(query);
+		for (Portal p : Portal.getList()) {
+			boolean change = false, found = false;
+			List<ServerStatus> servers = ServerStatus.get(p.getName());
+			for (ServerStatus s : servers) {
+				if (p.getCurrent().getId() == s.getId()) {
+					found = true;
+					if (s.getStatus() == Status.CLOSED)
+						change = true;
+					break;
+				}
+			}
+			if (!found)
+				change = true;
+			
+			if (change) {
+				if (servers.size() > 0) {
+					p.setCurrent(servers.get(0));
+				}
+			}
+		}
+		
+		for (Sign )
 	}
 	
 	public String query() {
@@ -25,7 +49,6 @@ public class QuerySchedule extends BukkitRunnable {
 		try {
 			q.retrieve();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return q.getResult();

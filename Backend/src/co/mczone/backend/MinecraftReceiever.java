@@ -24,14 +24,7 @@ public class MinecraftReceiever implements Runnable {
 				Chat.log("Receieved: " + line);
 				// line: Name:ID,Players,Status
 				
-				String[] arr = line.split(",");
-
-				String name = arr[0].split(":")[0];
-				int id = Integer.parseInt(arr[0].split(":")[1]);
-				int count = Integer.parseInt(arr[1]);
-				int status = Integer.parseInt(arr[2]);
-				new ServerStatus(name, id, count, status);
-				
+				ServerStatus.fromString(line);
 				bw.write("1");
 				bw.newLine();
 				bw.flush();

@@ -28,10 +28,9 @@ public class MCZone extends JavaPlugin {
 	public void onEnable() {
 		Bukkit.getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 		instance = this;
-		new ConfigAPI(this);
 		
 		Chat.log("Connecting to database...");
-		new Hive(new MySQL("alpha.mczone.co", "3306", "mczone", "root", "johnt#@!"));
+		new Hive(new MySQL("alpha.mczone.co", "3306", "mczone", "root", "johnt#@!"), new ConfigAPI(this));
 
 		Hive.getInstance().setStatus(Status.OPEN);
 		
@@ -44,6 +43,10 @@ public class MCZone extends JavaPlugin {
 			
 			schedule = new InfractionSchedule();
 			schedule.runTaskTimerAsynchronously(this, 0, 20 * 30);
+			schedules.add(schedule);
+			
+			schedule = new PlayerOnlineSchedule();
+			schedule.runTaskTimerAsynchronously(this, 0, 20 * 60);
 			schedules.add(schedule);
 		}
 		else {

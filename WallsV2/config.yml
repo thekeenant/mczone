@@ -1,0 +1,37 @@
+# Walls Configuration File
+pre-time: 300
+prep-time: 900
+kits:
+  archer:
+  - BOW,1,ARROW_DAMAGE:1
+  beastmaster:
+  - EGG:95,3
+  - BONE,5
+  fireman:
+  - BUCKET
+  magician:
+  - EXP_BOTTLE,64
+  - ENCHANTMENT_TABLE
+  poseidon: null
+  pyro:
+  - FIREBALL,10
+  - FLINT_AND_STEEL
+  snowman:
+  - SNOW_BALL,16
+  stomper: null
+  summoner:
+  - EGG:54
+  - EGG:50
+  - EGG:51
+  warrior:
+  - IRON_SWORD
+  woodcutter: null
+  guardian:
+  - DIAMOND_HELMET
+  - IRON_CHESTPLATE
+  scout: null
+  trickster:
+  - TRIPWIRE_HOOK,4
+  - STRING,5
+  - STONE_PLATE,3
+  - REDSTONE,16

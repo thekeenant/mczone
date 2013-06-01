@@ -1,6 +1,8 @@
 package co.mczone.lobby.events;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Location;
@@ -29,8 +31,9 @@ public class GameEvents implements Listener {
 	public GameEvents() {
 		Lobby.getInstance().getServer().getPluginManager().registerEvents(this, Lobby.getInstance());
 	}
-	
-	private static final int FRAME = Material.OBSIDIAN.getId();
+
+	private static final int FRAME = Material.LEAVES.getId();
+	private static final int FLOOR = Material.WOOL.getId();
     private static final int SIGN = Material.WALL_SIGN.getId();
 	
 	@EventHandler
@@ -86,10 +89,10 @@ public class GameEvents implements Listener {
         Location from = event.getFrom();
         World world = to.getWorld();
 
-        if (to.clone().add(0, -1, 0).getBlock().getType() != Material.REDSTONE_LAMP_ON)
+        if (to.clone().add(0, -1, 0).getBlock().getTypeId() != FLOOR)
         	return;
         
-        if (from.clone().add(0, -1, 0).getBlock().getType() == Material.REDSTONE_LAMP_ON)
+        if (from.clone().add(0, -1, 0).getBlock().getTypeId() == FLOOR)
         	return;
         
         for (Block block : getPortalNear(world, to.getBlockX(), to.getBlockY(), to.getBlockZ())) {
@@ -142,7 +145,7 @@ public class GameEvents implements Listener {
             }
         }
     }
-
+	
     private Set<Block> getPortalNear(World world, int x, int y, int z) {
         byte b0 = 0;
         byte b1 = 0;
@@ -152,6 +155,8 @@ public class GameEvents implements Listener {
         if (world.getBlockTypeIdAt(x, y, z - 1) == FRAME || world.getBlockTypeIdAt(x, y, z + 1) == FRAME) {
             b1 = 1;
         }
+        
+        Chat.log(b0 + " and " + b1);
 
         Set<Block> blocks = new HashSet<Block>();
 
@@ -167,6 +172,7 @@ public class GameEvents implements Listener {
                 if (i != -1 && i != 2 || j != -1 && j != 3) {
                     if (flag) {
                         blocks.add(world.getBlockAt(x + b0 * i, y + j, z + b1 * i));
+                        Chat.log(world.getBlockAt(x + b0 * i, y + j, z + b1 * i).getType().name());
                     }
                 }
             }

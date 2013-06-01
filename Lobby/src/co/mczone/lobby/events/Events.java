@@ -105,12 +105,16 @@ public class Events implements Listener {
 	
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent event) {
+		event.setCancelled(false);
+		
 		if (event.getPlayer().getGameMode() != GameMode.CREATIVE)
 			event.setCancelled(true);
 	}
 	
 	@EventHandler
 	public void onBlockPlace(BlockPlaceEvent event) {
+		event.setCancelled(false);
+		
 		if (event.getPlayer().getGameMode() != GameMode.CREATIVE)
 			event.setCancelled(true);
 	}

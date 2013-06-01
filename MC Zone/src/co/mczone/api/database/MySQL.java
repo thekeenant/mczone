@@ -37,11 +37,11 @@ public class MySQL extends Database {
 					+ this.portnmbr
 					+ "/"
 					+ this.database
-					+ "?zeroDateTimeBehavior=convertToNull&autoReconnect=true&failOverReadOnly=false&maxReconnects=10";
-			this.connection = DriverManager.getConnection(url, this.username,
-					this.password);
+					+ "?connectTimeout=3000&zeroDateTimeBehavior=convertToNull&autoReconnect=true&failOverReadOnly=false&maxReconnects=10";
+			this.connection = DriverManager.getConnection(url, this.username, this.password);
 			return this.connection;
 		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 		return null;
 	}

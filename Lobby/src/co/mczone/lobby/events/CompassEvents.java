@@ -1,6 +1,7 @@
 package co.mczone.lobby.events;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,7 +24,10 @@ public class CompassEvents implements Listener {
 	public void onInventoryClick(InventoryClickEvent event) {
 		Player p = (Player) event.getWhoClicked();
 		Inventory inv = event.getInventory();
-		event.setCancelled(true);
+
+		if (p.getGameMode() != GameMode.CREATIVE)
+			event.setCancelled(true);
+		
 		if (Chat.stripColor(inv.getTitle()).equalsIgnoreCase("MC Zone Games")) {
 			if (event.getRawSlot() > 9 || event.getCurrentItem() == null || event.getCurrentItem().getType() == Material.AIR)
 				return;
@@ -39,6 +43,7 @@ public class CompassEvents implements Listener {
 	public void onCompassClick(PlayerInteractEvent event) {
 		if (event.getItem() == null || event.getItem().getType() != Material.COMPASS)
 			return;
+		
 		Player p = event.getPlayer();
 		ItemStack stack = event.getItem();
 		if (stack.getItemMeta().hasDisplayName()) {

@@ -1,0 +1,39 @@
+name: Walls
+version: 2.4
+author: funkystudios
+main: co.mczone.walls.Walls
+startup: startup
+softdepend: [WorldGuard,MCZone]
+description: >
+             The Walls PVP
+commands:
+  kit:
+    description: Choose a kit of tools
+    aliases: ["kits", "join"]
+    usage: /kit (name)
+  help:
+    description: Get help
+    usage: /help
+  team:
+    description: Message team
+    usage: /team [msg]
+  teleport:
+    aliases: [tp,tpa]
+    description: Teleport to a player
+    usage: /teleport [player]
+  time:
+    aliases: [game]
+    description: check time
+    usage: /time
+  red:
+    description: choose red team
+    usage: /red
+  blue:
+    description: choose blue team
+    usage: /blue
+  yellow:
+    description: choose yellow team
+    usage: /yellow
+  green:
+    description: choose green team
+    usage: /green

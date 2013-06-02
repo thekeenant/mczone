@@ -129,11 +129,10 @@ public class Scheduler extends TimerTask {
 						new BukkitRunnable() {
 							@Override
 							public void run() {
-								for (Gamer g : Gamer
-										.getList()) {
+								for (Gamer g : Gamer.getList()) {
 									if (SurvivalGames.getWinner().getName().equals(g.getName())) {
-										g.getPlayer().kickPlayer(Chat.colors("&2[SG] &eYou have won this match! &8[&710 credits&8]"));
 										Gamer.get(g.getPlayer()).giveCredits(10);
+										g.getPlayer().kickPlayer(Chat.colors("&2[SG] &eYou have won this match! &8[&710 credits&8]"));
 									}
 									else
 										g.getPlayer().kickPlayer(Chat.colors("&2[SG] &eServer restarting for a new game!"));

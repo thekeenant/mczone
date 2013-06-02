@@ -2,7 +2,6 @@ package co.mczone.backend;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
@@ -44,8 +43,8 @@ public class MinecraftReceiever implements Runnable {
 		public void run() {
 			try {
 				respond();
-			} catch (Exception e) {
-				e.printStackTrace();
+			} catch (Exception ex) {
+				Chat.log("Error reading input (" + ex.getClass().getName() + ")");
 			}
 		}
 		
@@ -63,8 +62,8 @@ public class MinecraftReceiever implements Runnable {
 				new Thread(new Handler(sock)).start();
 				
 			}
-		} catch (IOException ex) {
-			ex.printStackTrace();
+		} catch (Exception ex) {
+			Chat.log("Error reading input (" + ex.getClass().getName() + ")");
 		}
 	}
 }

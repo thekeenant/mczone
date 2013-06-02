@@ -1,4 +1,4 @@
-package co.mczone.skywars.api;
+package co.mczone.walls.api;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +12,8 @@ import org.bukkit.potion.PotionEffect;
 import co.mczone.api.players.Gamer;
 import co.mczone.api.players.Permissible;
 import co.mczone.api.players.RankType;
-import co.mczone.skywars.SkyWars;
 import co.mczone.util.Chat;
+import co.mczone.walls.Walls;
 
 public class Kit implements Permissible {
 	@Getter static List<Kit> list = new ArrayList<Kit>();
@@ -45,6 +45,8 @@ public class Kit implements Permissible {
 		Kit k = (Kit) g.getVariable("kit");
 		
 		if (k == null) {
+			g.setVariable("kit", Kit.get("bruiser"));
+			k = Kit.get("bruiser");
 			return;
 		}
 		
@@ -55,7 +57,7 @@ public class Kit implements Permissible {
 		g.removePotionEffects();
 		
 		for (PotionEffect effect : k.getEffects())
-			g.addPotionEffect(effect);
+			g.addPotionEffect(effect, false);
 	}
 	
 	public static Kit get(String name) {
@@ -69,29 +71,28 @@ public class Kit implements Permissible {
 	@Override
 	public boolean hasPermission(Gamer g) {
 		@SuppressWarnings("unchecked")
-		List<Kit> purchases = (List<Kit>) g.getVariable("skywars-kits");
+		List<Kit> purchases = (List<Kit>) g.getVariable("walls-kits");
 		
 		RankType r = g.getRank().getType();
-
-		if (name.equals("archer"))
-			return true;
-		else if (name.equals("barbarian"))
-			return true;
-		else if (r.getLevel() >= RankType.TITAN.getLevel()) {
+		if (r.getLevel() >= RankType.TITAN.getLevel()) {
 			return true;
 		}
 		else if (r.getLevel() >= RankType.ELITE.getLevel()) {
-			if (SkyWars.getConf().getStringList("elite-kits").contains(name.toLowerCase()))
+			if (Walls.getConf().getStringList("elite-kits").contains(name.toLowerCase()))
 				return true;
 		}
 		else if (r.getLevel() >= RankType.VIP.getLevel()) {
-			if (SkyWars.getConf().getStringList("vip-kits").contains(name.toLowerCase()))
+			if (Walls.getConf().getStringList("vip-kits").contains(name.toLowerCase()))
 				return true;
 		}
-		else if (purchases.contains(this))
+		else if (purchases != null && purchases.contains(this))
 			return true;
-		else if (g.getVariable("skywars-vote") == this)
-			return true;
+		else {
+			if (name.equals("archer"))
+				return true;
+			if (name.equals("bruiser"))
+				return true;
+		}
 		
 		return false;
 	}

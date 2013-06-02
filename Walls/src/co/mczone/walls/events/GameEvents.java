@@ -1,4 +1,4 @@
-package co.mczone.skywars.events;
+package co.mczone.walls.events;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,15 +9,15 @@ import co.mczone.api.players.Gamer;
 import co.mczone.api.server.Hive;
 import co.mczone.events.custom.PlayerDamageEvent;
 import co.mczone.events.custom.PlayerKilledEvent;
-import co.mczone.skywars.SkyWars;
-import co.mczone.skywars.api.Arena;
-import co.mczone.skywars.api.ArenaState;
 import co.mczone.util.Chat;
+import co.mczone.walls.Walls;
+import co.mczone.walls.api.Arena;
+import co.mczone.walls.api.ArenaState;
 
 public class GameEvents implements Listener {
 
 	public GameEvents() {
-		SkyWars.getInstance().getServer().getPluginManager().registerEvents(this, SkyWars.getInstance());
+		Walls.getInstance().getServer().getPluginManager().registerEvents(this, Walls.getInstance());
 	}
 	
 	@EventHandler
@@ -42,7 +42,7 @@ public class GameEvents implements Listener {
 		t.setInvisible(true);
 		m.updateScoreboard();
 		
-		String broadcast = "&4[SkyWars] &6" + event.getDeathMessage();
+		String broadcast = "&4[Walls] &6" + event.getDeathMessage();
 		if (event.isPlayerKill()) {
 			Gamer p = Gamer.get(event.getPlayer());
 			p.giveCredits(2);
@@ -73,19 +73,24 @@ public class GameEvents implements Listener {
 		Player t = event.getTarget();
 		event.setCancelled(true);
 		
+		if (Gamer.get(t).isInvisible())
+			return;
+		
 		if (Gamer.get(t).getVariable("arena") != null) {
+			
 			Arena targetMatch = (Arena) Gamer.get(t).getVariable("arena");
+			
 			if (targetMatch.getState() != ArenaState.STARTED)
 				return;
-			
-			// Natural damage?
+
+			// Is natural damage
 			if (!event.isDamageByEntity()) {
 				event.setCancelled(false);
 				return;
 			}
 			
-			// Player damage?
-			if (event.isDamageByEntity()) {
+			// Is player damage
+			else {
 				Arena playerMatch = (Arena) Gamer.get(p).getVariable("arena");
 				
 				if (playerMatch == targetMatch) {

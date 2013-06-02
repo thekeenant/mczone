@@ -22,8 +22,8 @@ public class VotePanelEvents implements Listener {
 	public void onInventoryClick(InventoryClickEvent event) {
 		Player p = (Player) event.getWhoClicked();
 		Inventory inv = event.getInventory();
-		event.setCancelled(true);
 		if (Chat.stripColor(inv.getTitle()).equalsIgnoreCase("Voting Panel")) {
+			event.setCancelled(true);
 			if (event.getRawSlot() > 9 || event.getCurrentItem() == null || event.getCurrentItem().getType() == Material.AIR)
 				return;
 			ItemStack i = event.getCurrentItem();

@@ -1,0 +1,24 @@
+name: Walls
+main: co.mczone.walls.Walls
+version: 0.6.0 beta
+depend: [MC Zone]
+author: funkystudios
+description: >
+             MC Zone Walls
+commands:
+  arenas:
+    aliases: [games,matches]
+    description: View Walls matches
+    default: true
+  walls:
+    description: Walls administration
+    default: true
+  leave:
+    description: Walls leave command
+    default: true
+  help:
+    description: Walls help command
+    default: true
+  kit:
+    description: Walls kit command
+    default: true

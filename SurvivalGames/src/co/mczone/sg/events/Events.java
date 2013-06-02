@@ -25,6 +25,7 @@ import co.mczone.api.players.Gamer;
 import co.mczone.events.custom.PlayerDamageEvent;
 import co.mczone.sg.Scheduler;
 import co.mczone.sg.api.Game;
+import co.mczone.sg.api.Map;
 import co.mczone.sg.api.State;
 
 public class Events implements Listener {
@@ -137,6 +138,10 @@ public class Events implements Listener {
 	public void onPlayerMove(PlayerMoveEvent event) {
 		Gamer g = Gamer.get(event.getPlayer().getName());
 		if (Scheduler.getState() == State.WAITING && !g.getBoolean("moveable")) {
+			
+			if (Map.getCurrent().getWorld() != g.getPlayer().getWorld())
+				return;
+			
 			Location to = g.getLocation("spawn-block");
 			if (to == null)
 				return;

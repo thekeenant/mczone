@@ -1,4 +1,4 @@
-package co.mczone.skywars.api;
+package co.mczone.walls.api;
 
 import lombok.Getter;
 

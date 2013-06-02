@@ -39,7 +39,6 @@ public class Map {
 	@Getter @Setter List<String> votes = new ArrayList<String>();
 	@Getter YamlConfiguration config;
 	
-	@Getter HashMap<Location, Player> places = new HashMap<Location, Player>();
 	
 	public Map(String title, String worldName, List<Location> spawns, Location specSpawn) {
         list.add(this);
@@ -47,8 +46,6 @@ public class Map {
 		this.title = title;
 		this.worldName = worldName;
 		this.spawns = spawns;
-		for (Location l : spawns)
-			places.put(l, null);
 		
 		this.specSpawn = specSpawn;
         File file = new File(SurvivalGames.getInstance().getDataFolder() + File.separator + "maps", worldName + ".yml");
@@ -72,14 +69,19 @@ public class Map {
 				for (Location l : getSpawns())
 					l.setWorld(getWorld());
 				getSpecSpawn().setWorld(getWorld());
+				
     			for (Gamer g : Game.getTributes()) {
-    				places.put(getNextSpawn(), g.getPlayer());
-    				g.setVariable("spawn-block", getNextSpawn());
-    				g.getPlayer().teleport((Location) g.getVariable("spawn-block"));
+
+    				g.setVariable("moveable", true);
+    				Location next = getNextSpawn(g.getPlayer());
+    				g.setVariable("spawn-block", next);
+    				
+    				g.teleport(next);
     				g.setInvisible(false);
     				g.setVariable("moveable", false);
     				g.getPlayer().setHealth(20);
     				g.clearInventory();
+    				g.clearScoreboard();
     			}
 			}
 		}.runTask(SurvivalGames.getInstance());
@@ -155,14 +157,17 @@ public class Map {
         Chat.log("Loaded a total of " + Map.getList().size() + " maps!");
     }
 	
-	public Location getNextSpawn() {
-		Location l = null;
-		for (Entry<Location, Player> e : Map.getCurrent().getPlaces().entrySet()) {
-			if (e.getValue() == null) {
-				l = e.getKey();
-			}
+	HashMap<Integer, Player> places = new HashMap<Integer, Player>();
+	public Location getNextSpawn(Player p) {
+		for (Location l : spawns) {
+			int index = spawns.indexOf(l);
+			if (places.containsKey(index))
+				continue;
+			
+			places.put(index, p);
+			return l;
 		}
-		return l;
+		return null;
 	}
 	
 	public World getWorld() {

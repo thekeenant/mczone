@@ -1,4 +1,4 @@
-package co.mczone.skywars.events;
+package co.mczone.walls.events;
 
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -10,17 +10,17 @@ import org.bukkit.scheduler.BukkitRunnable;
 import co.mczone.api.players.Gamer;
 import co.mczone.api.players.SignChangePacket;
 import co.mczone.events.custom.SignClickEvent;
-import co.mczone.skywars.SkyWars;
-import co.mczone.skywars.api.Arena;
-import co.mczone.skywars.api.ArenaState;
-import co.mczone.skywars.api.Kit;
-import co.mczone.skywars.api.TeamColor;
 import co.mczone.util.Chat;
+import co.mczone.walls.Walls;
+import co.mczone.walls.api.Arena;
+import co.mczone.walls.api.ArenaState;
+import co.mczone.walls.api.Kit;
+import co.mczone.walls.api.TeamColor;
 
 public class SignEvents implements Listener {
 	
 	public SignEvents() {
-		SkyWars.getInstance().getServer().getPluginManager().registerEvents(this, SkyWars.getInstance());
+		Walls.getInstance().getServer().getPluginManager().registerEvents(this, Walls.getInstance());
 	}
 	
 	@EventHandler
@@ -57,7 +57,7 @@ public class SignEvents implements Listener {
 				Kit.giveKit(p);
 			}
 			
-		}.runTaskLater(SkyWars.getInstance(), 2);
+		}.runTaskLater(Walls.getInstance(), 2);
 		
 		
 		String[] arr = new String[4];

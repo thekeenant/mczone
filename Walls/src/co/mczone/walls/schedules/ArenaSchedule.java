@@ -1,21 +1,21 @@
-package co.mczone.skywars.schedules;
+package co.mczone.walls.schedules;
 
 import lombok.Getter;
 import lombok.Setter;
 
 import org.bukkit.scheduler.BukkitRunnable;
 
-import co.mczone.skywars.SkyWars;
-import co.mczone.skywars.api.Arena;
-import co.mczone.skywars.api.ArenaState;
 import co.mczone.util.Chat;
+import co.mczone.walls.Walls;
+import co.mczone.walls.api.Arena;
+import co.mczone.walls.api.ArenaState;
 
 public class ArenaSchedule extends BukkitRunnable {
-	public static int TIME_LIMIT = SkyWars.getConf().getInt("time-limit", 60 * 10);
+	public static int TIME_LIMIT = Walls.getConf().getInt("time-limit", 60 * 10);
 	@Getter @Setter int time = 0;
 	@Getter @Setter Arena match;
 	
-	@Getter @Setter int countdown = SkyWars.getConf().getInt("countdown", 60 * 2);
+	@Getter @Setter int countdown = Walls.getConf().getInt("countdown", 60 * 2);
 	
 	public ArenaSchedule(Arena match) {
 		this.match = match;
@@ -37,7 +37,7 @@ public class ArenaSchedule extends BukkitRunnable {
 					public void run() {
 						a.getWorld().setTime(16000);
 					}
-				}.runTask(SkyWars.getInstance());
+				}.runTask(Walls.getInstance());
 			}
 		}
 		
@@ -47,7 +47,7 @@ public class ArenaSchedule extends BukkitRunnable {
 			if (match.getRedPlayers().size() >= Arena.MAX_PER_TEAM && match.getBluePlayers().size() >= Arena.MAX_PER_TEAM) 
 				start = true;
 			else if (countdown == 10) {
-				if (match.getRedPlayers().size() < 1 || match.getBluePlayers().size() < 1) {
+				if (match.getRedPlayers().size() < Arena.MIN_PER_TEAM || match.getBluePlayers().size() < Arena.MIN_PER_TEAM) {
 					a.sendMessage("&cNeed at least 1 player per team to start the match!");
 					resetCountdown();
 					return;
@@ -75,7 +75,7 @@ public class ArenaSchedule extends BukkitRunnable {
 						time--;
 					}
 					
-				}.runTaskTimerAsynchronously(SkyWars.getInstance(), 0, 20);
+				}.runTaskTimerAsynchronously(Walls.getInstance(), 0, 20);
 				return;
 			}
 			if (time % 30 == 0) {
@@ -95,16 +95,23 @@ public class ArenaSchedule extends BukkitRunnable {
 				broadcast = true;
 			
 			if (broadcast)
-				Chat.server("&7Game ending automatically in &f" + Chat.time(TIME_LIMIT - time) + "&7");
+				a.sendMessage("&7Game ending automatically in &f" + Chat.time(TIME_LIMIT - time) + "&7");
 				
 			// Game over?
-			if (time == TIME_LIMIT || match.getBluePlayers().size() == 0 || match.getRedPlayers().size() == 0)
-				match.endGame();
+			if (time == TIME_LIMIT || match.getBluePlayers().size() == 0 || match.getRedPlayers().size() == 0) {
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						match.endGame();
+					}
+					
+				}.runTask(Walls.getInstance());
+			}
 		}
 	}
 
 	public void resetCountdown() {
-		countdown = SkyWars.getConf().getInt("countdown", 60 * 2);
+		countdown = Walls.getConf().getInt("countdown", 60 * 2);
 	}
 	
 }

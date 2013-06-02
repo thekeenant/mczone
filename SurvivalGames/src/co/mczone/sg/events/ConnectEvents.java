@@ -57,8 +57,8 @@ public class ConnectEvents implements Listener {
 			if (Game.getTributes().size() < 24) {
 				g.setInvisible(false);
 				
-				Location l = Map.getCurrent().getNextSpawn();
-				l.add(0, Map.getCurrent().getWorld().getHighestBlockYAt(l) + 1, 0);
+				Location l = Map.getCurrent().getNextSpawn(event.getPlayer());
+				
 				g.setVariable("spawn-block", l);
 				g.getPlayer().teleport(l);
 				g.setVariable("moveable", false);

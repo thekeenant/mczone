@@ -95,7 +95,7 @@ public class ArenaSchedule extends BukkitRunnable {
 				broadcast = true;
 			
 			if (broadcast)
-				Chat.server("&7Game ending automatically in &f" + Chat.time(TIME_LIMIT - time) + "&7");
+				a.sendMessage("&7Game ending automatically in &f" + Chat.time(TIME_LIMIT - time) + "&7");
 				
 			// Game over?
 			if (time == TIME_LIMIT || match.getBluePlayers().size() == 0 || match.getRedPlayers().size() == 0) {

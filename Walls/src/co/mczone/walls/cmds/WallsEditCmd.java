@@ -1,4 +1,4 @@
-package co.mczone.skywars.cmds;
+package co.mczone.walls.cmds;
 
 import lombok.Getter;
 
@@ -9,7 +9,7 @@ import co.mczone.api.commands.SubCommand;
 import co.mczone.api.players.Gamer;
 import co.mczone.util.Chat;
 
-public class SkyWarsEditCmd implements SubCommand {
+public class WallsEditCmd implements SubCommand {
 	@Getter String about = "Toggle map edit mode";
 	
 	@Override
@@ -22,11 +22,11 @@ public class SkyWarsEditCmd implements SubCommand {
 		
 		if ((boolean) g.getVariable("edit") == true) {
 			g.getPlayer().setGameMode(GameMode.CREATIVE);
-			Chat.player(sender, "&eYou have entered map edit mode. Remember to /skywars save");
+			Chat.player(sender, "&eYou have entered map edit mode. Remember to /walls save");
 		}
 		else {
 			g.getPlayer().setGameMode(GameMode.SURVIVAL);
-			Chat.player(sender, "&eYou have left map edit mode. Remember to /skywars save");
+			Chat.player(sender, "&eYou have left map edit mode. Remember to /walls save");
 		}
 		return false;
 	}

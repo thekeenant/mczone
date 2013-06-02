@@ -29,7 +29,7 @@ public class KitCmd implements CommandExecutor, Permissible {
 				kits += "&f, ";
 			}
 			
-			Chat.player(g, kits.substring(kits.length(), kits.length() -2));
+			Chat.player(g, kits.substring(0, kits.length() - 2));
 			Chat.player(g, "&7Choose your kit with &o/kit <kit name>");
 			return true;
 		}

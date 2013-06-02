@@ -3,7 +3,7 @@ package co.mczone.pets.cmds;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import co.mczone.cmds.SubCommand;
+import co.mczone.api.commands.SubCommand;
 import co.mczone.pets.api.PetInstance;
 import co.mczone.util.Chat;
 

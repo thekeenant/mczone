@@ -14,6 +14,8 @@ import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -22,6 +24,7 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
+import org.bukkit.util.Vector;
 
 import co.mczone.api.players.Gamer;
 import co.mczone.api.server.Hive;
@@ -96,6 +99,10 @@ public class Arena {
 		setState(ArenaState.STARTED);
 		schedule.setTime(0);
 		setStarting(false);
+		
+		for (Entity e : getWorld().getEntities())
+			if (e instanceof Monster)
+				e.remove();
 
 		
 		String query = "INSERT INTO ghost_player (username, game_id, kit, team) VALUES ";		
@@ -116,8 +123,13 @@ public class Arena {
 		for (Player p : getRedPlayers()) {
 			Gamer g = Gamer.get(p);
 			p.teleport(this.getRedSpawn());
+			
+			p.setFallDistance(0.0F);
+			p.setVelocity(new Vector(0,0,0));
 			p.setFlying(false);
 			p.setAllowFlight(false);
+			p.setFallDistance(0.0F);
+			
 			p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 2147483647, 0), true);
 			g.setVariable("inMatch", true);
 			
@@ -173,8 +185,6 @@ public class Arena {
 			g.setInvisible(false);
 			g.removePotionEffects();
 			
-			g.clearScoreboard();
-			
 			p.setHealth(20);
 			Kit.giveKit(p);
 			
@@ -190,9 +200,14 @@ public class Arena {
 	}
 	
 	public void loadWorld() {
+		new WorldCreator(worldName).createWorld();
 		new WorldCreator(getCurrent().worldName).createWorld();
 		getWorld().setAutoSave(false);
 		setState(ArenaState.WAITING);
+		
+		for (Entity e : getWorld().getEntities())
+			if (e instanceof Monster)
+				e.remove();
 	}
 	
 	private void registerTeams() {
@@ -254,10 +269,10 @@ public class Arena {
 				// Invisible means dead
 				if (Gamer.get(p.getName()).isInvisible()) {
 					clearScore(p.getName());
-					setScore(name, 2);
+					setScore(name, 1);
 					continue;
 				}
-			setScore(name, 2);
+			setScore(name, 1);
 		}
 	}
 	
@@ -326,6 +341,8 @@ public class Arena {
 		g.setVariable("arena", this);
 		g.setVariable("team", team);
 	
+		p.setFlySpeed(0.1F);
+		
 		p.setAllowFlight(true);
 		p.setFlying(true);
 		p.setScoreboard(scoreboard);

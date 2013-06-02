@@ -94,56 +94,30 @@ public class GameEvents implements Listener {
         
         if (from.clone().add(0, -1, 0).getBlock().getTypeId() == FLOOR)
         	return;
-        
-        for (Block block : getPortalNear(world, to.getBlockX(), to.getBlockY(), to.getBlockZ())) {
-            for (BlockFace bf : BlockFace.values()) {
-                Block relative = block.getRelative(bf);
-                if (relative.getTypeId() == SIGN) {
-                	
-                	// Specific server
-                	Sign sign = (Sign) relative.getState();
-                	Game game = null;
-                	for (Game g : Game.getList()) {
-                		String line_1 = Chat.stripColor(sign.getLine(0));
-                		String line_2 = Chat.stripColor(sign.getLine(1));
-                		if (g.getLine_1().equalsIgnoreCase(line_1))
-                    		if (g.getLine_2().equalsIgnoreCase(line_2))
-                				game = g;
-                	}
-                	
-                	if (game != null) {
-                		Chat.player(event.getPlayer(), "&7&oConnecting you to " + game.getTitle());
-                		Util.connect(event.getPlayer(), game.getAddress());
-                		return;
-                	}
-                	
-                	// Minigame with range of servers
-                    MiniGame g = null;
-                	ServerSign server = null;
-                    for (MiniGame ga : MiniGame.getList()) {                        	
-                    	for (ServerSign s : ga.getSigns()) {
-                    		if (s.getBlock().getX() == relative.getX() && s.getBlock().getZ() == relative.getZ()) {
-                    			server = s;
-                    			g = ga;
-                    			break;
-                    		}
-                    	}
-                    }
-                    
-                    if (g == null || server == null)
-                    	return;
-                    
-                    if (server.isUsed() == false) {
-                    	sign.setLine(1, "");
-                    	sign.setLine(2, Chat.colors("&0&lNo Servers"));
-                    	sign.setLine(3, "");
-                    	return;
-                    }
-                	
-                	Util.connect(event.getPlayer(), server.getCurrent().getAddress());
-                }
-            }
+
+        MiniGame g = null;
+    	Sign sign = null;
+    	ServerSign server = null;
+        for (MiniGame game : MiniGame.getList()) {
+        	Block b = game.getSigns().get(0).getBlock();
+        	if (b.getLocation().distance(event.getTo()) < 3.0) {
+        		g = game;
+        		server = game.getSigns().get(0);
+        		sign = (Sign) game.getSigns().get(0).getBlock().getState();
+        	}
         }
+                              
+        if (g == null || server == null)
+        	return;
+        
+        if (server.isUsed() == false) {
+        	sign.setLine(1, "");
+        	sign.setLine(2, Chat.colors("&0&lNo Servers"));
+        	sign.setLine(3, "");
+        	return;
+        }
+    	
+    	Util.connect(event.getPlayer(), server.getCurrent().getAddress());
     }
 	
     private Set<Block> getPortalNear(World world, int x, int y, int z) {

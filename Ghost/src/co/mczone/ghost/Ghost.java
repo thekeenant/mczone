@@ -104,12 +104,16 @@ public class Ghost extends JavaPlugin {
 			int id = conf.getInt(base + "id", 0);
 
 			String worldName = conf.getString(base + "world", null);
+			
+			new WorldCreator(worldName).createWorld();
+			
 			Block sign = conf.getBlock(base + "sign");
 			
 			List<Map> maps = new ArrayList<Map>();
 			for (String s : conf.getStringList(base + "maps")) {
 				maps.add(Map.get(s));
 			}
+			
 			
 			new Arena(arenaName, worldName, id, sign, maps);
 		}

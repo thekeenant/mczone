@@ -98,8 +98,15 @@ public class ArenaSchedule extends BukkitRunnable {
 				Chat.server("&7Game ending automatically in &f" + Chat.time(TIME_LIMIT - time) + "&7");
 				
 			// Game over?
-			if (time == TIME_LIMIT || match.getBluePlayers().size() == 0 || match.getRedPlayers().size() == 0)
-				match.endGame();
+			if (time == TIME_LIMIT || match.getBluePlayers().size() == 0 || match.getRedPlayers().size() == 0) {
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						match.endGame();
+					}
+					
+				}.runTask(Ghost.getInstance());
+			}
 		}
 	}
 

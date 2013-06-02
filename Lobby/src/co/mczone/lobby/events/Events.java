@@ -7,8 +7,8 @@ import java.util.List;
 
 import lombok.Getter;
 
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -34,6 +34,7 @@ import co.mczone.api.players.Gamer;
 import co.mczone.api.players.RankType;
 import co.mczone.lobby.Lobby;
 import co.mczone.util.Chat;
+import co.mczone.util.RandomUtil;
 
 public class Events implements Listener {
 	public Events() {
@@ -55,7 +56,17 @@ public class Events implements Listener {
 		p.setHealth(20);
 		p.setFoodLevel(20);
 		p.getInventory().clear();
-		p.teleport(event.getPlayer().getWorld().getSpawnLocation().clone().add(0.5,20,0.5));
+		
+		Location l = event.getPlayer().getWorld().getSpawnLocation();
+		l.setX(14.5);
+		l.setY(10.5);
+		l.setZ(-795.5);
+		l.setPitch(0.5F);
+		l.setYaw(90 * RandomUtil.between(1, 4));
+		
+		
+		
+		p.teleport(l);
 		p.setGameMode(GameMode.SURVIVAL);
 		p.getInventory().addItem(Lobby.book);
 		p.getInventory().addItem(Lobby.compass);
@@ -161,8 +172,15 @@ public class Events implements Listener {
 			return;
 		event.setCancelled(true);
 		
-		if (event.getCause()==DamageCause.VOID)
-			event.getEntity().teleport(Bukkit.getWorld("void").getSpawnLocation());
+		if (event.getCause()==DamageCause.VOID) {
+			Location l = event.getEntity().getWorld().getSpawnLocation();
+			l.setX(14.5);
+			l.setY(10.5);
+			l.setZ(-795.5);
+			l.setPitch(0.5F);
+			l.setYaw(90 * RandomUtil.between(1, 4));
+			event.getEntity().teleport(l);
+		}
 	}
 	
 	/*

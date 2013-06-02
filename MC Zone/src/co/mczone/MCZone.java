@@ -30,7 +30,7 @@ public class MCZone extends JavaPlugin {
 		instance = this;
 		
 		Chat.log("Connecting to database...");
-		new Hive(new MySQL("alpha.mczone.co", "3306", "mczone", "root", "johnt#@!"), new ConfigAPI(this));
+		new Hive(new MySQL("www.mczone.co", "3306", "mczone", "root", "johnt#@!"), new ConfigAPI(this));
 
 		Hive.getInstance().setStatus(Status.OPEN);
 		

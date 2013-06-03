@@ -71,7 +71,7 @@ public class Map {
 				getSpecSpawn().setWorld(getWorld());
 				
     			for (Gamer g : Game.getTributes()) {
-
+    				g.clearVariable("parkour");
     				g.setVariable("moveable", true);
     				Location next = getNextSpawn(g.getPlayer());
     				g.setVariable("spawn-block", next);

@@ -10,6 +10,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -49,7 +50,9 @@ public class GeneralEvents implements Listener {
 	
 	@EventHandler
 	public void onEntitySpawn(CreatureSpawnEvent event) {
-		event.setCancelled(true);
+		event.setCancelled(false);
+		if (event.getSpawnReason() != SpawnReason.EGG && event.getSpawnReason() != SpawnReason.CUSTOM)
+			event.setCancelled(true);
 	}
 	        
 	@EventHandler

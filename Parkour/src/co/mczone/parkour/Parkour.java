@@ -27,7 +27,6 @@ import co.mczone.util.Chat;
 public class Parkour extends JavaPlugin implements Listener {
 	@Getter static Parkour instance;
 	@Getter ConfigAPI configAPI;
-	@Getter static HashMap<String, Course> current = new HashMap<String, Course>();
 	
 	public void onEnable() {
 		Bukkit.getPluginManager().registerEvents(this, this);
@@ -94,6 +93,7 @@ public class Parkour extends JavaPlugin implements Listener {
 			return;
 		
 		Player p = event.getPlayer();
+		Gamer g = Gamer.get(p);
 		
 		Block b = event.getClickedBlock();
 		for (Course c : Course.getList()) {
@@ -101,7 +101,7 @@ public class Parkour extends JavaPlugin implements Listener {
 			Block test2 = c.getEnd();
 
 			if (test1 != null && test1.getX() == b.getX() && test1.getY() == b.getY() && test1.getZ() == b.getZ()) {
-				current.put(p.getName(), c);
+				g.setVariable("parkour", c);
 				p.teleport(c.getStart());
 				return;
 			}
@@ -111,7 +111,7 @@ public class Parkour extends JavaPlugin implements Listener {
 				if (c.getNextCourse() != null) {
 					Course next = Course.get(c.getNextCourse());
 					if (next != null) {
-						current.put(p.getName(), next);
+						g.setVariable("parkour", next);
 						p.teleport(next.getStart());
 						return;
 					}
@@ -125,10 +125,10 @@ public class Parkour extends JavaPlugin implements Listener {
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent event) {
 		Player p = event.getPlayer();
+		Gamer g = Gamer.get(p);
 		if (p.getLocation().getY() < configAPI.getInt("void", 66)) {
-			if (current.containsKey(p.getName())) {
-				Course c = current.get(p.getName());
-				p.teleport(c.getStart());
+			if (g.getVariable("parkour") != null) {
+				p.teleport(((Course) g.getVariable("parkour")).getStart());
 			}
 		}
 	}
@@ -142,9 +142,9 @@ public class Parkour extends JavaPlugin implements Listener {
 			return;
 		
 		Player p = (Player) event.getEntity();
-		if (current.containsKey(p.getName())) {
-			Course c = current.get(p.getName());
-			p.teleport(c.getStart());
+		Gamer g = Gamer.get(p);
+		if (g.getVariable("parkour") != null) {
+			p.teleport(((Course) g.getVariable("parkour")).getStart());
 		}
 	}
 }

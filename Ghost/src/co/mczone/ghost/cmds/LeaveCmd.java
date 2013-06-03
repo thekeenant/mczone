@@ -24,6 +24,7 @@ public class LeaveCmd implements CommandExecutor,Permissible {
 		
 		Arena a = (Arena) g.getVariable("arena");
 		a.leave(g.getPlayer());
+		g.setInvisible(false);
     	g.teleport(Ghost.getLobby().getSpawn());
 		Chat.player(sender, "&aYou have left your current match.");
 		return true;

@@ -3,6 +3,8 @@ package co.mczone.ghost.schedules;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import co.mczone.ghost.Ghost;
@@ -30,12 +32,19 @@ public class ArenaSchedule extends BukkitRunnable {
 		
 		if (time % 3 == 0) {
 			match.updateSign();
-			
+		}
+		
+		if (time % 10 == 0) {
 			if (match.getWorld() != null) {
 				new BukkitRunnable() {
 					@Override
 					public void run() {
 						a.getWorld().setTime(16000);
+						
+						for (LivingEntity e : a.getWorld().getLivingEntities()) {
+							if (e instanceof Player == false)
+								e.remove();
+						}
 					}
 				}.runTask(Ghost.getInstance());
 			}

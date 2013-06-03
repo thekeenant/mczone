@@ -138,13 +138,16 @@ public class Events implements Listener {
 	public void onPlayerMove(PlayerMoveEvent event) {
 		Gamer g = Gamer.get(event.getPlayer().getName());
 		if (Scheduler.getState() == State.WAITING && !g.getBoolean("moveable")) {
-			
-			if (Map.getCurrent().getWorld() != g.getPlayer().getWorld())
-				return;
-			
+
 			Location to = g.getLocation("spawn-block");
 			if (to == null)
 				return;
+			
+			if (Map.getCurrent().getWorld() != g.getPlayer().getWorld()) {
+				event.getPlayer().teleport(to);
+				return;
+			}
+
 			to.setYaw(event.getPlayer().getLocation().getYaw());
 			to.setPitch(event.getPlayer().getLocation().getPitch());
 			if (to.getBlock().getX() != event.getTo().getBlock().getX())

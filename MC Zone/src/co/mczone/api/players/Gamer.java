@@ -345,4 +345,11 @@ public class Gamer {
 		}
 		getPlayer().sendPluginMessage(MCZone.getInstance(), "BungeeCord", b.toByteArray());
 	}
+
+	public void setNameTag(String name) {
+		if (name.length() > 16)
+			name = name.substring(0, 16);
+		
+		getPlayer().setCustomName(name);
+	}
 }

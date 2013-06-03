@@ -37,7 +37,12 @@ public class KitCmd implements CommandExecutor, Permissible {
 		String s = args[0];
 		Kit kit = Kit.get(s);
 		if (kit == null) {
-			Chat.player(g, "&cYou can purchase this kit at www.mczone.co/shop");
+			Chat.player(g, "&cThe kit, " + args[0] + ", does not exist!");
+			return true;
+		}
+		
+		if (!kit.hasPermission(g)) {
+			Chat.player(g, "You can purchase this kit at www.mczone.co/shop");
 			return true;
 		}
 		

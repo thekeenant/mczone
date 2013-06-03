@@ -47,7 +47,6 @@ public class Kit implements Permissible {
 		if (k == null) {
 			g.setVariable("kit", Kit.get("bruiser"));
 			k = Kit.get("bruiser");
-			return;
 		}
 		
 		List<ItemStack> items = k.getItems();

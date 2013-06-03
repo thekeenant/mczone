@@ -41,7 +41,14 @@ public class DataHandler implements Runnable {
 					}
 					else {
 						if (get.split(":").length != 2) {
-							bw.write("error");
+							String result = "";
+							for (ServerStatus server : ServerStatus.getServers().get(get)) {
+								result += server.getName() + ":" + server.getId() + ",";
+								result += server.getPlayerCount() + ",";
+								result += server.getStatus().getValue() + "/";
+							}
+							
+							bw.write(result);
 						}
 						else {
 							String name = get.split(":")[0];

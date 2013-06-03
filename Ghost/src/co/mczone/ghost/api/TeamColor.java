@@ -6,6 +6,7 @@ import org.bukkit.ChatColor;
 
 public enum TeamColor {
 	RED("Red", ChatColor.RED),
+	SPEC("spec", ChatColor.GRAY),
 	BLUE("Blue", ChatColor.BLUE);
 	
 	@Getter String name;

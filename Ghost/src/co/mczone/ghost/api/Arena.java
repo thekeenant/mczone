@@ -24,7 +24,6 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
-import org.bukkit.util.Vector;
 
 import co.mczone.api.players.Gamer;
 import co.mczone.api.server.Hive;
@@ -48,8 +47,13 @@ public class Arena {
 	Sign sign;
 	
 	@Getter int gameID;
+
+	@Getter Scoreboard specScoreboard;
+	@Getter Team specPlayers;
+	@Getter Objective specSidebar;
 	
 	@Getter Scoreboard scoreboard;
+	
 	@Getter Objective sidebar;
 	@Getter Team red;
 	@Getter Team blue;
@@ -125,7 +129,6 @@ public class Arena {
 			p.teleport(this.getRedSpawn());
 			
 			p.setFallDistance(0.0F);
-			p.setVelocity(new Vector(0,0,0));
 			p.setFlying(false);
 			p.setAllowFlight(false);
 			p.setFallDistance(0.0F);
@@ -143,8 +146,12 @@ public class Arena {
 		for (Player p : getBluePlayers()) {
 			Gamer g = Gamer.get(p);
 			p.teleport(this.getBlueSpawn());
+			
+			p.setFallDistance(0.0F);
 			p.setFlying(false);
 			p.setAllowFlight(false);
+			p.setFallDistance(0.0F);
+			
 			p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 2147483647, 0), true);
 			g.setVariable("inMatch", true);
 			
@@ -188,10 +195,10 @@ public class Arena {
 			p.setHealth(20);
 			Kit.giveKit(p);
 			
-			if (g.getVariable("team") == null)
-				join(p);
-			else
+			if (g.getVariable("team") != null && g.getVariable("team") != "spec")
 				join(p, (String) g.getVariable("team"));
+			else
+				join(p);
 		}
 		
 		if (TRACK_GAMES) {
@@ -226,9 +233,18 @@ public class Arena {
 		blue.setCanSeeFriendlyInvisibles(true);
 		blue.setPrefix(ChatColor.BLUE + "");
 
-		sidebar = scoreboard.registerNewObjective("test", "dummy");
+		sidebar = scoreboard.registerNewObjective("players", "dummy");
 		sidebar.setDisplaySlot(DisplaySlot.SIDEBAR);
-		sidebar.setDisplayName("Teams (0 means dead)");
+		sidebar.setDisplayName("Teams");
+		
+		this.specScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+		specPlayers = this.specScoreboard.registerNewTeam("players");
+		specPlayers.setCanSeeFriendlyInvisibles(true);
+		specPlayers.setPrefix(ChatColor.GRAY + "");
+		
+		specSidebar = scoreboard.registerNewObjective("specs", "dummy");
+		specSidebar.setDisplaySlot(DisplaySlot.SIDEBAR);
+		specSidebar.setDisplayName("Teams");
 	}
 	
 	public void updateScoreboard() {
@@ -279,6 +295,9 @@ public class Arena {
 	public void setScore(String key, int value) {
 		Score score = sidebar.getScore(Bukkit.getOfflinePlayer(Chat.colors(key)));
 		score.setScore(value);
+		
+		score = specSidebar.getScore(Bukkit.getOfflinePlayer(Chat.colors(key)));
+		score.setScore(value);
 	}
 	
 	public void clearScore(String key) {
@@ -328,16 +347,26 @@ public class Arena {
 	}
 	
 	public TeamColor join(Player p, String team) {
+		Gamer g = Gamer.get(p);
+		
 		if (team.equals("spec")) {
-			// something special?
+			specPlayers.addPlayer(p);
+			p.setScoreboard(specScoreboard);
+			g.setInvisible(true);
+		}
+		else if (team.equals("red")) {
+			specPlayers.addPlayer(p);
+			red.addPlayer(p);
+			p.setScoreboard(scoreboard);
+			g.setNameTag(ChatColor.RED + p.getName());
+		}
+		else if (team.equals("blue")) {
+			specPlayers.addPlayer(p);
+			blue.addPlayer(p);
+			p.setScoreboard(scoreboard);
+			g.setNameTag(ChatColor.BLUE + p.getName());
 		}
 		
-		if (team.equals("red"))
-			red.addPlayer(p);
-		else if (team.equals("blue"))
-			blue.addPlayer(p);
-		
-		Gamer g = Gamer.get(p);
 		g.setVariable("arena", this);
 		g.setVariable("team", team);
 	
@@ -345,7 +374,6 @@ public class Arena {
 		
 		p.setAllowFlight(true);
 		p.setFlying(true);
-		p.setScoreboard(scoreboard);
 		p.teleport(getSpawn());
 		return TeamColor.valueOf(team.toUpperCase());
 	}
@@ -357,6 +385,7 @@ public class Arena {
 		g.clearVariable("team");
 		g.setFlying(false);
 		g.setAllowFlight(false);
+		g.setInvisible(false);
 		g.removePotionEffects();
 		scoreboard.getPlayerTeam(Bukkit.getOfflinePlayer(p.getName())).removePlayer(Bukkit.getOfflinePlayer(p.getName()));
 		g.clearScoreboard();

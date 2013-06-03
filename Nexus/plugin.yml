@@ -1,0 +1,8 @@
+name: Nexus
+main: co.mczone.nexus.Nexus
+version: 0.6.0 beta
+depend: [MC Zone]
+author: funkystudios
+description: >
+             MC Zone Nexus Kit PVP
+commands:

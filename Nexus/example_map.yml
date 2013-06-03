@@ -1,0 +1,12 @@
+info:
+  world: example
+  title: Example
+  version: 1.5.2
+  creators:
+  - funkystudios
+  - Notch
+teams:
+  darkness:
+    title: Darkness
+    color: gray
+    spawn: 

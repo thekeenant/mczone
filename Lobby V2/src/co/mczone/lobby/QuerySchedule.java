@@ -7,6 +7,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import co.mczone.MCZone;
 import co.mczone.lobby.api.Portal;
+import co.mczone.lobby.api.ServerSign;
 import co.mczone.lobby.api.ServerStatus;
 import co.mczone.lobby.api.Status;
 
@@ -37,7 +38,9 @@ public class QuerySchedule extends BukkitRunnable {
 			}
 		}
 		
-		for (Sign )
+		for (ServerSign sign : ServerSign.getList()) {
+			
+		}
 	}
 	
 	public String query() {

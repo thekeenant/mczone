@@ -17,6 +17,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import co.mczone.api.modules.Coordinate;
+
 public class ConfigAPI {
 	@Getter FileConfiguration config;
     
@@ -105,6 +107,16 @@ public class ConfigAPI {
 		World world = Bukkit.getWorld(worldName);
 		Location r = new Location(world, x, y, z, yaw, pitch);
 		return r;
+	}
+	
+	public Coordinate getCoordinate(String s) {
+		String raw = config.getString(s);
+		Double x = Double.parseDouble(raw.split(",")[0]);
+		Double y = Double.parseDouble(raw.split(",")[1]);
+		Double z = Double.parseDouble(raw.split(",")[2]);
+		float yaw = Float.parseFloat(raw.split(",")[3]);
+		float pitch = Float.parseFloat(raw.split(",")[4]);
+		return new Coordinate(x, y, z, yaw, pitch);
 	}
 	
 	public Block getBlock(String s) {

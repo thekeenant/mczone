@@ -1,7 +1,6 @@
 package co.mczone.lobby.api;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import lombok.Getter;
@@ -18,7 +17,7 @@ public class ServerSign {
 	@Getter String name;
 	@Getter String identifier;
 	
-	@Getter HashMap<String, Sign> signs = new HashMap<String, Sign>();
+	@Getter Sign sign;
 	
 	@Getter ServerStatus current;
 	
@@ -36,7 +35,7 @@ public class ServerSign {
 		updateSign();
 	}
 	
-	public void updateSign(String identifier) {
+	public void updateSign() {
 		if (sign == null)
 			return;
 		

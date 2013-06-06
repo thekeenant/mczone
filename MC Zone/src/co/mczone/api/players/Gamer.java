@@ -60,6 +60,18 @@ public class Gamer {
 		this.rank = rank;
 	}
 	
+	public void setHealth(int health) {
+		getPlayer().setHealth(health);
+	}
+
+	public void setFoodLevel(int food) {
+		getPlayer().setFoodLevel(20);
+	}
+
+	public void setSaturation(float saturation) {
+		getPlayer().setSaturation(saturation);
+	}
+	
 	public Player getPlayer() {
 		Player p = Bukkit.getPlayerExact(name);
 		if (p == null || !p.isOnline()) {

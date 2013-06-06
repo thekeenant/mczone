@@ -1,12 +1,16 @@
 info:
-  world: example
-  title: Example
+  world: red_v_blue
+  title: Red vs Blue
   version: 1.5.2
   creators:
   - funkystudios
   - Notch
 teams:
-  darkness:
-    title: Darkness
-    color: gray
-    spawn: 
+  red:
+    title: Red
+    color: red
+    spawn: 10,10,10,90,0
+  blue:
+    title: Blue
+    color: blue
+    spawn: 0,0,0,270,0

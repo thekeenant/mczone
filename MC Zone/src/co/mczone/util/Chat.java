@@ -112,4 +112,8 @@ public class Chat {
 			list.add(s);
 		return list;
 	}
+	
+	public static String chomp(String str, int chars) {
+		return str.substring(0, str.length() - chars);
+	}
 }

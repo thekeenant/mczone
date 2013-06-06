@@ -16,6 +16,8 @@ public class Team {
 	
 	@Getter List<Gamer> members = new ArrayList<Gamer>();
 	
+	@Getter int kills;
+	
 	public Team(TeamColor color, Coordinate spawn) {
 		this.color = color;
 		this.spawn = spawn;

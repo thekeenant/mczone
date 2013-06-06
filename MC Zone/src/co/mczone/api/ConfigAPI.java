@@ -46,6 +46,18 @@ public class ConfigAPI {
         this.config = YamlConfiguration.loadConfiguration(file);
     }
     
+    public ConfigAPI(File file, JavaPlugin plugin) {
+    	if (!file.exists()) {
+			try {
+				file.getParentFile().mkdirs();
+				file.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+    	}
+        this.config = YamlConfiguration.loadConfiguration(file);
+    }
+    
     public boolean save(File file) {
         try {
             config.save(file);

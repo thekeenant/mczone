@@ -1,6 +1,7 @@
 package co.mczone.nexus.events;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -49,10 +50,10 @@ public class GameEvents implements Listener {
 	
 	@EventHandler
 	public void onPlayerDamage(PlayerDamageEvent event) {
-		if (event.isDamageByEntity() == false)
+		if (event.isDamageByEntity() == false || event.getDamager() instanceof Player == false)
 			return;
 		
-		Gamer g = Gamer.get(event.getPlayer());
+		Gamer g = Gamer.get((Player) event.getDamager());
 		Gamer t = Gamer.get(event.getTarget());
 		
 		Map map = Nexus.getRotary().getCurrentMap();

@@ -134,7 +134,7 @@ public class Kit implements Permissible {
 		RankType rank = g.getRank().getType();
 		if (name.equalsIgnoreCase("barbarian") || name.equalsIgnoreCase("warrior") || name.equalsIgnoreCase("medic") || name.equalsIgnoreCase("archer"))
 			return true;
-		if (rank.getLevel() > RankType.TITAN.getLevel())
+		if (rank.getLevel() >= RankType.TITAN.getLevel())
 			return true;
 		if (Kit.donations.containsKey(g.getName().toLowerCase()) && Kit.donations.get(g.getName().toLowerCase()).contains(Kit.get(name)))
 			return true;

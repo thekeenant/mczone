@@ -52,35 +52,20 @@ public class DamageEvents implements Listener {
 		if (!(event.getEntity() instanceof Player))
 			return;
 		
-		
 		Entity e = event.getDamager();
-		Player p = null;
 		Player t = (Player) event.getEntity();
 		
-		if (e instanceof Player) {
-			p = (Player) e;
-		}
-		else if (e instanceof Projectile) {
+		if (e instanceof Projectile) {
 			Projectile proj = (Projectile) e;
 			if (proj.getShooter() instanceof Player)
-				p = (Player) proj.getShooter();
-		}
-		else if (e.hasMetadata("Player")) {
-			String s = e.getMetadata("Player").get(0).asString();
-			Player test = Bukkit.getPlayerExact(s);
-			if (test != null && test.isOnline()) {
-				p = test;
-			}
+				e = (Entity) proj.getShooter();
 		}
 		
 		if (!damages.containsKey(t.getName()))
 			damages.put(t.getName(), new ArrayList<EntityDamageEvent>());
 		damages.get(t.getName()).add(event);
 		
-		if (p == null)
-			return;
-		
-		PlayerDamageEvent callMe = new PlayerDamageEvent(p, t, event.getCause());
+		PlayerDamageEvent callMe = new PlayerDamageEvent(e, t, event.getCause());
 		Bukkit.getPluginManager().callEvent(callMe);
 		event.setCancelled(callMe.isCancelled());		
 	}

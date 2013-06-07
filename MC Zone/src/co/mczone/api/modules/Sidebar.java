@@ -33,6 +33,7 @@ public class Sidebar {
 	
 	public Sidebar(String title, Scoreboard scoreboard) {
 		this.title = title;
+		this.scoreboard = scoreboard;
 		
 		scoreboard.getObjective(DisplaySlot.SIDEBAR);
 		objective = scoreboard.registerNewObjective("test", "dummy");

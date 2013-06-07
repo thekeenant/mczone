@@ -67,7 +67,11 @@ public class GameEvents implements Listener {
 	
 	@EventHandler
 	public void onPlayerDamage(PlayerDamageEvent event) {
-		Player p = event.getPlayer();
+		if (event.isDamageByEntity() == false || event.getDamager() instanceof Player == false)
+			return;
+		
+		
+		Player p = (Player) event.getDamager();
 		Player t = event.getTarget();
 		event.setCancelled(true);
 		

@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.Location;
 
 import lombok.Getter;
+import lombok.Setter;
 import co.mczone.api.modules.Coordinate;
 import co.mczone.api.players.Gamer;
 import co.mczone.nexus.Nexus;
@@ -22,6 +23,8 @@ public class Team {
 	
 	@Getter int kills;
 	
+	@Getter @Setter org.bukkit.scoreboard.Team team;
+	
 	public Team(String title, TeamColor color, Coordinate spawn) {
 		this.title = title;
 		this.color = color;
@@ -33,6 +36,7 @@ public class Team {
 	}
 	
 	public void join(Gamer g, boolean teleport) {
+		team.addPlayer(g.getPlayer());
 		members.add(g);
 		g.setVariable("spectator", null);
 		

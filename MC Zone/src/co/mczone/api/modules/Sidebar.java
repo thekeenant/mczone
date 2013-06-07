@@ -31,6 +31,15 @@ public class Sidebar {
 		objective.setDisplayName(Chat.colors(title));
 	}
 	
+	public Sidebar(String title, Scoreboard scoreboard) {
+		this.title = title;
+		
+		scoreboard.getObjective(DisplaySlot.SIDEBAR);
+		objective = scoreboard.registerNewObjective("test", "dummy");
+		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+		objective.setDisplayName(Chat.colors(title));
+	}
+	
 	public void set(String key, int value) {
 		Score score = objective.getScore(Bukkit.getOfflinePlayer(Chat.colors(key)));
 		score.setScore(value);

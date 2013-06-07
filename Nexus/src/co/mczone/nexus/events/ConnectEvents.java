@@ -24,6 +24,7 @@ public class ConnectEvents implements Listener {
 		g.setSaturation(99F);
 		
 		g.setVariable("spectator", true);
+		g.setVariable("killstreak", 0);
 		
 		Nexus.getRotary().getSidebar().add(event.getPlayer());
 		

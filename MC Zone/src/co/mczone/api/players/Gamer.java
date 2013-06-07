@@ -159,7 +159,7 @@ public class Gamer {
 			pm.c = (byte) effect.getAmplifier();
 			
 			// 32767 means xx:xx
-			if (effect.getDuration() > 32767)
+			if (effect.getDuration() == -1 || effect.getDuration() > 32767)
 				pm.d = 32767;
 			else
 				pm.d = (short) effect.getDuration();
@@ -285,9 +285,13 @@ public class Gamer {
 	public String getPrefix() {
 		return this.getRank().getPrefix();
 	}
-	
+
 	public void kill(Player target, int game_id) {
 		Hive.getInstance().kill(target, name, game_id);
+	}
+
+	public void kill(Gamer target, int game_id) {
+		kill(target.getPlayer(), game_id);
 	}
 	
 	public void setAllowFlight(boolean flight) {

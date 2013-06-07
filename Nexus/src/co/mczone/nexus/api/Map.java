@@ -10,6 +10,8 @@ import org.bukkit.WorldCreator;
 
 import co.mczone.api.ConfigAPI;
 import co.mczone.api.modules.Coordinate;
+import co.mczone.api.players.Gamer;
+import co.mczone.nexus.Nexus;
 import co.mczone.nexus.enums.TeamColor;
 import co.mczone.util.Chat;
 
@@ -57,6 +59,12 @@ public class Map {
 		wc.createWorld();
 		
 		for (Team team : teams) {
+			// Register teams
+			org.bukkit.scoreboard.Team t = Nexus.getRotary().getScoreboard().registerNewTeam(team.getColor().name().toLowerCase());
+			t.setAllowFriendlyFire(false);
+			t.setPrefix(team.getColor().getChatColor() + "");
+			
+			team.setTeam(t);
 			team.getMembers().clear();
 		}
 	}
@@ -75,6 +83,13 @@ public class Map {
 	public Location getSpawnLocation() {
 		Location spawn = this.spawn.getLocation(getWorld());
 		return spawn;
+	}
+	
+	public Team getTeam(Gamer g) {
+		for (Team t : teams)
+			if (t.getMembers().contains(g))
+				return t;
+		return null;
 	}
 	
 }

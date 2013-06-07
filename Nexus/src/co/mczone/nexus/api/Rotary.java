@@ -1,7 +1,12 @@
 package co.mczone.nexus.api;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.bukkit.Bukkit;
+import org.bukkit.scoreboard.Scoreboard;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,8 +28,13 @@ public class Rotary {
 	
 	@Getter Sidebar sidebar;
 	
+	@Getter Scoreboard scoreboard;
+	
+	@Getter int gameID;
+	
 	public Rotary() {
-		this.sidebar = new Sidebar("&eKills");
+		scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+		this.sidebar = new Sidebar("&eKills", scoreboard);
 		this.state = GameState.STARTING;
 		this.time = 0;
 	}
@@ -67,7 +77,9 @@ public class Rotary {
 	}
 
 	public void nextMatch() {
-		this.getSidebar().resetScores();
+		scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+		this.sidebar = new Sidebar("&eKills", scoreboard);
+		
 		setState(GameState.STARTING);
 		loadNext();
 		
@@ -94,13 +106,23 @@ public class Rotary {
 		
 		setState(GameState.PLAYING);
 		
+		ResultSet r = Nexus.getDatabase().query("SELECT id FROM nexus_games ORDER BY id DESC");
+		try {
+			while (r.next())
+				gameID = r.getInt("id");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		Nexus.getDatabase().update("INSERT INTO nexus_games (start) VALUES (now())");
+		
 		// Reset time, will count up
 		setTime(0);
 		
 		for (Team team : getCurrentMap().getTeams()) {
-			for (Gamer g : team.getMembers()) {	
-				g.teleport(team.getSpawn());
-				
+			for (Gamer g : team.getMembers()) {
+				g.run("give-kit");
+				g.teleport(team.getSpawnLocation());
 				g.setFlying(false);
 				g.setAllowFlight(false);
 				g.getPlayer().setFallDistance(0F);

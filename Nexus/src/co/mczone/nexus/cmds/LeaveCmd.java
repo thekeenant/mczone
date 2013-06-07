@@ -12,7 +12,7 @@ import co.mczone.nexus.api.Team;
 import co.mczone.nexus.enums.TeamColor;
 import co.mczone.util.Chat;
 
-public class JoinCmd implements CommandExecutor {
+public class LeaveCmd implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {

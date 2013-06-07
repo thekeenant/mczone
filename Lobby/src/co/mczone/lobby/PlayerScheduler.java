@@ -10,7 +10,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import co.mczone.api.players.Gamer;
 import co.mczone.lobby.events.Events;
-import co.mczone.parkour.Parkour;
 import co.mczone.util.Chat;
 
 public class PlayerScheduler extends BukkitRunnable {
@@ -29,9 +28,6 @@ public class PlayerScheduler extends BukkitRunnable {
 			
 			Gamer g = Gamer.get(p.getName());
 			if (g.getRank().getLevel() > 0)
-				continue;
-			
-			if (Parkour.getCurrent().containsKey(p.getName()))
 				continue;
 			
 			int delay = 300; // Seconds

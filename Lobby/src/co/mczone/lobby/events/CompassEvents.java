@@ -50,10 +50,14 @@ public class CompassEvents implements Listener {
 			String display = Chat.stripColor(stack.getItemMeta().getDisplayName());
 			if (display.equalsIgnoreCase("game picker")) {
 				Inventory inv = Bukkit.getServer().createInventory(p, 9, Chat.colors("&oMC Zone Games"));
-				for (int i = 0; i < 9; i++) {
+				for (int i = 1; i < 10; i++) {
+
+					int number = i - 1;
+					
 					if (i > GameIcon.getList().size() - 1)
 						break;
-					inv.setItem(i, GameIcon.getList().get(i).getItemStack());
+					
+					inv.setItem(i, GameIcon.getList().get(number).getItemStack());
 				}
 				p.openInventory(inv);
 			}

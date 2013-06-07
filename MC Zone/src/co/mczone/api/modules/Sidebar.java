@@ -1,5 +1,7 @@
 package co.mczone.api.modules;
 
+import java.util.Set;
+
 import lombok.Getter;
 
 import org.bukkit.Bukkit;
@@ -13,10 +15,15 @@ import org.bukkit.scoreboard.Scoreboard;
 import co.mczone.util.Chat;
 
 public class Sidebar {
+	
+	@Getter String title;
+	
 	@Getter Scoreboard scoreboard;
 	@Getter Objective objective;
 	
 	public Sidebar(String title) {
+		this.title = title;
+		
 		scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 		scoreboard.getObjective(DisplaySlot.SIDEBAR);
 		objective = scoreboard.registerNewObjective("test", "dummy");
@@ -35,6 +42,19 @@ public class Sidebar {
 	
 	public void clearScore(String key) {
 		getScoreboard().resetScores(Bukkit.getOfflinePlayer(Chat.colors(key)));
+	}
+	
+	public void resetScores() {
+		Set<OfflinePlayer> players = scoreboard.getPlayers();
+		
+		scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+		scoreboard.getObjective(DisplaySlot.SIDEBAR);
+		objective = scoreboard.registerNewObjective("test", "dummy");
+		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+		objective.setDisplayName(Chat.colors(title));
+		
+		for (OfflinePlayer p : players)
+			p.getPlayer().setScoreboard(scoreboard);
 	}
 
 	public void hide() {

@@ -1,7 +1,9 @@
 package co.mczone.nexus.api;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Location;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
@@ -17,17 +19,22 @@ public class Map {
 	
 	@Getter String title;
 	@Getter String worldName;
+	@Getter List<String> creators = new ArrayList<String>();
+	@Getter String version;
+	
 	@Getter Coordinate spawn;
 	@Getter List<Team> teams;
 	@Getter ConfigAPI config;
 	
-	@Getter int timeLimit;
+	@Getter int duration;
 	
-	public Map(String title, String worldName, int timeLimit, ConfigAPI config, Coordinate spawn, List<Team> teams) {
+	public Map(String title, List<String> creators, String version, String worldName, int duration, ConfigAPI config, Coordinate spawn, List<Team> teams) {
 		this.title = title;
+		this.creators = creators;
+		this.version = version;
 		this.worldName = worldName;
 		this.spawn = spawn;
-		this.timeLimit = timeLimit;
+		this.duration = duration;
 		this.config = config;
 		this.teams = teams;
 	}
@@ -63,6 +70,11 @@ public class Map {
 			Chat.log(Prefix.LOG_WORLDS + "Successfully unloaded world!");
 		else
 			Chat.log(Prefix.LOG_WORLDS + "Failed to unload world");
+	}
+	
+	public Location getSpawnLocation() {
+		Location spawn = this.spawn.getLocation(getWorld());
+		return spawn;
 	}
 	
 }

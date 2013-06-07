@@ -5,10 +5,12 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import co.mczone.api.modules.Sidebar;
 import co.mczone.api.players.Gamer;
 import co.mczone.nexus.GameSchedule;
 import co.mczone.nexus.Nexus;
 import co.mczone.nexus.enums.GameState;
+import co.mczone.util.Chat;
 
 public class Rotary {
 
@@ -19,9 +21,17 @@ public class Rotary {
 
 	@Getter @Setter GameSchedule schedule;
 	
+	@Getter Sidebar sidebar;
+	
 	public Rotary() {
+		this.sidebar = new Sidebar("&eKills");
 		this.state = GameState.STARTING;
 		this.time = 0;
+	}
+	
+	public void updateSidebar() {
+		for (Team team : getCurrentMap().getTeams())
+			sidebar.set(team.getColor().getChatColor() + team.getTitle(), team.getKills());
 	}
 	
 	public void start() {
@@ -36,35 +46,28 @@ public class Rotary {
 		
 	}
 	
-	public void addTime(int i) {
-		if (i > 0)
-			time += i;
-		else
-			time -= i;
-	}
-	
 	public Map getCurrentMap() {
 		return maps.get(currentMapIndex);
 	}
 
-	int currentMapIndex = 0;
+	int currentMapIndex = -1;
 	public void loadNext() {
-		currentMapIndex += 1;
 		Map next = getNextMap();
 		next.loadMatch();
 	}
 	
 	public Map getNextMap() {
-		int next = currentMapIndex + 1;
+		currentMapIndex += 1;
 		try {
-			return maps.get(next);
+			return maps.get(currentMapIndex);
 		}
 		catch (IndexOutOfBoundsException e) {
-			return maps.get(next);
+			return maps.get(currentMapIndex);
 		}
 	}
 
 	public void nextMatch() {
+		this.getSidebar().resetScores();
 		setState(GameState.STARTING);
 		loadNext();
 		
@@ -86,6 +89,9 @@ public class Rotary {
 	}
 	
 	public void startMatch() {
+		Chat.server("&aThe match has &2STARTED. &aPrepare for battle!");
+		updateSidebar();
+		
 		setState(GameState.PLAYING);
 		
 		// Reset time, will count up
@@ -103,6 +109,7 @@ public class Rotary {
 	}
 	
 	public void endMatch() {
+		sidebar.resetScores();
 		setState(GameState.END);
 		setTime(30);
 	}	

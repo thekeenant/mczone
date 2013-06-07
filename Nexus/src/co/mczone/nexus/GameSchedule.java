@@ -20,7 +20,8 @@ public class GameSchedule extends BukkitRunnable {
 		Map map = rotary.getCurrentMap();
 		
 		if (state == GameState.STARTING) {
-			rotary.addTime(-1);
+			rotary.setTime(rotary.getTime() - 1);
+			rotary.updateSidebar();
 			
 			if (rotary.getTime() == 0) {
 				rotary.startMatch();
@@ -32,10 +33,17 @@ public class GameSchedule extends BukkitRunnable {
 		}
 		
 		else if (state == GameState.PLAYING) {
-			rotary.addTime(1);
+			rotary.setTime(rotary.getTime() + 1);
+			rotary.updateSidebar();
 			
-			if (rotary.getTime() >= map.getTimeLimit()) {
+			if (rotary.getTime() >= map.getDuration()) {
 				rotary.endMatch();
+				return;
+			}
+			
+			int left = map.getDuration() - rotary.getTime();
+			if (left <= 30 && (left % 5 == 0 || left <= 10)) {
+				Chat.server("&cMatch ending in &4" + Chat.time(left));
 				return;
 			}
 			
@@ -45,18 +53,18 @@ public class GameSchedule extends BukkitRunnable {
 				for (Team team : map.getTeams()) {
 					int kills = team.getKills();
 					ChatColor color = team.getColor().getChatColor();
-					scores += color + "&l" + kills + "  &7/  ";
+					scores += color + "&l" + kills + " &f/ ";
 				}
-				scores = Chat.chomp(scores, 7);
+				scores = Chat.chomp(scores, 5);
 				
-				int time = map.getTimeLimit() - rotary.getTime();
+				int time = map.getDuration() - rotary.getTime();
 				Chat.server(prefix + scores);
-				Chat.server("&7Time left: " + Chat.time(time));
+				Chat.server("&fTime left: &7" + Chat.time(time));
 			}
 		}
 		
 		else if (state == GameState.END) {
-			rotary.addTime(-1);
+			rotary.setTime(rotary.getTime() - 1);
 			
 			if (rotary.getTime() == 0) {
 				rotary.nextMatch();

@@ -1,8 +1,11 @@
 name: Nexus
-main: co.mczone.nexus.Nexus
+main: co.mczone.nexus.Main
 version: 0.6.0 beta
 depend: [MC Zone]
 author: funkystudios
 description: >
              MC Zone Nexus Kit PVP
 commands:
+  join:
+    description: Join the game
+    default: true

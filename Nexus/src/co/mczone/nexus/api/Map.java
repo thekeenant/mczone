@@ -21,6 +21,8 @@ import lombok.Getter;
 
 public class Map {
 	
+	@Getter static List<Map> list = new ArrayList<Map>();
+	
 	@Getter String title;
 	@Getter String worldName;
 	@Getter List<String> creators = new ArrayList<String>();
@@ -41,6 +43,7 @@ public class Map {
 		this.duration = duration;
 		this.config = config;
 		this.teams = teams;
+		list.add(this);
 	}
 	
 	public Team getTeam(TeamColor color) {
@@ -101,6 +104,13 @@ public class Map {
 		for (Team t : teams)
 			if (t.getMembers().contains(g))
 				return t;
+		return null;
+	}
+
+	public static Map get(String name) {
+		for (Map map : list)
+			if (map.getWorldName().equalsIgnoreCase(name))
+				return map;
 		return null;
 	}
 	

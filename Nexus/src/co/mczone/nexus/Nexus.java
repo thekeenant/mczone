@@ -39,6 +39,8 @@ public class Nexus {
 	public Nexus(Main main) {
 		instance = this;
 		plugin = main;
+		
+		kitConfig = new ConfigAPI("kits.yml", plugin);
 		config = new ConfigAPI(plugin);
 		
 		database = Hive.getInstance().getDatabase();
@@ -51,6 +53,7 @@ public class Nexus {
 		Hive.getInstance().setType(GameType.NEXUS);
 		
 		loadMaps();
+		loadKits();
 		rotary.start();
 
 		Hive.getInstance().registerCommand(Nexus.getPlugin(), "join", new JoinCmd());
@@ -85,7 +88,42 @@ public class Nexus {
 			}
 		});
 		
-		kitConfig = new ConfigAPI("kits.yml", plugin);
+		for (String name : config.getStringList("rotation")) {
+			Map map = Map.get(name);
+			
+			if (map != null)
+				rotary.getMaps().add(map);
+		}
+		
+	}
+	
+	public void loadMaps() {
+		List<File> files = FileUtil.getFiles(new File(getPlugin().getDataFolder(), "maps"));
+		for (File f : files) {
+			ConfigAPI config = new ConfigAPI(f, plugin);
+			String world = config.getString("info.world");
+			String title = config.getString("info.title");
+			int duration  = config.getInt("info.duration", 600);
+			String version = config.getString("info.version");
+			List<String> creators = config.getList("info.creators");
+			
+			Coordinate spawn = config.getCoordinate("spawn");
+			
+			List<Team> teams = new ArrayList<Team>();
+			for (String key : config.getConfigurationSection("teams").getKeys(false)) {
+				Team team = new Team(
+						config.getString("teams." + key + ".title"),
+						TeamColor.valueOf(config.getString("teams." + key + ".color").toUpperCase()),
+						config.getCoordinate("teams." + key + ".spawn")
+						);
+				teams.add(team);
+			}
+			
+			new Map(title, creators, version, world, duration, config, spawn, teams);
+		}
+	}
+	
+	public void loadKits() {
         int c = 0;
         Kit.getList().clear();
         if (kitConfig.getConfigurationSection("kits") != null) {
@@ -152,33 +190,6 @@ public class Nexus {
             }
             Chat.log("Loaded " + c + " kits into game!");
         }
-	}
-	
-	public void loadMaps() {
-		List<File> files = FileUtil.getFiles(new File(getPlugin().getDataFolder(), "maps"));
-		for (File f : files) {
-			ConfigAPI config = new ConfigAPI(f, plugin);
-			String world = config.getString("info.world");
-			String title = config.getString("info.title");
-			int duration  = config.getInt("info.duration", 600);
-			String version = config.getString("info.version");
-			List<String> creators = config.getList("info.creators");
-			
-			Coordinate spawn = config.getCoordinate("spawn");
-			
-			List<Team> teams = new ArrayList<Team>();
-			for (String key : config.getConfigurationSection("teams").getKeys(false)) {
-				Team team = new Team(
-						config.getString("teams." + key + ".title"),
-						TeamColor.valueOf(config.getString("teams." + key + ".color").toUpperCase()),
-						config.getCoordinate("teams." + key + ".spawn")
-						);
-				teams.add(team);
-			}
-			
-			Map map = new Map(title, creators, version, world, duration, config, spawn, teams);
-			rotary.getMaps().add(map);
-		}
 	}
 	
 	public void onDisable() {

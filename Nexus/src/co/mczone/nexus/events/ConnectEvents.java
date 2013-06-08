@@ -1,5 +1,10 @@
 package co.mczone.nexus.events;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import lombok.Getter;
+
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -9,12 +14,15 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import co.mczone.api.players.Gamer;
 import co.mczone.nexus.Nexus;
 import co.mczone.nexus.api.Team;
+import co.mczone.nexus.enums.GameState;
 
 public class ConnectEvents implements Listener {
-
+	
 	public ConnectEvents() {
 		Bukkit.getPluginManager().registerEvents(this, Nexus.getPlugin());
 	}
+	
+	@Getter List<String> dbPlayers = new ArrayList<String>();
 	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
@@ -34,6 +42,12 @@ public class ConnectEvents implements Listener {
 		
 		g.setAllowFlight(true);
 		g.setFlying(true);
+		
+		if (Nexus.getRotary().getState() == GameState.PLAYING)
+			Nexus.getDatabase().update(
+					"INESRT INTO nexus_players (game_id,username,team,date) VALUES " +
+					"(" + Nexus.getRotary().getGameID() + ", '" + g.getName() + "','spec',now())");
+		
 	}
 	
 	@EventHandler

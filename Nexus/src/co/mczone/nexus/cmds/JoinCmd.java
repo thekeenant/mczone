@@ -9,6 +9,7 @@ import co.mczone.api.players.RankType;
 import co.mczone.nexus.Nexus;
 import co.mczone.nexus.api.Map;
 import co.mczone.nexus.api.Team;
+import co.mczone.nexus.enums.GameState;
 import co.mczone.nexus.enums.TeamColor;
 import co.mczone.util.Chat;
 
@@ -17,6 +18,11 @@ public class JoinCmd implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Gamer g = Gamer.get(sender);
+		
+		if (Nexus.getRotary().getState() == GameState.END) {
+			Chat.player(g, "&cYou cannot join a team at this time. Please wait until the map loads.");
+			return true;
+		}
 		
 		boolean random = true;
 		if (args.length > 0)

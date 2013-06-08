@@ -34,9 +34,9 @@ public class Team {
 	public void join(Gamer g) {
 		team.addPlayer(g.getPlayer());
 		members.add(g);
-		g.setVariable("spectator", null);
 		
 		if (Nexus.getRotary().getState() == GameState.PLAYING) {
+			g.clearVariable("spectator");
 			g.teleport(getSpawnLocation());
 			g.setFlying(false);
 			g.setAllowFlight(false);
@@ -46,6 +46,9 @@ public class Team {
 		else {
 			
 		}
+		
+		Nexus.getDatabase().update("UPDATE nexus_players SET team='" + getTitle().toLowerCase() + "' " +
+				"WHERE username='" + g.getName() + "' AND game_id=" + Nexus.getRotary().getGameID());
 	}
 	
 	public void remove(Gamer g) {

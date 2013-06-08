@@ -149,6 +149,9 @@ public class Gamer {
 	
 	public void addPotionEffect(PotionEffect effect, boolean particles) {
 		if (particles) {
+			if (effect.getDuration() < 0 || effect.getDuration() > 32767)
+				effect = new PotionEffect(effect.getType(), 32767, effect.getAmplifier());
+			
 			getPlayer().addPotionEffect(effect);
 		}
 		else {
@@ -159,7 +162,7 @@ public class Gamer {
 			pm.c = (byte) effect.getAmplifier();
 			
 			// 32767 means xx:xx
-			if (effect.getDuration() == -1 || effect.getDuration() > 32767)
+			if (effect.getDuration() < 0 || effect.getDuration() > 32767)
 				pm.d = 32767;
 			else
 				pm.d = (short) effect.getDuration();

@@ -45,17 +45,6 @@ public class GameSchedule extends BukkitRunnable {
 				return;
 			}
 			
-			if (left == 30) {
-				new BukkitRunnable() {
-
-					@Override
-					public void run() {
-						Nexus.getRotary().getNextMap().loadMap();
-					}
-					
-				}.runTask(Nexus.getPlugin());
-			}
-			
 			if (rotary.getTime() % 60 == 0) {
 				/*
 				String prefix = "&fScore: ";

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 
 import lombok.Getter;
@@ -55,6 +56,17 @@ public class Rotary {
 		schedule.runTaskTimerAsynchronously(Nexus.getPlugin(), 0, 20);
 	}
 	
+	public boolean change(Map map) {
+		if (!maps.contains(map))
+			return false;
+		
+		int index = maps.indexOf(map);
+		// getNextMap() will add one to the index
+		currentMapIndex = index - 1;
+		endMatch();		
+		return true;
+	}
+	
 	public Map getCurrentMap() {
 		return maps.get(currentMapIndex);
 	}
@@ -96,10 +108,13 @@ public class Rotary {
 			
 			g.teleport(getCurrentMap().getSpawnLocation());
 			
+			g.setVariable("spectator", true);
 			g.setAllowFlight(true);
 			g.setFlying(true);
 		}
 	}
+	
+	@Getter static List<String> insertedPlayers = new ArrayList<String>();
 	
 	public void startMatch() {
 		Chat.server("&aThe match has &2STARTED. &aPrepare for battle!");
@@ -119,20 +134,55 @@ public class Rotary {
 		// Reset time, will count up
 		setTime(0);
 		
+		insertedPlayers.clear();
+		String sql = "INSERT INTO nexus_players (game_id, username, team, date) VALUES ";
 		for (Team team : getCurrentMap().getTeams()) {
 			for (Gamer g : team.getMembers()) {
 				g.run("give-kit");
+				g.clearVariable("spectator");
+				g.setVariable("killstreak", 0);
 				g.teleport(team.getSpawnLocation());
 				g.setFlying(false);
 				g.setAllowFlight(false);
 				g.getPlayer().setFallDistance(0F);
+				
+				sql += "(" + gameID + ",'" + g.getName() + "','" + team.getTitle().toLowerCase() + "',now()),";
+				
+				insertedPlayers.add(g.getName());
 			}
 		}
+		sql = Chat.chomp(sql, 1);
+		
+		Nexus.getDatabase().update(sql);
 	}
 	
 	public void endMatch() {
+		
+		new BukkitRunnable() {
+
+			@Override
+			public void run() {
+				Nexus.getRotary().getNextMap().loadMap();
+			}
+			
+		}.runTask(Nexus.getPlugin());
+		
+		for (Gamer g : Gamer.getList()) {
+			g.clearInventory();
+			g.removePotionEffects();
+			g.setAllowFlight(true);
+			g.setFlying(true);
+			g.setHealth(20);
+			g.setFoodLevel(20);
+			g.setSaturation(99);
+			g.setVariable("spectator", true);
+		}
+		
 		setState(GameState.END);
 		setTime(30);
+		
+		if (gameID != 0)
+			Nexus.getDatabase().update("UPDATE nexus_games SET start=start,end=now() WHERE id=" + gameID);
 	}	
 	
 }

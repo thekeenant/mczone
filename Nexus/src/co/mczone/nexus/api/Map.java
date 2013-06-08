@@ -73,6 +73,9 @@ public class Map {
 	}
 	
 	public void loadMatch() {
+		if (getWorld() == null)
+			loadMap();
+				
 		for (Team team : teams) {
 			// Register teams
 			org.bukkit.scoreboard.Team t = Nexus.getRotary().getScoreboard().registerNewTeam(team.getColor().name().toLowerCase());

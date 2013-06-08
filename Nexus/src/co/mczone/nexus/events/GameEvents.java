@@ -5,6 +5,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import co.mczone.api.players.Gamer;
 import co.mczone.api.server.Hive;
@@ -52,6 +54,8 @@ public class GameEvents implements Listener {
 			g.teleport(Nexus.getRotary().getCurrentMap().getSpawnLocation());
 			return;
 		}
+		
+		g.addPotionEffect(new PotionEffect(PotionEffectType.HEAL, 20 * 5, 3));
 		
 		g.teleport(t.getSpawnLocation());
 		g.run("give-kit");

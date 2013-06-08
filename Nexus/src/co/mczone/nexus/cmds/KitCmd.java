@@ -35,9 +35,7 @@ public class KitCmd implements CommandExecutor {
 			Chat.player(g, "&7You will receieve the &f" + k.getName() + "&7 kit upon respawning.");
 		else
 			Chat.player(g, "&7You have selected the &f" + k.getName() + "&7 kit.");
-		
-		
-		
+
 		return true;
 	}
 

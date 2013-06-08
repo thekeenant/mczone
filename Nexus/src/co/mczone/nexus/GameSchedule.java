@@ -1,11 +1,9 @@
 package co.mczone.nexus;
 
-import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import co.mczone.nexus.api.Map;
 import co.mczone.nexus.api.Rotary;
-import co.mczone.nexus.api.Team;
 import co.mczone.nexus.enums.GameState;
 import co.mczone.util.Chat;
 
@@ -47,7 +45,19 @@ public class GameSchedule extends BukkitRunnable {
 				return;
 			}
 			
-			if (rotary.getTime() % 120 == 0) {
+			if (left == 30) {
+				new BukkitRunnable() {
+
+					@Override
+					public void run() {
+						Nexus.getRotary().getNextMap().loadMap();
+					}
+					
+				}.runTask(Nexus.getPlugin());
+			}
+			
+			if (rotary.getTime() % 60 == 0) {
+				/*
 				String prefix = "&fScore: ";
 				String scores = "";
 				for (Team team : map.getTeams()) {
@@ -57,8 +67,10 @@ public class GameSchedule extends BukkitRunnable {
 				}
 				scores = Chat.chomp(scores, 5);
 				
-				int time = map.getDuration() - rotary.getTime();
 				Chat.server(prefix + scores);
+				*/
+				
+				int time = map.getDuration() - rotary.getTime();
 				Chat.server("&fTime left: &7" + Chat.time(time));
 			}
 		}

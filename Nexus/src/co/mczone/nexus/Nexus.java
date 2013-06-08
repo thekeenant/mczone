@@ -64,6 +64,13 @@ public class Nexus {
 				
 				Kit kit = (Kit) gamer.getVariable("kit");
 				
+				if (kit == null) {
+					kit = Kit.get("warrior");
+					gamer.setVariable("kit", kit);
+				}
+				
+				kit.giveKit(gamer);
+				
 				if (kit.getName().equals("spy")) {
 					gamer.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, -1, 1));
 				}
@@ -74,6 +81,7 @@ public class Nexus {
 				else if (kit.getName().equals("tank")) {
 					gamer.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, -1, 2));
 				}
+				
 			}
 		});
 		

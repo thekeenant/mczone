@@ -5,11 +5,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import co.mczone.api.players.Gamer;
-import co.mczone.api.players.RankType;
 import co.mczone.nexus.Nexus;
-import co.mczone.nexus.api.Map;
 import co.mczone.nexus.api.Team;
-import co.mczone.nexus.enums.TeamColor;
 import co.mczone.util.Chat;
 
 public class LeaveCmd implements CommandExecutor {
@@ -18,49 +15,24 @@ public class LeaveCmd implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Gamer g = Gamer.get(sender);
 		
-		boolean random = true;
-		if (args.length > 0)
-			random = false;
+		Team team = Nexus.getRotary().getCurrentMap().getTeam(g);
 		
-		if (random == true && g.getRank().getLevel() < RankType.VIP.getLevel()) {
-			Chat.player(g, "&cGet VIP or higher in order to choose the team you join!");
+		if (team == null) {
+			Chat.player(g, "&cYou are already a spectator.");
 			return true;
 		}
 		
-		Map map = Nexus.getRotary().getCurrentMap();
-		Team team = null;
-		if (random == false) {
-			TeamColor color = null;
-			try {
-				color = TeamColor.valueOf(args[0].toUpperCase());
-			}
-			catch (IllegalArgumentException e) {
-				Chat.player(g, "&cUnknown color: " + args[0]);
-				return true;
-			}
-			
-			team = map.getTeam(color);
-			if (team == null) {
-				String choices = "";
-				for (Team t : map.getTeams())
-					choices += t.getColor().name().toLowerCase() + ", ";
-				choices = Chat.chomp(choices, 2);
-				
-				Chat.player(g, "&7Unknown team: &f" + args[0] + "&7. Choices: &f" + choices);
-				return true;
-			}
-		}
-		else {
-			Team result = map.getTeams().get(0);
-			for (Team t : map.getTeams()) {
-				if (t.getMembers().size() < result.getMembers().size())
-					result = t;
-			}
-			team = result;
-		}
+		team.remove(g);
 		
-		team.join(g);
-		Chat.player(g, "&7You have joined " + team.getColor().getChatColor() + team.getTitle());
+		g.setVariable("spectator", true);
+		g.setFlying(false);
+		g.setAllowFlight(false);
+		g.setHealth(20);
+		g.setFoodLevel(20);
+		g.setSaturation(99);
+		g.removePotionEffects();
+		g.teleport(Nexus.getRotary().getCurrentMap().getSpawnLocation());
+		Chat.player(g, "&7You are now a &fspectator &7watching the game in progress.");
 		return true;		
 	}
 

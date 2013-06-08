@@ -53,7 +53,6 @@ public class Rotary {
 		
 		schedule = new GameSchedule();
 		schedule.runTaskTimerAsynchronously(Nexus.getPlugin(), 0, 20);
-		
 	}
 	
 	public Map getCurrentMap() {
@@ -72,11 +71,13 @@ public class Rotary {
 			return maps.get(currentMapIndex);
 		}
 		catch (IndexOutOfBoundsException e) {
+			currentMapIndex = 0;
 			return maps.get(currentMapIndex);
 		}
 	}
 
 	public void nextMatch() {
+		sidebar.resetScores();
 		scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 		this.sidebar = new Sidebar("&eKills", scoreboard);
 		
@@ -93,7 +94,7 @@ public class Rotary {
 			g.setSaturation(99F);
 			g.removePotionEffects();
 			
-			g.teleport(getCurrentMap().getSpawn().getLocation(getCurrentMap().getWorld()));
+			g.teleport(getCurrentMap().getSpawnLocation());
 			
 			g.setAllowFlight(true);
 			g.setFlying(true);
@@ -105,16 +106,15 @@ public class Rotary {
 		updateSidebar();
 		
 		setState(GameState.PLAYING);
-		
-		ResultSet r = Nexus.getDatabase().query("SELECT id FROM nexus_games ORDER BY id DESC");
+
+		Nexus.getDatabase().syncUpdate("INSERT INTO nexus_games (start) VALUES (now())");
+		ResultSet r = Nexus.getDatabase().query("SELECT id FROM nexus_games ORDER BY id DESC LIMIT 1");
 		try {
 			while (r.next())
 				gameID = r.getInt("id");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		Nexus.getDatabase().update("INSERT INTO nexus_games (start) VALUES (now())");
 		
 		// Reset time, will count up
 		setTime(0);
@@ -131,7 +131,6 @@ public class Rotary {
 	}
 	
 	public void endMatch() {
-		sidebar.resetScores();
 		setState(GameState.END);
 		setTime(30);
 	}	

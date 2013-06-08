@@ -32,10 +32,6 @@ public class Team {
 	}
 	
 	public void join(Gamer g) {
-		join(g, true);
-	}
-	
-	public void join(Gamer g, boolean teleport) {
 		team.addPlayer(g.getPlayer());
 		members.add(g);
 		g.setVariable("spectator", null);
@@ -45,10 +41,16 @@ public class Team {
 			g.setFlying(false);
 			g.setAllowFlight(false);
 			g.getPlayer().setFallDistance(0.0F);
+			g.run("give-kit");
 		}
 		else {
 			
 		}
+	}
+	
+	public void remove(Gamer g) {
+		team.removePlayer(g.getPlayer());
+		members.remove(g);
 	}
 	
 	public Location getSpawnLocation() {

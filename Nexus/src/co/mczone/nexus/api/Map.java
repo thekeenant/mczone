@@ -7,6 +7,8 @@ import org.bukkit.Location;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 
 import co.mczone.api.ConfigAPI;
 import co.mczone.api.modules.Coordinate;
@@ -52,12 +54,22 @@ public class Map {
 		return Bukkit.getWorld(worldName);
 	}
 	
-	public void loadMatch() {
+	public void loadMap() {
 		Chat.log(Prefix.LOG_WORLDS + "Generating world: " + worldName + "...");
 		
 		WorldCreator wc = new WorldCreator(worldName);
 		wc.createWorld();
 		
+		getWorld().setAutoSave(false);
+		getWorld().setKeepSpawnInMemory(false);
+		getWorld().setFullTime(6000);
+		
+		for (Entity e : getWorld().getEntities())
+			if (e instanceof Player == false)
+				e.remove();
+	}
+	
+	public void loadMatch() {
 		for (Team team : teams) {
 			// Register teams
 			org.bukkit.scoreboard.Team t = Nexus.getRotary().getScoreboard().registerNewTeam(team.getColor().name().toLowerCase());

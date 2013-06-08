@@ -25,6 +25,9 @@ public class GameEvents implements Listener {
 	public void onPlayerKilled(PlayerKilledEvent event) {
 		Gamer g = Gamer.get(event.getPlayer());
 		Gamer t = Gamer.get(event.getTarget());
+		
+		if (t.getVariable("spectator") != null)
+			return;
 
 		if (event.isPlayerKill())
 			g.kill(t, Nexus.getRotary().getGameID());
@@ -44,6 +47,12 @@ public class GameEvents implements Listener {
 		Gamer g = Gamer.get(event.getPlayer());
 		
 		Team t = Nexus.getRotary().getCurrentMap().getTeam(g);
+		
+		if (t == null) {
+			g.teleport(Nexus.getRotary().getCurrentMap().getSpawnLocation());
+			return;
+		}
+		
 		g.teleport(t.getSpawnLocation());
 		g.run("give-kit");
 	}

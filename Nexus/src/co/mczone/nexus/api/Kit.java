@@ -34,33 +34,16 @@ public class Kit implements Permissible {
 		list.add(this);
 	}
 	
-	public static void giveKit(final Player p) {
-		Gamer g = Gamer.get(p.getName());
+	public void giveKit(Gamer g) {
 		g.clearInventory();
-		Kit k = (Kit) g.getVariable("kit");
 		
-		if (k == null) {
-			k = Kit.get("warrior");
-			g.setVariable("kit", k);
-		}
-		
-		List<ItemStack> items = k.getItems();
+		List<ItemStack> items = getItems();
 		
 		for (ItemStack i : items) {
-			int id = i.getType().getId();
-			if ((id < 298) || (317 < id))
-                p.getInventory().addItem(i);
-	        else if ((id == 298) || (id == 302)     || (id == 306) || (id == 310)   || (id == 314))
-	                p.getInventory().setHelmet(new ItemStack(id, 1));
-	        else if ((id == 299) || (id == 303)     || (id == 307) || (id == 311) || (id == 315))
-	                p.getInventory().setChestplate(new ItemStack(id, 1));
-	        else if ((id == 300) || (id == 304) || (id == 308) || (id == 312) || (id == 316))
-	                p.getInventory().setLeggings(new ItemStack(id, 1));
-	        else if ((id == 301) || (id == 305) || (id == 309) || (id == 313) || (id == 317))
-	                p.getInventory().setBoots(new ItemStack(id, 1));
+			g.giveItem(i);
 		}
-		for (PotionEffect potion : p.getActivePotionEffects())
-			p.removePotionEffect(potion.getType());
+		
+		g.removePotionEffects();
 	}
 	
 	public static Kit get(String name) {

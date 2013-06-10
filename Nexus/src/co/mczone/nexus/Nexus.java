@@ -33,6 +33,7 @@ public class Nexus {
 	@Getter static ConfigAPI config;
 	@Getter static ConfigAPI kitConfig;
 	@Getter static MySQL database;
+	@Getter static MatchStats matchStats;
 	
 	@Getter static Rotary rotary;
 	
@@ -45,6 +46,7 @@ public class Nexus {
 		
 		database = Hive.getInstance().getDatabase();
 		rotary = new Rotary();
+		matchStats = new MatchStats();
 
 		new ConnectEvents();
 		new GameEvents();
@@ -53,25 +55,34 @@ public class Nexus {
 		Hive.getInstance().setType(GameType.NEXUS);
 		
 		loadMaps();
+		
+		for (String name : config.getStringList("rotation")) {
+			Map map = Map.get(name);
+			
+			if (map != null)
+				rotary.getMaps().add(map);
+		}
+		
 		loadKits();
 		rotary.start();
 
+		Hive.getInstance().registerCommand(Nexus.getPlugin(), "match", new MatchCmd());
 		Hive.getInstance().registerCommand(Nexus.getPlugin(), "join", new JoinCmd());
+		Hive.getInstance().registerCommand(Nexus.getPlugin(), "leave", new LeaveCmd());
 		Hive.getInstance().registerCommand(Nexus.getPlugin(), "kit", new KitCmd());
 		
 		Gamer.addFunction("give-kit", new GamerRunnable() {
 			@Override
 			public void run() {
-				if (gamer.getVariable("kit") == null)
-					return;
-				
-				Kit kit = (Kit) gamer.getVariable("kit");
-				
-				if (kit == null) {
+				Kit kit = null;
+				if (gamer.getVariable("kit") == null) {
 					kit = Kit.get("warrior");
 					gamer.setVariable("kit", kit);
 				}
+				else
+					kit = (Kit) gamer.getVariable("kit");
 				
+
 				kit.giveKit(gamer);
 				
 				if (kit.getName().equals("spy")) {
@@ -87,13 +98,6 @@ public class Nexus {
 				
 			}
 		});
-		
-		for (String name : config.getStringList("rotation")) {
-			Map map = Map.get(name);
-			
-			if (map != null)
-				rotary.getMaps().add(map);
-		}
 		
 	}
 	
@@ -127,8 +131,8 @@ public class Nexus {
         int c = 0;
         Kit.getList().clear();
         if (kitConfig.getConfigurationSection("kits") != null) {
-            for (String name : config.getConfigurationSection("kits").getKeys(false)) {
-                List<String> rawList = config.getStringList("kits." + name);
+            for (String name : kitConfig.getConfigurationSection("kits").getKeys(false)) {
+                List<String> rawList = kitConfig.getStringList("kits." + name);
                 List<ItemStack> items = new ArrayList<ItemStack>();
                 for (String raw : rawList) {
                     String[] info;

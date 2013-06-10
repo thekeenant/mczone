@@ -12,10 +12,10 @@ public class PlayerOnlineSchedule extends BukkitRunnable {
 		if (Bukkit.getOnlinePlayers().length == 0 || Hive.getInstance().getType() == null)
 			return;
 		
-		String query = "UPDATE players SET created=created,updated=now(),server='" + Hive.getInstance().getType().name().toLowerCase() + "' WHERE ";
-		for (Player p : Bukkit.getOnlinePlayers()) {
+		String query = "UPDATE players SET created=created,updated=now(),server='" + Hive.getInstance().getType().getTitle() + "' WHERE ";
+		for (Player p : Bukkit.getOnlinePlayers())
 			query += "username = '" + p.getName() + "' OR ";
-		}
+		
 		query = query.substring(0, query.length() - 4);
 		Hive.getInstance().getDatabase().update(query);
 	}

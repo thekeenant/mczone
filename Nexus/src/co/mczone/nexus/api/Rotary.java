@@ -42,7 +42,7 @@ public class Rotary {
 	
 	public void updateSidebar() {
 		for (Team team : getCurrentMap().getTeams())
-			sidebar.set(team.getColor().getChatColor() + team.getTitle(), team.getKills());
+			sidebar.set(team.getColor().getChatColor() + team.getTitle(), team.getPoints());
 	}
 	
 	public void start() {
@@ -73,22 +73,28 @@ public class Rotary {
 
 	int currentMapIndex = -1;
 	public void loadNext() {
-		Map next = getNextMap();
-		next.loadMatch();
+		currentMapIndex = getNextMapIndex();
+		getCurrentMap().loadMatch();
 	}
 	
 	public Map getNextMap() {
-		currentMapIndex += 1;
 		try {
-			return maps.get(currentMapIndex);
+			return maps.get(getNextMapIndex());
 		}
 		catch (IndexOutOfBoundsException e) {
-			currentMapIndex = 0;
-			return maps.get(currentMapIndex);
+			return maps.get(0);
 		}
+	}
+	
+	public int getNextMapIndex() {
+		int index = currentMapIndex + 1;
+		if (index >= maps.size())
+			 index = 0;
+		return index;
 	}
 
 	public void nextMatch() {
+		Nexus.getMatchStats().reset();
 		sidebar.resetScores();
 		scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 		this.sidebar = new Sidebar("&eKills", scoreboard);
@@ -112,6 +118,21 @@ public class Rotary {
 			g.setAllowFlight(true);
 			g.setFlying(true);
 		}
+		
+		new BukkitRunnable() {
+
+			@Override
+			public void run() {
+				try {
+					Map previous = maps.get(currentMapIndex - 1);
+					previous.unloadWorld();
+				}
+				catch (IndexOutOfBoundsException e) {
+					return;
+				}
+			}
+			
+		}.runTaskLater(Nexus.getPlugin(), 20 * 5);
 	}
 	
 	@Getter static List<String> insertedPlayers = new ArrayList<String>();
@@ -134,13 +155,15 @@ public class Rotary {
 		// Reset time, will count up
 		setTime(0);
 		
+		boolean insert = false;
 		insertedPlayers.clear();
+		Nexus.getMatchStats().resetKillstreaks();
 		String sql = "INSERT INTO nexus_players (game_id, username, team, date) VALUES ";
 		for (Team team : getCurrentMap().getTeams()) {
 			for (Gamer g : team.getMembers()) {
+				insert = true;
 				g.run("give-kit");
 				g.clearVariable("spectator");
-				g.setVariable("killstreak", 0);
 				g.teleport(team.getSpawnLocation());
 				g.setFlying(false);
 				g.setAllowFlight(false);
@@ -153,7 +176,8 @@ public class Rotary {
 		}
 		sql = Chat.chomp(sql, 1);
 		
-		Nexus.getDatabase().update(sql);
+		if (insert)
+			Nexus.getDatabase().update(sql);
 	}
 	
 	public void endMatch() {

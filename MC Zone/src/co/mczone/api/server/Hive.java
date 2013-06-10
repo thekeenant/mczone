@@ -74,7 +74,7 @@ public class Hive {
 		return Gamer.get(name);
 	}
 	
-	public void kill(Player target, String cause, int game_id) {
+	public void kill(Player target, String cause, int game_id) {		
 		String query = "INSERT INTO kills (server, player, target, game_id) VALUES ('" + type.getName() + "',";
 		if (cause != null)
 			query += "'" + cause + "','" + target.getName() + "'";

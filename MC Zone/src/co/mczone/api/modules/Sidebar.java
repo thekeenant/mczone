@@ -63,8 +63,13 @@ public class Sidebar {
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 		objective.setDisplayName(Chat.colors(title));
 		
-		for (OfflinePlayer p : players)
+		for (OfflinePlayer op : players) {
+			if (!op.isOnline())
+				continue;
+			Player p = Bukkit.getPlayerExact(op.getName());
 			p.getPlayer().setScoreboard(scoreboard);
+		}
+			
 	}
 
 	public void hide() {

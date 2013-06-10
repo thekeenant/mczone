@@ -87,7 +87,7 @@ public class Map {
 		}
 	}
 	
-	public void unloadMatch() {
+	public void unloadWorld() {
 		Chat.log(Prefix.LOG_WORLDS + "Unloading world: " + worldName + "...");
 		
 		boolean unloaded = Bukkit.unloadWorld(worldName, false);

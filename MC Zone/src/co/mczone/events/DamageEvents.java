@@ -60,6 +60,9 @@ public class DamageEvents implements Listener {
 			if (proj.getShooter() instanceof Player)
 				e = (Entity) proj.getShooter();
 		}
+		else if (e.hasMetadata("Player")) {
+			e = Bukkit.getPlayerExact(e.getMetadata("Player").get(0).asString());
+		}
 		
 		if (!damages.containsKey(t.getName()))
 			damages.put(t.getName(), new ArrayList<EntityDamageEvent>());
@@ -89,13 +92,16 @@ public class DamageEvents implements Listener {
 					callMe = new PlayerKilledEvent(e, t, event.getDeathMessage());
 			}
 			else {
-				if (ev.getCause() == DamageCause.FALL)
-					event.setDeathMessage(Chat.colors(event.getDeathMessage() + " &7(" + t.getFallDistance() + " blocks)"));
+				if (ev.getCause() == DamageCause.FALL) {
+					String fall = String.format("%.2f", t.getFallDistance());
+					event.setDeathMessage(Chat.colors(event.getDeathMessage() + " &7(" + fall + " blocks)"));
+				}
 				
 				callMe = new PlayerKilledEvent(t, event.getDeathMessage());
 			}
 			
 		}
+		
 		
 		if (callMe == null) {
 			Chat.log("Error handling PlayerKilledEvent! " + event.getEntity().getLastDamageCause().getCause().name());
@@ -103,6 +109,6 @@ public class DamageEvents implements Listener {
 		}
 		
 		Bukkit.getPluginManager().callEvent(callMe);
-		event.setDeathMessage(callMe.getDeathMessage());
+		event.setDeathMessage(Chat.colors(callMe.getDeathMessage()));
 	}
 }

@@ -9,6 +9,13 @@ commands:
   join:
     description: Join the game
     default: true
+  join:
+    description: Leave the game
+    default: true
+  match:
+    aliases: [m]
+    description: Leave the game
+    default: true
   kit:
     description: Choose a kit
     default: true

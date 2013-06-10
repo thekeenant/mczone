@@ -21,7 +21,7 @@ public class Team {
 	
 	@Getter List<Gamer> members = new ArrayList<Gamer>();
 	
-	@Getter int kills;
+	@Getter @Setter int points;
 	
 	@Getter @Setter org.bukkit.scoreboard.Team team;
 	
@@ -29,6 +29,10 @@ public class Team {
 		this.title = title;
 		this.color = color;
 		this.spawn = spawn;
+	}
+	
+	public void addPoints(int amount) {
+		points += amount;
 	}
 	
 	public void join(Gamer g) {

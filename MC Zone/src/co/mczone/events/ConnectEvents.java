@@ -30,6 +30,7 @@ public class ConnectEvents implements Listener {
 	public void onPlayerLogin(PlayerLoginEvent event) {
 		Player p = event.getPlayer();
 		Gamer g = Gamer.get(p.getName());
+		
 		if (g == null)
 			g = new Gamer(p.getName());
 
@@ -87,7 +88,7 @@ public class ConnectEvents implements Listener {
 		Gamer g = Gamer.get(event.getPlayer());
 		if (g.getRank().isCancelled()) {
 			Date cancel = g.getRank().getExpireDate();
-			Chat.player(g, "&7&oYour &8" + g.getRank().getType().getTitle()	+ " &7will expire on &8" + Infraction.human.format(cancel));
+			Chat.player(g, "&7Your &8" + g.getRank().getType().getTitle()	+ " &7will expire on &8" + Infraction.human.format(cancel));
 		}
 	}
 }

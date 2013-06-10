@@ -67,13 +67,15 @@ public class GameSchedule extends BukkitRunnable {
 		else if (state == GameState.END) {
 			rotary.setTime(rotary.getTime() - 1);
 			
+			Map next = rotary.getNextMap();
+			
 			if (rotary.getTime() == 0) {
 				rotary.nextMatch();
 				return;
 			}
 			
 			if (rotary.getTime() % 5 == 0 || rotary.getTime() <= 10)
-				Chat.server("&6Next match on &e" + map.getTitle() + " &6loading in &e" + Chat.time(rotary.getTime()));
+				Chat.server("&6Next match on &e" + next.getTitle() + " &6loading in &e" + Chat.time(rotary.getTime()));
 		}
 	}
 

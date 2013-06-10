@@ -34,9 +34,9 @@ public class ConnectEvents implements Listener {
 		g.setHealth(20);
 		g.setFoodLevel(20);
 		g.setSaturation(99F);
+		g.removePotionEffects();
 		
 		g.setVariable("spectator", true);
-		g.setVariable("killstreak", 0);
 		
 		Nexus.getRotary().getSidebar().add(event.getPlayer());
 		

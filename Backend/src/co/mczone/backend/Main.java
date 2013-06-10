@@ -44,6 +44,7 @@ public class Main {
 					break;
 				}
 			}
+			
 			if (!found)
 				Chat.log("Command not found.");
 		}

@@ -7,6 +7,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import co.mczone.api.players.Gamer;
 import co.mczone.api.server.Hive;
@@ -28,37 +29,63 @@ public class GameEvents implements Listener {
 		Gamer g = Gamer.get(event.getPlayer());
 		Gamer t = Gamer.get(event.getTarget());
 		
+		Team targetTeam = Nexus.getRotary().getCurrentMap().getTeam(t);
+		
 		if (t.getVariable("spectator") != null)
 			return;
 
-		if (event.isPlayerKill())
+		if (event.isPlayerKill()) {
+			Team killerTeam = Nexus.getRotary().getCurrentMap().getTeam(g);
 			g.kill(t, Nexus.getRotary().getGameID());
-		else
+			
+			// Set killstreaks
+			int streak = Nexus.getMatchStats().getKills(g);
+			if (streak > 1)
+				Chat.player(g, "&eYou have reached a killstreak of &6" + streak + " &ekills");
+			
+			// Add points
+			killerTeam.addPoints(1);
+			Nexus.getMatchStats().addKill(g);
+			
+			String message = event.getDeathMessage();
+			message.replace(t.getName(), targetTeam.getColor().getChatColor() + t.getName() + "&7");
+			message.replace(g.getName(), targetTeam.getColor().getChatColor() + g.getName());
+			event.setDeathMessage(message);
+		}
+		else {
 			Hive.getInstance().kill(t.getPlayer(), "natural", Nexus.getRotary().getGameID());
+			
+			String message = event.getDeathMessage();
+			message.replace(t.getName(), targetTeam.getColor().getChatColor() + t.getName() + "&7");
+			event.setDeathMessage(message);
+		}
 		
-		// Set killstreaks
-		int streak = (Integer) g.getVariable("killstreak");
-		if (streak > 1)
-			Chat.player(g, "&eYou have reached a killstreak of &6" + streak + " &ekills");
-		g.setVariable("killstreak", streak + 1);
-		t.setVariable("killstreak", 0);
+		// There goes his KD...
+		Nexus.getMatchStats().addDeath(t);
 	}
 	
 	@EventHandler
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
-		Gamer g = Gamer.get(event.getPlayer());
+		final Gamer g = Gamer.get(event.getPlayer());
 		
-		Team t = Nexus.getRotary().getCurrentMap().getTeam(g);
-		
-		if (t == null) {
-			g.teleport(Nexus.getRotary().getCurrentMap().getSpawnLocation());
-			return;
-		}
-		
-		g.addPotionEffect(new PotionEffect(PotionEffectType.HEAL, 20 * 5, 3));
-		
-		g.teleport(t.getSpawnLocation());
-		g.run("give-kit");
+		new BukkitRunnable() {
+
+			@Override
+			public void run() {
+				Team t = Nexus.getRotary().getCurrentMap().getTeam(g);
+				
+				if (t == null) {
+					g.teleport(Nexus.getRotary().getCurrentMap().getSpawnLocation());
+					return;
+				}
+				
+				g.addPotionEffect(new PotionEffect(PotionEffectType.HEAL, 20 * 5, 3));
+				
+				g.teleport(t.getSpawnLocation());
+				g.run("give-kit");
+			}
+			
+		}.runTaskLater(Nexus.getPlugin(), 1);
 	}
 	
 	@EventHandler

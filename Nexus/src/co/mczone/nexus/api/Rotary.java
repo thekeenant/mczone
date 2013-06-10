@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
 import lombok.Getter;
@@ -95,8 +96,8 @@ public class Rotary {
 
 	public void nextMatch() {
 		Nexus.getMatchStats().reset();
-		sidebar.resetScores();
-		scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+
+		this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 		this.sidebar = new Sidebar("&eKills", scoreboard);
 		
 		setState(GameState.STARTING);
@@ -111,8 +112,12 @@ public class Rotary {
 			g.setFoodLevel(20);
 			g.setSaturation(99F);
 			g.removePotionEffects();
-			
+
 			g.teleport(getCurrentMap().getSpawnLocation());
+
+			getSidebar().add(g.getPlayer());
+			
+			Chat.log(g.getPlayer().getScoreboard().getObjective(DisplaySlot.SIDEBAR).getName());
 			
 			g.setVariable("spectator", true);
 			g.setAllowFlight(true);
@@ -168,6 +173,8 @@ public class Rotary {
 				g.setFlying(false);
 				g.setAllowFlight(false);
 				g.getPlayer().setFallDistance(0F);
+				
+				g.getPlayer().setScoreboard(scoreboard);
 				
 				sql += "(" + gameID + ",'" + g.getName() + "','" + team.getTitle().toLowerCase() + "',now()),";
 				

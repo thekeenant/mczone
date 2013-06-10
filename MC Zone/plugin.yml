@@ -26,3 +26,6 @@ commands:
   hive:
     description: MC Zone admin command
     usage: /hive <args>
+  register:
+    description: Register your account
+    usage: /register <password>

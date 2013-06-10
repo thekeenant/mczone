@@ -45,7 +45,7 @@ public class ConnectEvents implements Listener {
 		
 		if (Nexus.getRotary().getState() == GameState.PLAYING)
 			Nexus.getDatabase().update(
-					"INESRT INTO nexus_players (game_id,username,team,date) VALUES " +
+					"INSERT INTO nexus_players (game_id,username,team,date) VALUES " +
 					"(" + Nexus.getRotary().getGameID() + ", '" + g.getName() + "','spec',now())");
 		
 	}

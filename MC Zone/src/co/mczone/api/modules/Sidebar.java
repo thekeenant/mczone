@@ -1,7 +1,5 @@
 package co.mczone.api.modules;
 
-import java.util.Set;
-
 import lombok.Getter;
 
 import org.bukkit.Bukkit;
@@ -13,6 +11,7 @@ import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
 import co.mczone.util.Chat;
+import co.mczone.util.RandomUtil;
 
 public class Sidebar {
 	
@@ -25,8 +24,8 @@ public class Sidebar {
 		this.title = title;
 		
 		scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-		scoreboard.getObjective(DisplaySlot.SIDEBAR);
-		objective = scoreboard.registerNewObjective("test", "dummy");
+		
+		objective = scoreboard.registerNewObjective("test" + RandomUtil.between(1, 500), "dummy");
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 		objective.setDisplayName(Chat.colors(title));
 	}
@@ -35,8 +34,7 @@ public class Sidebar {
 		this.title = title;
 		this.scoreboard = scoreboard;
 		
-		scoreboard.getObjective(DisplaySlot.SIDEBAR);
-		objective = scoreboard.registerNewObjective("test", "dummy");
+		objective = scoreboard.registerNewObjective("test" + RandomUtil.between(1, 500), "dummy");
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 		objective.setDisplayName(Chat.colors(title));
 	}
@@ -55,28 +53,7 @@ public class Sidebar {
 	}
 	
 	public void resetScores() {
-		Set<OfflinePlayer> players = scoreboard.getPlayers();
-		
-		scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-		scoreboard.getObjective(DisplaySlot.SIDEBAR);
-		objective = scoreboard.registerNewObjective("test", "dummy");
-		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-		objective.setDisplayName(Chat.colors(title));
-		
-		for (OfflinePlayer op : players) {
-			if (!op.isOnline())
-				continue;
-			Player p = Bukkit.getPlayerExact(op.getName());
-			p.getPlayer().setScoreboard(scoreboard);
-		}
-			
-	}
-
-	public void hide() {
-		for (OfflinePlayer op : scoreboard.getPlayers()) {
-			Player p = op.getPlayer();
-			if (p != null && p.isOnline())
-				p.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
-		}
+		for (OfflinePlayer score : scoreboard.getPlayers())
+			objective.getScoreboard().resetScores(score);
 	}
 }

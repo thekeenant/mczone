@@ -28,7 +28,7 @@ public class JoinCmd implements CommandExecutor {
 		if (args.length > 0)
 			random = false;
 		
-		if (random == true && g.getRank().getLevel() < RankType.VIP.getLevel()) {
+		if (random == false && g.getRank().getLevel() < RankType.VIP.getLevel()) {
 			Chat.player(g, "&cGet VIP or higher in order to choose the team you join!");
 			return true;
 		}

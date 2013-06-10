@@ -51,11 +51,11 @@ public class MatchStats {
 	}
 
 	public int getKills(Gamer g) {
-		return kills.containsKey(g.getName()) ? 0 : kills.get(g.getName());
+		return kills.containsKey(g.getName()) ? kills.get(g.getName()) : 0;
 	}
 	
 	public int getDeaths(Gamer g) {
-		return deaths.containsKey(g.getName()) ? 0 : deaths.get(g.getName());
+		return deaths.containsKey(g.getName()) ? deaths.get(g.getName()) : 0;
 	}
 	
 	public double getKD(Gamer g) {

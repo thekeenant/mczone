@@ -9,7 +9,7 @@ commands:
   join:
     description: Join the game
     default: true
-  join:
+  leave:
     description: Leave the game
     default: true
   match:

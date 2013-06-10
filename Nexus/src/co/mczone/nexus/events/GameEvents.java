@@ -4,6 +4,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -99,6 +101,16 @@ public class GameEvents implements Listener {
 		Map map = Nexus.getRotary().getCurrentMap();
 		if (map.getTeam(g) == map.getTeam(t))
 			event.setCancelled(true);
+	}
+	
+	@EventHandler
+	public void onBlockBreak(BlockBreakEvent event) {
+		event.setCancelled(true);
+	}
+	
+	@EventHandler
+	public void onBlockPlace(BlockPlaceEvent event) {
+		event.setCancelled(true);
 	}
 	
 }

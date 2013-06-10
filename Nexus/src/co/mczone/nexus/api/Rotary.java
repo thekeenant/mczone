@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
 import lombok.Getter;
@@ -99,6 +98,7 @@ public class Rotary {
 
 		this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 		this.sidebar = new Sidebar("&eKills", scoreboard);
+		updateSidebar();
 		
 		setState(GameState.STARTING);
 		loadNext();
@@ -116,8 +116,6 @@ public class Rotary {
 			g.teleport(getCurrentMap().getSpawnLocation());
 
 			getSidebar().add(g.getPlayer());
-			
-			Chat.log(g.getPlayer().getScoreboard().getObjective(DisplaySlot.SIDEBAR).getName());
 			
 			g.setVariable("spectator", true);
 			g.setAllowFlight(true);

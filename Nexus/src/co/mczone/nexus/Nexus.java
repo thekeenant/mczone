@@ -7,7 +7,9 @@ import java.util.logging.Level;
 
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -197,7 +199,8 @@ public class Nexus {
 	}
 	
 	public void onDisable() {
-		
+		for (World w : Bukkit.getWorlds())
+			Bukkit.unloadWorld(w, false);
 	}
 	
 	public void updateHidden() {
@@ -207,7 +210,7 @@ public class Nexus {
 				
 				for (Gamer t : Gamer.getList())
 					
-					if (g.getVariable("spectator") == null)
+					if (t.getVariable("spectator") == null)
 						g.getPlayer().showPlayer(t.getPlayer());
 					else
 						g.getPlayer().hidePlayer(t.getPlayer());

@@ -17,6 +17,8 @@ public class GameSchedule extends BukkitRunnable {
 		GameState state = rotary.getState();
 		Map map = rotary.getCurrentMap();
 		
+		Nexus.getInstance().updateHidden();
+		
 		if (state == GameState.STARTING) {
 			rotary.setTime(rotary.getTime() - 1);
 			rotary.updateSidebar();

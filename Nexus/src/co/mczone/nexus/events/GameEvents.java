@@ -6,6 +6,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -25,6 +27,16 @@ public class GameEvents implements Listener {
 	public GameEvents() {
 		Bukkit.getPluginManager().registerEvents(this, Nexus.getPlugin());
 	}
+	
+	@EventHandler
+	public void onEntityDeath(EntityDeathEvent event) {
+		event.getDrops().clear();
+	}
+	
+    @EventHandler
+    public void onEntityExplode(EntityExplodeEvent event) {
+		event.blockList().clear();
+    }
 	
 	@EventHandler
 	public void onPlayerKilled(PlayerKilledEvent event) {
@@ -50,15 +62,15 @@ public class GameEvents implements Listener {
 			Nexus.getMatchStats().addKill(g);
 			
 			String message = event.getDeathMessage();
-			message.replace(t.getName(), targetTeam.getColor().getChatColor() + t.getName() + "&7");
-			message.replace(g.getName(), targetTeam.getColor().getChatColor() + g.getName());
+			message = message.replace(t.getName(), targetTeam.getColor().getChatColor() + t.getName() + "&7");
+			message = message.replace(g.getName(), killerTeam.getColor().getChatColor() + g.getName());
 			event.setDeathMessage(message);
 		}
 		else {
 			Hive.getInstance().kill(t.getPlayer(), "natural", Nexus.getRotary().getGameID());
 			
 			String message = event.getDeathMessage();
-			message.replace(t.getName(), targetTeam.getColor().getChatColor() + t.getName() + "&7");
+			message = message.replace(t.getName(), targetTeam.getColor().getChatColor() + t.getName() + "&7");
 			event.setDeathMessage(message);
 		}
 		

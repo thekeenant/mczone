@@ -3,6 +3,8 @@ package co.mczone.nexus.api;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -107,6 +109,10 @@ public class Rotary {
 		setTime(30);
 		
 		for (Gamer g : Gamer.getList()) {
+
+			if (g.getPlayer() == null || g.getPlayer().isOnline() == false)
+				continue;
+			
 			g.clearInventory(true);
 			g.setHealth(20);
 			g.setFoodLevel(20);
@@ -186,6 +192,20 @@ public class Rotary {
 	}
 	
 	public void endMatch() {
+		Comparator<Team> c = new Comparator<Team>() {
+
+		    public int compare(Team t1, Team t2) {
+		        return t2.getPoints() - t1.getPoints();
+		    }
+		};
+
+		List<Team> teams = Nexus.getRotary().getCurrentMap().getTeams();
+		Collections.sort(teams, c);
+		Team winner = teams.get(0);
+		
+		Chat.server("&f&l > > > > > " + winner.getColor().getChatColor() + winner.getTitle() + " WINS &f&l < < < < <");
+		Chat.log("Order: " + teams.toString());
+		
 		
 		new BukkitRunnable() {
 
@@ -197,6 +217,9 @@ public class Rotary {
 		}.runTask(Nexus.getPlugin());
 		
 		for (Gamer g : Gamer.getList()) {
+			if (g.getPlayer() == null || g.getPlayer().isOnline() == false)
+				continue;
+			
 			g.clearInventory();
 			g.removePotionEffects();
 			g.setAllowFlight(true);

@@ -1,8 +1,10 @@
 package co.mczone.nexus.events;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import co.mczone.api.players.Gamer;
@@ -17,7 +19,10 @@ public class GeneralEvents implements Listener {
 	
 	@EventHandler
 	public void onPlayerDamage(PlayerDamageEvent event) {
-		Gamer g = Gamer.get(event.getTarget());
+		if (event.getDamager() instanceof Player == false)
+			return;
+		
+		Gamer g = Gamer.get((Player) event.getDamager());
 
 		if (g.getVariable("spectator") != null)
 			event.setCancelled(true);
@@ -29,6 +34,11 @@ public class GeneralEvents implements Listener {
 
 		if (g.getVariable("spectator") != null)
 			event.setCancelled(true);
+	}
+	
+	@EventHandler
+	public void onDropItem(PlayerDropItemEvent event) {
+		event.setCancelled(true);
 	}
 	
 }

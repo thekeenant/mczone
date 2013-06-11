@@ -25,6 +25,7 @@ public class LeaveCmd implements CommandExecutor {
 		team.remove(g);
 		
 		g.setVariable("spectator", true);
+		g.clearInventory();
 		g.setFlying(false);
 		g.setAllowFlight(false);
 		g.setHealth(20);

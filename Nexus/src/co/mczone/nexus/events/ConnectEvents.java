@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.server.ServerListPingEvent;
 
 import co.mczone.api.players.Gamer;
 import co.mczone.nexus.Nexus;
@@ -25,6 +26,11 @@ public class ConnectEvents implements Listener {
 	@Getter List<String> dbPlayers = new ArrayList<String>();
 	
 	@EventHandler
+	public void serverListPing(ServerListPingEvent event) {
+		event.setMotd(Nexus.getRotary().getCurrentMap().getTitle());
+	}
+	
+	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		event.setJoinMessage(null);
 		
@@ -35,6 +41,8 @@ public class ConnectEvents implements Listener {
 		g.setFoodLevel(20);
 		g.setSaturation(99F);
 		g.removePotionEffects();
+		
+		g.run("give-book");
 		
 		g.setVariable("spectator", true);
 		

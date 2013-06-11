@@ -2,11 +2,13 @@ package co.mczone.nexus;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 import java.util.logging.Level;
 
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -23,6 +25,7 @@ import co.mczone.api.server.GameType;
 import co.mczone.api.server.Hive;
 import co.mczone.nexus.api.*;
 import co.mczone.nexus.cmds.*;
+import co.mczone.nexus.enums.GameState;
 import co.mczone.nexus.enums.TeamColor;
 import co.mczone.nexus.events.*;
 import co.mczone.util.Chat;
@@ -53,6 +56,7 @@ public class Nexus {
 		new ConnectEvents();
 		new GameEvents();
 		new GeneralEvents();
+		new KitEvents();
 		
 		Hive.getInstance().setType(GameType.NEXUS);
 		
@@ -98,6 +102,40 @@ public class Nexus {
 					gamer.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, -1, 2));
 				}
 				
+				gamer.giveItem(new ItemStack(Material.GOLDEN_APPLE, 3));
+				gamer.giveItem(new ItemStack(Material.COOKED_BEEF, 16));
+				
+			}
+		});
+		
+		Gamer.addFunction("give-book", new GamerRunnable() {
+			@Override
+			public void run() {
+				ItemStack book = new ItemStack(Material.WRITTEN_BOOK, 1);
+		        BookMeta data = (BookMeta) book.getItemMeta();
+		        data.setAuthor(Chat.colors("&7&oMC Zone"));
+		        data.setTitle(Chat.colors("&2&lNeuxs MC"));
+		        String page1 = "     ";
+		        String page2 = "";
+		        
+		        // Page 1
+		        page1 += "  &3&lNexus MC\n";
+		        page1 += "    &6&oHow To Guide\n";
+		        page1 += "\n";
+		        page1 += "&0Nexus MC is a server made for Minecraft PVP gamers. Fight on various maps with any number of teams in team deathmatch. Learn how to join and how to play on the next page.";
+		        page1 += "\n\n&7www.mczone.co";
+		        // Page 2
+		        page2 += "       &4&oCommands\n";
+		        page2 += "\n";
+		        page2 += "&6/join &0Joins the game\n";
+		        page2 += "&6/leave &0Leave the game\n";
+		        page2 += "&6/kit &0View available kits\n";
+		        page2 += "&6/kit <kit> &0Choose a kit\n";
+		        page2 += "&6/help &0Show commands";
+		        
+		        data.setPages(Chat.colors(page1), Chat.colors(page2));
+		        book.setItemMeta(data);
+		        gamer.giveItem(book);
 			}
 		});
 		
@@ -204,15 +242,36 @@ public class Nexus {
 	}
 	
 	public void updateHidden() {
-		for (Team team : rotary.getCurrentMap().getTeams())
-			
-			for (Gamer g : team.getMembers())
+		try {
+			for (Team team : rotary.getCurrentMap().getTeams()) {
 				
-				for (Gamer t : Gamer.getList())
+				for (Gamer g : team.getMembers()) {
 					
-					if (t.getVariable("spectator") == null)
-						g.getPlayer().showPlayer(t.getPlayer());
-					else
-						g.getPlayer().hidePlayer(t.getPlayer());
+					if (g.getPlayer() == null || g.getPlayer().isOnline() == false)
+						continue;
+					
+					for (Gamer t : Gamer.getList()) {
+						
+						if (t.getPlayer() == null || t.getPlayer().isOnline() == false)
+							continue;
+						
+						if (Nexus.getRotary().getState() != GameState.PLAYING) {
+							g.getPlayer().showPlayer(t.getPlayer());
+							continue;
+						}
+						
+						if (t.getVariable("spectator") == null)
+							g.getPlayer().showPlayer(t.getPlayer());
+						else
+							g.getPlayer().hidePlayer(t.getPlayer());
+					}
+					
+				}
+			
+			}
+		}
+		catch (ConcurrentModificationException e) {
+			return;
+		}
 	}
 }

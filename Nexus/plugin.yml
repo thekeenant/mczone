@@ -13,7 +13,7 @@ commands:
     description: Leave the game
     default: true
   match:
-    aliases: [m]
+    aliases: [m,stats]
     description: Leave the game
     default: true
   kit:

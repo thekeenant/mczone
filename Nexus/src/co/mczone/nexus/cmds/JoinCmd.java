@@ -24,6 +24,11 @@ public class JoinCmd implements CommandExecutor {
 			return true;
 		}
 		
+		if (Nexus.getRotary().getCurrentMap().getTeam(g) != null) {
+			Chat.player(g, "&cYou are already on a team.");
+			return true;
+		}
+		
 		boolean random = true;
 		if (args.length > 0)
 			random = false;

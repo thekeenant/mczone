@@ -27,10 +27,6 @@ public class MatchStats {
 		killstreak.put(g.getName(), 0);
 	}
 	
-	public int getKillstreak(Gamer g) {
-		return killstreak.containsKey(g.getName()) ? 0 : killstreak.get(g.getName());
-	}
-	
 	public void addKill(Gamer g) {
 		if (!kills.containsKey(g.getName()))
 			kills.put(g.getName(), 0);
@@ -49,7 +45,11 @@ public class MatchStats {
 		deaths.put(g.getName(), deaths.get(g.getName()) + 1);
 		resetKillstreak(g);
 	}
-
+	
+	public int getKillstreak(Gamer g) {
+		return killstreak.containsKey(g.getName()) ? killstreak.get(g.getName()) : 0;
+	}
+	
 	public int getKills(Gamer g) {
 		return kills.containsKey(g.getName()) ? kills.get(g.getName()) : 0;
 	}

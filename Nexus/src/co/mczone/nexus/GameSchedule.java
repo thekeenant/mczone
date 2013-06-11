@@ -12,7 +12,7 @@ public class GameSchedule extends BukkitRunnable {
 	@Override
 	public void run() {
 		
-		Rotary rotary = Nexus.getRotary();
+		final Rotary rotary = Nexus.getRotary();
 		
 		GameState state = rotary.getState();
 		Map map = rotary.getCurrentMap();
@@ -24,7 +24,14 @@ public class GameSchedule extends BukkitRunnable {
 			rotary.updateSidebar();
 			
 			if (rotary.getTime() == 0) {
-				rotary.startMatch();
+				new BukkitRunnable() {
+
+					@Override
+					public void run() {
+						rotary.startMatch();
+					}
+					
+				}.runTask(Nexus.getPlugin());
 				return;
 			}
 			
@@ -72,7 +79,14 @@ public class GameSchedule extends BukkitRunnable {
 			Map next = rotary.getNextMap();
 			
 			if (rotary.getTime() == 0) {
-				rotary.nextMatch();
+				new BukkitRunnable() {
+
+					@Override
+					public void run() {
+						rotary.nextMatch();
+					}
+					
+				}.runTask(Nexus.getPlugin());
 				return;
 			}
 			

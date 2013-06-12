@@ -9,10 +9,13 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
+import co.mczone.api.players.CustomDamageCause;
+
 public class PlayerDamageEvent extends Event {
 	public static HandlerList handlers = new HandlerList();
 	@Getter Entity damager;
 	@Getter Player target;
+	@Getter @Setter CustomDamageCause customCause;
 	@Getter DamageCause cause;
 	@Getter @Setter boolean cancelled;
 	@Getter boolean damageByEntity;

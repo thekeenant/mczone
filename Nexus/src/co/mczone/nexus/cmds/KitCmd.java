@@ -29,6 +29,11 @@ public class KitCmd implements CommandExecutor {
 			return true;
 		}
 		
+		if (!k.hasPermission(g)) {
+			Chat.player(g, "&cPurchase this kit at &4www.mczone.co/shop");
+			return true;
+		}
+		
 		g.setVariable("kit", k);
 		
 		if (Nexus.getRotary().getState() == GameState.PLAYING)

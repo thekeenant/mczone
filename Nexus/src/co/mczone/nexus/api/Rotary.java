@@ -150,7 +150,6 @@ public class Rotary {
 		Chat.server("&aThe match has &2STARTED. &aPrepare for battle!");
 		updateSidebar();
 		
-		setState(GameState.PLAYING);
 
 		Nexus.getDatabase().syncUpdate("INSERT INTO nexus_games (start) VALUES (now())");
 		ResultSet r = Nexus.getDatabase().query("SELECT id FROM nexus_games ORDER BY id DESC LIMIT 1");
@@ -186,6 +185,8 @@ public class Rotary {
 			}
 		}
 		sql = Chat.chomp(sql, 1);
+		
+		setState(GameState.PLAYING);
 		
 		if (insert)
 			Nexus.getDatabase().update(sql);

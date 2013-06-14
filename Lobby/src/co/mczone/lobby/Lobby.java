@@ -55,16 +55,16 @@ public class Lobby extends JavaPlugin implements Listener {
 		Game.load(configAPI.getConfig().getConfigurationSection("games"));
 
 		// Game Icons!
-		new GameIcon(Material.DIAMOND_SWORD, "&5Nebula MC", new Location(Bukkit.getWorld("void"), 1.5, 10, -749.5, 270, 0), true);
+		new GameIcon(Material.DIAMOND_SWORD, "&5Nebula MC", new Location(Bukkit.getWorld("void"), 1.5, 10, -749.5, 0, 0), true);
 		
 		new GameIcon(Material.BRICK, "&2The Walls", new Location(Bukkit.getWorld("void"), -30.5, 10, -808.5, 90, 0));
-		new GameIcon(Material.FIRE, "&4Survival Games", new Location(Bukkit.getWorld("void"), 27.5, 10, -840.5, 90, 0));
-		new GameIcon(Material.GOLDEN_APPLE, "&2Hunger Games", new Location(Bukkit.getWorld("void"), 0.5, 10, -840.5, 270, 0));
+		new GameIcon(Material.FIRE, "&4Survival Games", new Location(Bukkit.getWorld("void"), 27.5, 10, -840.5, 180, 0));
+		new GameIcon(Material.GOLDEN_APPLE, "&2Hunger Games", new Location(Bukkit.getWorld("void"), 0.5, 10, -840.5, 180, 0));
 		
 		new GameIcon(Material.IRON_SWORD, "&9Nexus MC", new Location(Bukkit.getWorld("void"), 28.5, 10, -750.5, 0, 0));
-		new GameIcon(Material.BOW, "&bSky Wars", new Location(Bukkit.getWorld("void"), 60.5, 10, -809.5, 180, 0), true);
+		new GameIcon(Material.BOW, "&bSky Wars", new Location(Bukkit.getWorld("void"), 60.5, 10, -809.5, 270, 0), true);
 		
-		new GameIcon(Material.POTION, 16462, "&bGhost Squadron", new Location(Bukkit.getWorld("void"), -33.5, 10, -781.5, 270, 0));
+		new GameIcon(Material.POTION, 16462, "&bGhost Squadron", new Location(Bukkit.getWorld("void"), -33.5, 10, -781.5, 90, 0));
 
 		// Events!
 		new CompassEvents();

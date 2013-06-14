@@ -1,5 +1,6 @@
 package co.mczone.nexus;
 
+import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import co.mczone.nexus.api.Map;
@@ -55,19 +56,6 @@ public class GameSchedule extends BukkitRunnable {
 			}
 			
 			if (rotary.getTime() % 60 == 0) {
-				/*
-				String prefix = "&fScore: ";
-				String scores = "";
-				for (Team team : map.getTeams()) {
-					int kills = team.getKills();
-					ChatColor color = team.getColor().getChatColor();
-					scores += color + "&l" + kills + " &f/ ";
-				}
-				scores = Chat.chomp(scores, 5);
-				
-				Chat.server(prefix + scores);
-				*/
-				
 				int time = map.getDuration() - rotary.getTime();
 				Chat.server("&fTime left: &7" + Chat.time(time));
 			}
@@ -77,6 +65,26 @@ public class GameSchedule extends BukkitRunnable {
 			rotary.setTime(rotary.getTime() - 1);
 			
 			Map next = rotary.getNextMap();
+			
+			if (rotary.getLoops() == 3) {
+				if (rotary.getTime() == 0) {
+					new BukkitRunnable() {
+
+						@Override
+						public void run() {
+							Bukkit.shutdown();
+						}
+						
+					}.runTask(Nexus.getPlugin());
+					return;
+				}
+				
+				if (rotary.getTime() % 5 == 0 || rotary.getTime() <= 10)
+					Chat.server("&6Server rebooting in &e" + Chat.time(rotary.getTime()));	
+				
+				return;
+			}
+			
 			
 			if (rotary.getTime() == 0) {
 				new BukkitRunnable() {

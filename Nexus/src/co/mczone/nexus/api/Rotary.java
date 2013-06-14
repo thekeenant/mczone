@@ -73,9 +73,16 @@ public class Rotary {
 		return maps.get(currentMapIndex);
 	}
 
+	// Number of times looped through the rotary
+	@Getter int loops = 0;
+	
 	int currentMapIndex = -1;
 	public void loadNext() {
 		currentMapIndex = getNextMapIndex();
+		
+		if (currentMapIndex == 0)
+			loops++;
+		
 		getCurrentMap().loadMatch();
 	}
 	

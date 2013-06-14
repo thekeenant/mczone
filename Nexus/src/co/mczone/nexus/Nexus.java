@@ -1,6 +1,8 @@
 package co.mczone.nexus;
 
 import java.io.File;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.List;
@@ -14,6 +16,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import lombok.Getter;
 import co.mczone.api.ConfigAPI;
@@ -138,6 +141,35 @@ public class Nexus {
 		        gamer.giveItem(book);
 			}
 		});
+		
+        new BukkitRunnable() {
+			@Override
+			public void run() {
+				ResultSet r = database.query("SELECT * FROM nexus_donations");
+				//Kit.votes.clear();
+				Kit.getDonations().clear();
+				int donations = 0;
+				try {
+					while (r.next()) {
+						String username = r.getString("username").toLowerCase();
+						String kit = r.getString("kit").toLowerCase();
+						boolean free = (r.getInt("free")==1) ? true : false;
+						if (free) {
+							//Kit.votes.put(username, Kit.findByName(kit));
+						}
+						else {
+							donations += 1;
+							if (!Kit.getDonations().containsKey(username))
+								Kit.getDonations().put(username, new ArrayList<Kit>());
+							Kit.getDonations().get(username).add(Kit.get(kit));
+						}
+					}
+				} catch (SQLException e) {
+					Chat.log("DB Error: Couldn't load donations/votes!");
+				}
+				Chat.log("Loaded " + donations + " kit donations!");
+			}
+        }.runTaskTimerAsynchronously(getPlugin(), 80, 60 * 20);
 		
 	}
 	

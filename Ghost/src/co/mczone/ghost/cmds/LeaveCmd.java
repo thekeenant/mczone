@@ -23,6 +23,7 @@ public class LeaveCmd implements CommandExecutor,Permissible {
 		}
 		
 		Arena a = (Arena) g.getVariable("arena");
+		g.setVariable("arena", null);
 		a.leave(g.getPlayer());
 		g.setInvisible(false);
     	g.teleport(Ghost.getLobby().getSpawn());

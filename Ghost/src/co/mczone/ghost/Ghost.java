@@ -15,6 +15,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import co.mczone.api.ConfigAPI;
 import co.mczone.api.players.Gamer;
@@ -137,6 +138,25 @@ public class Ghost extends JavaPlugin {
 				gamer.setVariable("ghost-kits", kits);
 			}
 		});
+		
+		new BukkitRunnable() {
+
+			@Override
+			public void run() {
+				Chat.server("&4[Ghost] &cServer shutting down in 30 seconds for reboot!");
+				
+				new BukkitRunnable() {
+
+					@Override
+					public void run() {
+						Chat.server("&4[Ghost] &cServer rebooting, please rejoin!");
+						Bukkit.shutdown();
+					}
+					
+				}.runTaskLater(Ghost.getInstance(), 20 * 30);
+			}
+			
+		}.runTaskLater(this, 20 * 60 * 60 * 6);
 	}
 	
 	public void onDisable() {

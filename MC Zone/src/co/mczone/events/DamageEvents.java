@@ -128,6 +128,6 @@ public class DamageEvents implements Listener {
 		}
 		
 		Bukkit.getPluginManager().callEvent(callMe);
-		event.setDeathMessage(Chat.colors(callMe.getDeathMessage()));
+		event.setDeathMessage(callMe.getDeathMessage() == null ? null : Chat.colors(callMe.getDeathMessage()));
 	}
 }

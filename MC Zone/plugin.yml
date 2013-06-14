@@ -29,3 +29,9 @@ commands:
   register:
     description: Register your account
     usage: /register <password>
+  credits:
+    description: View your credits
+    usage: /credits
+  shop:
+    description: The MC Zone shop
+    usage: /shop (item) (amount)

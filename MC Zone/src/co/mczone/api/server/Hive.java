@@ -21,22 +21,28 @@ import co.mczone.api.backend.Status;
 import co.mczone.api.commands.HiveCommandExecutor;
 import co.mczone.api.database.MySQL;
 import co.mczone.api.players.Gamer;
+import co.mczone.api.shop.Shop;
 
 public class Hive {
+	@Getter static Hive instance;
+	
 	@Getter HashMap<String, Object> variables = new HashMap<String, Object>();
 	@Getter MySQL database;
-	@Getter static Hive instance;
+	
 	@Getter @Setter GameType type;
 	
 	@Getter ConfigAPI config;
 	
-	DataSender sender;
+	private DataSender sender;
 	@Getter Status status;
+	
+	@Getter Shop shop;
 	
 	public Hive(MySQL database, ConfigAPI config) {
 		instance = this;
 		this.database = database;
 		this.config = config;
+		this.shop = new Shop();
 		
 		database.open();
 		

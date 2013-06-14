@@ -12,7 +12,10 @@ public class CmdBase {
         MCZone.getInstance().getCommand("list").setExecutor(new ListCmd());
         
         MCZone.getInstance().getCommand("hive").setExecutor(new HiveCmd());
-        
+
         MCZone.getInstance().getCommand("register").setExecutor(new RegisterCmd());
+
+        MCZone.getInstance().getCommand("credits").setExecutor(new CreditsCmd());
+        MCZone.getInstance().getCommand("shop").setExecutor(new ShopCmd());
     }
 }

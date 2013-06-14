@@ -104,9 +104,14 @@ public class Gamer {
 			return null;
 		return get(p.getName());
 	}
-	
+
 	public void giveCredits(int amount) {
 		Hive.getInstance().getDatabase().update("UPDATE players SET credits=credits+" + amount + " WHERE username='" + name + "'");
+		updateCredits();
+	}
+	
+	public void takeCredits(int amount) {
+		Hive.getInstance().getDatabase().update("UPDATE players SET credits=credits-" + amount + " WHERE username='" + name + "'");
 		updateCredits();
 	}
 	
